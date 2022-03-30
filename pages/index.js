@@ -15,6 +15,20 @@ export default function Home() {
         <h1 className={styles.title}>
           Hello World
         </h1>
+
+        <h1 className="text-3xl font-bold underline">
+          Hello world!
+        </h1>
+
+        <div className="p-6 max-w-sm mx-auto bg-white rounded-xl shadow-lg flex items-center space-x-4">
+          <div className="shrink-0">
+            <img className="h-12 w-12" src="/vercel.svg" alt="ChitChat Logo"/>
+          </div>
+          <div>
+            <div className="text-xl font-medium text-black">Umar</div>
+            <p className="text-slate-500">This is my first nextjs X tailwind css project!</p>
+          </div>
+        </div>
       </main>
     </div>
   )
