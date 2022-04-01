@@ -1,5 +1,7 @@
 import Head from 'next/head'
 
+import BottomMenuBar from "../components/BottomMenuBar"
+
 export default function Home() {
   return (
     <div className="bg-[#d6e0ef]">
@@ -17,7 +19,7 @@ export default function Home() {
                 <div className="w-[175px] h-[265px]">
                   <div className="flex flex-col justify-end relative z-10">
                     <img src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx143289-iVgJWY0c8EVe.jpg" className="w-full h-full rounded" />
-                    <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded">
+                    <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full">
                       <a className="text-sm font-sans" href="https://anilist.co/anime/143289/EstabLife-Great-Escape" target="_blank" rel="noopener noreferrer">Estab-Life: Great Escape</a>
                       <div className="text-sm text-[#75b5f0]"><span>Chapter 1</span></div>
                     </div>
@@ -30,39 +32,7 @@ export default function Home() {
 
       </div>
 
-      <div className="w-full h-screen">
-        <section className="block fixed inset-x-0 bottom-0 z-10">
-          <div className="flex justify-end mr-4 mb-2">
-            <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded">
-              <button className="focus:text-teal-500 hover:text-teal-500">
-                <i className="fi fi-rr-angle-down text-white" width="25" height="25"></i>
-              </button>
-            </div>
-          </div>
-          <div className="flex justify-between bg-[#2b2d42] mx-2 mb-2 rounded">
-            <a href="#" className="w-full text-white focus:text-teal-500 hover:text-teal-500 text-center pt-2 pb-1">
-              <i className="fi fi-rr-home" width="25" height="25"></i>
-              <span className="tab tab-home block text-xs">Home</span>
-            </a>
-            <a href="#" className="w-full text-white focus:text-teal-500 hover:text-teal-500 text-center pt-2 pb-1">
-              <i className="fi fi-rr-search" width="25" height="25"></i>
-              <span className="tab tab-home block text-xs">Search</span>
-            </a>
-            <a href="#" className="w-full text-white focus:text-teal-500 hover:text-teal-500 text-center pt-2 pb-1">
-              <i className="fi fi-rr-time-past" width="25" height="25"></i>
-              <span className="tab tab-home block text-xs">History</span>
-            </a>
-            <a href="#" className="w-full text-white focus:text-teal-500 hover:text-teal-500 text-center pt-2 pb-1">
-              <i className="fi fi-rr-settings" width="25" height="25"></i>
-              <span className="tab tab-home block text-xs">Setting</span>
-            </a>
-            <a href="#" className="w-full text-white focus:text-teal-500 hover:text-teal-500 text-center pt-2 pb-1">
-              <i className="fi fi-rr-user" width="25" height="25"></i>
-              <span className="tab tab-home block text-xs">Account</span>
-            </a>
-          </div>
-        </section>
-      </div>
+      <BottomMenuBar />
     </div>
   )
 }
