@@ -7,6 +7,7 @@ import animapuApi from "../../../../apis/AnimapuApi"
 
 var onApiCall = false
 var onApiCall2 = false
+var BreakException = {}
 export default function ReadManga() {
   let router = useRouter()
 
@@ -60,34 +61,40 @@ export default function ReadManga() {
   }
 
   useEffect(() => {
+    if (!query) {return}
     GetMangaDetail()
     GetReadManga()
   // eslint-disable-next-line
-  }, [])
+  }, [query])
 
-  var hist = {}
   var unsupportedTitles = []
+  var hist = {}
   function handleImageFallback(imageObj, e) {
-    if (!hist[manga.id]) { hist[manga.id] = {} }
-
     var found = false
     var selectedImageUrl = ""
-    imageObj.image_urls.map((imageUrl) => {
-      if (!hist[imageUrl]) {
-        hist[imageUrl] = true
-        found = true
-        selectedImageUrl = imageUrl
-        return
-      }
-    })
 
-    if (found) {
-      e.target.src = selectedImageUrl
-      return
-    } else {
-      console.log("IMG", e.target.style.visibility)
-      e.target.style.display = "none"
+    try {
+      imageObj.image_urls.forEach((imageUrl,idx) => {
+        if (!hist[`${imageUrl}-${idx}`]) {
+          hist[`${imageUrl}-${idx}`] = true
+          found = true
+          selectedImageUrl = imageUrl
+          throw BreakException
+        }
+      })
+    } catch(err) {
+      if (err !== BreakException) throw err
+
+      if (found) {
+        console.log(selectedImageUrl)
+        e.target.src = selectedImageUrl
+        return
+      } else {
+        e.target.style.display = "none"
+      }
     }
+    e.target.style.display = "none"
+
   }
 
   return (
@@ -104,9 +111,8 @@ export default function ReadManga() {
           <div className="mb-2">
             <span className="bg-white rounded p-1">Chapter {chapter.number}</span>
           </div>
-
           {chapter.chapter_images.map((imageObj, idx) => (
-            <div key={idx}>
+            <div key={`${chapter.id}-${idx}`}>
               <img
                 className="w-full mb-1"
                 src={imageObj.image_urls[0]}
@@ -118,7 +124,7 @@ export default function ReadManga() {
         </div>
       </div>
 
-      <BottomMenuBar />
+      <BottomMenuBar isPaginateNavOn={true} manga={manga} chapter_id={chapter_id} />
     </div>
   )
 }

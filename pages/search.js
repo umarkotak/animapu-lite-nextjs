@@ -135,10 +135,7 @@ export default function Home() {
               onError={(e) => handleImageFallback(props.manga, e)}
               alt="thumb"
             />
-            <div
-              className="absolute p-2 text-white z-3 rounded w-full bg-gradient-to-t from-black"
-              onClick={() => router.push(`/mangas/${props.manga.id}?secondary_source_id=${props.manga.secondary_source_id}`)}
-            >
+            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full" onClick={() => router.push(`/mangas/${props.manga.id}?secondary_source_id=${props.manga.secondary_source_id}`)}>
               <span className="text-sm font-sans">{props.manga.title.slice(0, 50)}</span>
               <div className="text-sm text-[#75b5f0]"><b>Ch {props.manga.latest_chapter_id}</b></div>
             </div>

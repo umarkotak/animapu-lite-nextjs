@@ -1,11 +1,14 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import Select from 'react-select'
 
+var currentIdx = 0
 export default function BottomMenuBar(props) {
   let router = useRouter()
 
   const [isOpen, setIsOpen] = useState(props.isOpen || true)
+  const [currentChapterIDX, setCurrentChapterIDX] = useState(0)
+  const [chapters, setChapters] = useState([{ value: 'N/A', label: 'Pick Chapter' }])
 
   const customStyles = {
     control: base => ({
@@ -13,7 +16,38 @@ export default function BottomMenuBar(props) {
       height: "30px",
       minHeight: "30px"
     })
-  };
+  }
+
+  useEffect(() => {
+    if (!props.manga || !props.chapter_id) {return}
+    if (props.manga.chapters.length === 0) {return}
+    var chapterOpts = props.manga.chapters.map((chapter, idx) => {
+      if (props.chapter_id === chapter.id) {
+        currentIdx = idx
+      }
+      return { value: `/mangas/${props.manga.source_id}/read/${chapter.id}?secondary_source_id=${props.manga.secondary_source_id}`, label: chapter.title }
+    })
+    setChapters(chapterOpts)
+  // eslint-disable-next-line
+  }, [props])
+
+  useEffect(() => {
+    setCurrentChapterIDX(currentIdx)
+  }, [chapters])
+
+  function handleSelectChapter(e) {
+    router.push(e.value)
+  }
+
+  function nextChapter() {
+    console.log(currentChapterIDX, chapters[currentChapterIDX], chapters[currentChapterIDX-1])
+    router.push(chapters[currentIdx-1].value)
+  }
+
+  function prevChapter() {
+    console.log(currentChapterIDX, chapters[currentChapterIDX], chapters[currentChapterIDX-1])
+    router.push(chapters[currentIdx+1].value)
+  }
 
   return(
     <div className="w-full h-screen">
@@ -21,31 +55,35 @@ export default function BottomMenuBar(props) {
         <div className="flex justify-end mx-4 mb-2">
           <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded">
             <div className="h-1"></div>
-            <button className="focus:text-teal-500 hover:text-teal-500" onClick={() => {setIsOpen(!isOpen)}}>
+            <button className="focus:text-teal-500 hover:text-teal-500" onClick={() => window.scrollTo(0, 0)}>
               <i className="fi fi-rr-angle-up text-white" width="25" height="25"></i>
             </button>
           </div>
         </div>
 
         <div className="flex justify-between mx-4 mb-2">
-          <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-1 rounded">
-            <div className={`${isOpen ? "block" : "hidden"} flex justify-between`}>
-              <button className="focus:text-teal-500 hover:text-teal-500 mx-2">
-                <i className="fi fi-rr-angle-left text-white" width="25" height="25"></i>
-              </button>
-              <button className="focus:text-teal-500 hover:text-teal-500 mx-2">
-                <i className="fi fi-rr-book text-white" width="25" height="25"></i>
-              </button>
-              <Select
-                options={[]}
-                menuPlacement={"top"}
-                className="mx-2"
-                onChange={() => {}}
-                styles={customStyles}
-              />
-              <button className="focus:text-teal-500 hover:text-teal-500 mx-1">
-                <i className="fi fi-rr-angle-right text-white" width="25" height="25"></i>
-              </button>
+          <div>
+            <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} bg-[#2b2d42] bg-opacity-50 py-1 px-1 rounded`}>
+              <div className={`flex justify-between`}>
+                <button className="focus:text-teal-500 hover:text-teal-500 mx-2">
+                  <i className="fi fi-rr-angle-left text-white" width="25" height="25" onClick={()=>prevChapter()}></i>
+                </button>
+                <button className="focus:text-teal-500 hover:text-teal-500 mx-2">
+                  <i className="fi fi-rr-book text-white" width="25" height="25"></i>
+                </button>
+                <Select
+                  options={chapters}
+                  menuPlacement={"top"}
+                  className="mx-2"
+                  onChange={(e) => handleSelectChapter(e)}
+                  defaultValue={chapters[currentIdx]}
+                  value={chapters[currentIdx]}
+                  styles={customStyles}
+                />
+                <button className="focus:text-teal-500 hover:text-teal-500 mx-1">
+                  <i className="fi fi-rr-angle-right text-white" width="25" height="25" onClick={()=>nextChapter()}></i>
+                </button>
+              </div>
             </div>
           </div>
           <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded">

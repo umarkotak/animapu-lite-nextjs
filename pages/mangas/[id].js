@@ -51,6 +51,7 @@ export default function MangaDetail() {
 
       <div className={`h-[200px] z-0 ${manga.title ? "" : "animate-pulse"}`} style={{
         backgroundImage: `url(${manga.cover_image[0].image_urls[0]})`,
+        backgroundColor: "#d6e0ef",
         backgroundPosition: "50% 35%",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
@@ -88,7 +89,10 @@ export default function MangaDetail() {
                 <div key={chapter.title}>
                   <button
                     className="bg-white w-full rounded mb-2 p-2 text-[#5c728a]"
-                    onClick={() => router.push(`/mangas/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`)}
+                    onClick={() => {
+                      window.scrollTo(0, 0)
+                      router.push(`/mangas/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`)
+                    }}
                   >
                     {chapter.title}
                   </button>
