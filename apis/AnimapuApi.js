@@ -30,6 +30,17 @@ class AnimapuApi {
     return response
   }
 
+  async GetReadManga(params) {
+    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}?secondary_source_id=${params.secondary_source_id}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    return response
+  }
+
   GetActiveMangaSource() {
     return "mangaupdates"
   }

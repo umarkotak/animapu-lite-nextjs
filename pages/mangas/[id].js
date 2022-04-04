@@ -85,8 +85,13 @@ export default function MangaDetail() {
             <div></div>
             <div className="col-span-2 p-2">
               {manga.chapters.map((chapter, idx) => (
-                <div className="bg-white rounded mb-2 p-2 text-[#5c728a]" key={chapter.title}>
-                  {chapter.title}
+                <div key={chapter.title}>
+                  <button
+                    className="bg-white w-full rounded mb-2 p-2 text-[#5c728a]"
+                    onClick={() => router.push(`/mangas/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`)}
+                  >
+                    {chapter.title}
+                  </button>
                 </div>
               ))}
             </div>
