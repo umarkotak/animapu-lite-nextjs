@@ -64,6 +64,12 @@ export default function MangaDetail() {
           <div className="backdrop-blur-sm grid grid-cols-1 sm:grid-cols-3">
             <div className="h-full z-5 p-2 mt-[-125px]">
               <img className={`rounded w-full ${manga.title ? "" : "animate-pulse"}`} src={manga.cover_image[0].image_urls[0]}/>
+              <button
+                className="w-full bg-[#3db3f2] text-white rounded mt-2"
+                onClick={() => router.push(`/mangas/${manga_id}/read/${manga.chapters[0].id || 1}?secondary_source_id=${secondary_source_id}`)}
+              >
+                Read
+              </button>
             </div>
             <div className="col-span-2 p-2">
               <h1 className="text-[#5c728a] text-xl mb-1">

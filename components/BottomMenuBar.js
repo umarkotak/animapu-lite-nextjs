@@ -36,21 +36,35 @@ export default function BottomMenuBar(props) {
   }, [chapters])
 
   function handleSelectChapter(e) {
+    window.scrollTo(0, 0)
     router.push(e.value)
   }
 
   function nextChapter() {
-    console.log(currentChapterIDX, chapters[currentChapterIDX], chapters[currentChapterIDX-1])
+    window.scrollTo(0, 0)
+    if (!chapters[currentIdx-1]) { return }
     router.push(chapters[currentIdx-1].value)
   }
 
   function prevChapter() {
-    console.log(currentChapterIDX, chapters[currentChapterIDX], chapters[currentChapterIDX-1])
+    window.scrollTo(0, 0)
+    if (!chapters[currentIdx+1]) { return }
     router.push(chapters[currentIdx+1].value)
   }
 
   return(
     <div className="w-full h-screen">
+      <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
+        <div className="flex justify-between">
+          <button className="focus:text-teal-500 hover:text-teal-500 mx-2 w-full bg-[#2b2d42] py-1 pr-1 rounded">
+            <i className="fi fi-rr-angle-left text-white" width="25" height="25" onClick={()=>prevChapter()}></i>
+          </button>
+          <button className="focus:text-teal-500 hover:text-teal-500 mx-1 w-full bg-[#2b2d42] py-1 pl-1 rounded">
+            <i className="fi fi-rr-angle-right text-white" width="25" height="25" onClick={()=>nextChapter()}></i>
+          </button>
+        </div>
+      </div>
+
       <div className="block fixed inset-x-0 bottom-0 z-10">
         <div className="flex justify-end mx-4 mb-2">
           <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded">
