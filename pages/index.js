@@ -7,6 +7,8 @@ import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 
 var onApiCall = false
+var page
+
 export default function Home() {
   let router = useRouter()
   const [activeSource, setActiveSource] = useState("")
@@ -16,12 +18,18 @@ export default function Home() {
     {id: "dummy-2", shimmer: true},
   ])
 
-  var page = 1
   const [hasMore, setHasMore] = useState(false)
 
   async function GetLatestManga(append) {
     if (onApiCall) {return}
     onApiCall = true
+
+    if (append) {
+      page = page + 1
+    } else {
+      page = 1
+    }
+
     try {
       const response = await animapuApi.GetLatestManga({
         manga_source: animapuApi.GetActiveMangaSource(),
@@ -51,7 +59,6 @@ export default function Home() {
   }, [])
 
   function GetLatestMangaNextPage() {
-    page = page + 1
     GetLatestManga(true)
   }
 

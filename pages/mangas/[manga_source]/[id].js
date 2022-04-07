@@ -59,7 +59,7 @@ export default function MangaDetail() {
         backgroundPosition: "50% 35%",
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        marginTop: "-58px"
+        marginTop: "-60px"
       }}>
         <div className="backdrop-blur-md h-full"></div>
       </div>
