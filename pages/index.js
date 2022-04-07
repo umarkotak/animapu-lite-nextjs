@@ -16,19 +16,26 @@ export default function Home() {
     {id: "dummy-2", shimmer: true},
   ])
 
-  async function GetLatestManga() {
+  var page = 1
+  const [hasMore, setHasMore] = useState(false)
+
+  async function GetLatestManga(append) {
     if (onApiCall) {return}
     onApiCall = true
     try {
       const response = await animapuApi.GetLatestManga({
         manga_source: animapuApi.GetActiveMangaSource(),
-        page: 1
+        page: page
       })
       const body = await response.json()
       console.log(body)
       setActiveSource(animapuApi.GetActiveMangaSource())
       if (response.status == 200) {
-        setMangas(body.data)
+        if (append) {
+          setMangas(mangas.concat(body.data))
+        } else {
+          setMangas(body.data)
+        }
       }
       onApiCall = false
 
@@ -39,9 +46,14 @@ export default function Home() {
   }
 
   useEffect(() => {
-    GetLatestManga()
+    GetLatestManga(false)
   // eslint-disable-next-line
   }, [])
+
+  function GetLatestMangaNextPage() {
+    page = page + 1
+    GetLatestManga(true)
+  }
 
   return (
     <div className="bg-[#d6e0ef]">
@@ -64,6 +76,15 @@ export default function Home() {
                 <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
               ))}
             </div>
+          </div>
+
+          <div className="px-4">
+            <button
+              className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mb-2 p-2 text-center  m"
+              onClick={() => GetLatestMangaNextPage()}
+            >
+              Load More
+            </button>
           </div>
         </div>
       </div>

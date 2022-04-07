@@ -26,8 +26,10 @@ export default function MangaCard(props) {
       e.target.src = selectedImageUrl
       return
     } else {
-      e.target.src = "/images/default-book.png"
-      localStorage.setItem(`unsupported-titles-${manga.secondary_source_id}`, "true")
+      if (manga.cover_image[0].image_urls.length > 1) {
+        e.target.src = "/images/default-book.png"
+        localStorage.setItem(`unsupported-title-${manga.source}-${manga.source_id}-${manga.secondary_source_id}`, "true")
+      }
     }
   }
 
@@ -69,7 +71,7 @@ export default function MangaCard(props) {
         justify-center
         px-1
         mb-4
-        ${localStorage.getItem("unsupported-titles-"+props.manga.secondary_source_id) ? "hidden" : "block"}
+        ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}
       `}
       key={`${props.idx}-${props.manga.id}`}
     >
@@ -86,7 +88,7 @@ export default function MangaCard(props) {
             onClick={() => goToManga(props.manga)}
           >
             <span className="text-sm font-sans">{props.manga.title.slice(0, 50)}</span>
-            <div className="text-sm text-[#75b5f0]"><b>Ch {props.manga.latest_chapter_id}</b></div>
+            <div className="text-sm text-[#75b5f0]"><b>Ch {props.manga.latest_chapter_number}</b></div>
           </div>
         </div>
       </div>

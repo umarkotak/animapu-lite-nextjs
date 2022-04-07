@@ -54,7 +54,7 @@ export default function Home() {
       <div className="pt-4">
         <div className="container mx-auto max-w-[1040px]">
           <h2 className="text-xl mb-2">Select Manga Source</h2>
-            <span className="float-right mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+          <span className="float-right mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
           {sources.map((source, idx) => (
             <div className="" key={idx}>
               <button
