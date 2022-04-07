@@ -12,6 +12,7 @@ export default function Home() {
 
   const [mangas, setMangas] = useState([])
   const [title, setTitle] = useState("")
+  const [activeSource, setActiveSource] = useState(animapuApi.GetActiveMangaSource())
 
   async function SearchManga() {
     if (onApiCall) {return}
@@ -49,8 +50,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
+
+        <div className="container mx-auto max-w-[1040px] pt-2">
+          <span className="px-4 mb-4 text-white">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+        </div>
+      </div>
+
       <div className="pt-4">
         <div className="container mx-auto max-w-[1040px]">
+
           <div className="bg-[#2b2d42] rounded p-2 m-2">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

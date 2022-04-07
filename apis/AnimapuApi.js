@@ -3,8 +3,8 @@ class AnimapuApi {
     // if (window.location.protocol === "https:") {
     //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // } else {
-      this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
       this.AnimapuApiHost = "http://localhost:6001"
+      this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // }
   }
 
@@ -69,7 +69,7 @@ class AnimapuApi {
         return localStorage.getItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE")
       }
     }
-    return "mangaupdates"
+    return "mangabat"
   }
 
 }
