@@ -39,32 +39,6 @@ export default function Home() {
   // eslint-disable-next-line
   }, [])
 
-  var hist = {}
-  var unsupportedTitles = []
-  function handleImageFallback(manga, e) {
-    if (!hist[manga.id]) { hist[manga.id] = {} }
-
-    var found = false
-    var selectedImageUrl = ""
-    manga.cover_image[0].image_urls.map((imageUrl) => {
-      if (!hist[manga.id][imageUrl]) {
-        hist[manga.id][imageUrl] = true
-        found = true
-        selectedImageUrl = imageUrl
-        return
-      }
-    })
-
-    if (found) {
-      e.target.src = selectedImageUrl
-      return
-    } else {
-      e.target.src = "/images/default-book.png"
-      localStorage.setItem(`unsupported-titles-${manga.secondary_source_id}`, "true")
-    }
-
-  }
-
   return (
     <div className="bg-[#d6e0ef]">
       <Head>
@@ -74,74 +48,9 @@ export default function Home() {
       </Head>
 
       <div className="pt-4">
-        <div className="container mx-auto max-w-[1040px]">
-          <div className="grid grid-rows-1 grid-flow-col">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-              {mangas.map((manga, idx) => (
-                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
 
       <BottomMenuBar />
     </div>
   )
-
-  function MangaCard(props) {
-    if (props.manga.shimmer) {
-      return(
-        <div
-          className={`
-            flex
-            justify-center
-            px-1
-            mb-4
-          `}
-          key={`${props.idx}-${props.manga.id}`}
-        >
-          <div className="w-[175px] h-[265px]">
-            <div className="flex flex-col justify-end relative z-10 animate-pulse">
-              <div className="w-full h-[265px] rounded bg-slate-500">
-              </div>
-
-              <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full">
-                <div className="h-2 bg-slate-500 rounded mb-2"></div>
-                <div className="h-2 bg-slate-500 rounded mb-2"></div>
-                <div className="h-3 w-12 bg-blue-500 rounded"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-    return(
-      <div
-        className={`
-          flex
-          justify-center
-          px-1
-          mb-4
-          ${localStorage.getItem("unsupported-titles-"+props.manga.secondary_source_id) ? "hidden" : "block"}
-        `}
-        key={`${props.idx}-${props.manga.id}`}
-      >
-        <div className="w-[175px] h-[265px]">
-          <div className="flex flex-col justify-end relative z-10">
-            <img
-              className="w-full h-[265px] rounded"
-              src={props.manga.cover_image[0].image_urls[0]}
-              onError={(e) => handleImageFallback(props.manga, e)}
-              alt="thumb"
-            />
-            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full" onClick={() => router.push(`/mangas/${props.manga.id}?secondary_source_id=${props.manga.secondary_source_id}`)}>
-              <span className="text-sm font-sans">{props.manga.title.slice(0, 50)}</span>
-              <div className="text-sm text-[#75b5f0]"><b>Ch {props.manga.latest_chapter_id}</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
 }

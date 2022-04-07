@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
+import Link from 'next/link'
 
-import BottomMenuBar from "../../components/BottomMenuBar"
-import animapuApi from "../../apis/AnimapuApi"
+import BottomMenuBar from "../../../components/BottomMenuBar"
+import animapuApi from "../../../apis/AnimapuApi"
 
 var onApiCall = false
 export default function MangaDetail() {
   let router = useRouter()
 
   const query = router.query
+  var manga_source = query.manga_source
   var manga_id = query.id
   var secondary_source_id = query.secondary_source_id
   const [manga, setManga] = useState({
-    cover_image:[{image_urls:["/images/default-book.png"]}], chapters:[]
+    cover_image:[{image_urls:["/images/default-book.png"]}], chapters:[{id: 1}]
   })
 
   async function GetMangaDetail() {
@@ -21,12 +23,14 @@ export default function MangaDetail() {
     onApiCall = true
     try {
       const response = await animapuApi.GetMangaDetail({
-        manga_source: animapuApi.GetActiveMangaSource(),
+        manga_source: manga_source,
         manga_id: manga_id,
         secondary_source_id: secondary_source_id
       })
       const body = await response.json()
-      setManga(body.data)
+      if (response.status == 200) {
+        setManga(body.data)
+      }
       console.log(body)
       onApiCall = false
 
@@ -64,12 +68,13 @@ export default function MangaDetail() {
           <div className="backdrop-blur-sm grid grid-cols-1 sm:grid-cols-3">
             <div className="h-full z-5 p-2 mt-[-125px]">
               <img className={`rounded w-full ${manga.title ? "" : "animate-pulse"}`} src={manga.cover_image[0].image_urls[0]}/>
-              <button
-                className="w-full bg-[#3db3f2] text-white rounded mt-2"
-                onClick={() => router.push(`/mangas/${manga_id}/read/${manga.chapters[0].id || 1}?secondary_source_id=${secondary_source_id}`)}
+              <Link
+                href={`/mangas/${manga_source}/${manga_id}/read/${manga.chapters[0].id || 1}?secondary_source_id=${secondary_source_id}`}
               >
-                Read
-              </button>
+                <a className="block w-full bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">
+                  Read
+                </a>
+              </Link>
             </div>
             <div className="col-span-2 p-2">
               <h1 className="text-[#5c728a] text-xl mb-1">
@@ -92,16 +97,12 @@ export default function MangaDetail() {
             <div></div>
             <div className="col-span-2 p-2">
               {manga.chapters.map((chapter, idx) => (
-                <div key={chapter.title}>
-                  <button
-                    className="bg-white w-full rounded mb-2 p-2 text-[#5c728a]"
-                    onClick={() => {
-                      window.scrollTo(0, 0)
-                      router.push(`/mangas/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`)
-                    }}
-                  >
-                    {chapter.title}
-                  </button>
+                <div className="" key={chapter.title}>
+                  <Link href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`}>
+                    <a className="bg-white w-full rounded mb-2 p-2 text-[#5c728a] text-center block w-full">
+                      {chapter.title}
+                    </a>
+                  </Link>
                 </div>
               ))}
             </div>

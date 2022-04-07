@@ -9,23 +9,20 @@ var onApiCall = false
 export default function Home() {
   let router = useRouter()
 
-  const [mangas, setMangas] = useState([
-    {id: "dummy-1", shimmer: true},
-    {id: "dummy-2", shimmer: true},
-    {id: "dummy-3", shimmer: true}
-  ])
+  const [sources, setSources] = useState([])
+  const [activeSource, setActiveSource] = useState("")
 
-  async function GetLatestManga() {
+  async function GetSourceList() {
     if (onApiCall) {return}
     onApiCall = true
     try {
-      const response = await animapuApi.GetLatestManga({
-        manga_source: animapuApi.GetActiveMangaSource(),
-        page: 1
-      })
+      const response = await animapuApi.GetSourceList({})
       const body = await response.json()
       console.log(body)
-      setMangas(body.data)
+      if (response.status == 200) {
+        setSources(body.data)
+        setActiveSource(animapuApi.GetActiveMangaSource())
+      }
       onApiCall = false
 
     } catch (e) {
@@ -35,34 +32,15 @@ export default function Home() {
   }
 
   useEffect(() => {
-    GetLatestManga()
+    GetSourceList()
   // eslint-disable-next-line
   }, [])
 
-  var hist = {}
-  var unsupportedTitles = []
-  function handleImageFallback(manga, e) {
-    if (!hist[manga.id]) { hist[manga.id] = {} }
-
-    var found = false
-    var selectedImageUrl = ""
-    manga.cover_image[0].image_urls.map((imageUrl) => {
-      if (!hist[manga.id][imageUrl]) {
-        hist[manga.id][imageUrl] = true
-        found = true
-        selectedImageUrl = imageUrl
-        return
-      }
-    })
-
-    if (found) {
-      e.target.src = selectedImageUrl
-      return
-    } else {
-      e.target.src = "/images/default-book.png"
-      localStorage.setItem(`unsupported-titles-${manga.secondary_source_id}`, "true")
+  function changeMangaSource(source) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE", source)
+      setActiveSource(source)
     }
-
   }
 
   return (
@@ -75,73 +53,22 @@ export default function Home() {
 
       <div className="pt-4">
         <div className="container mx-auto max-w-[1040px]">
-          <div className="grid grid-rows-1 grid-flow-col">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-              {mangas.map((manga, idx) => (
-                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
-              ))}
+          <h2 className="text-xl mb-2">Select Manga Source</h2>
+            <span className="float-right mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+          {sources.map((source, idx) => (
+            <div className="" key={idx}>
+              <button
+                className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mb-2 p-2 text-center"
+                onClick={() => changeMangaSource(source)}
+              >
+                {source}
+              </button>
             </div>
-          </div>
+          ))}
         </div>
       </div>
 
       <BottomMenuBar />
     </div>
   )
-
-  function MangaCard(props) {
-    if (props.manga.shimmer) {
-      return(
-        <div
-          className={`
-            flex
-            justify-center
-            px-1
-            mb-4
-          `}
-          key={`${props.idx}-${props.manga.id}`}
-        >
-          <div className="w-[175px] h-[265px]">
-            <div className="flex flex-col justify-end relative z-10 animate-pulse">
-              <div className="w-full h-[265px] rounded bg-slate-500">
-              </div>
-
-              <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full">
-                <div className="h-2 bg-slate-500 rounded mb-2"></div>
-                <div className="h-2 bg-slate-500 rounded mb-2"></div>
-                <div className="h-3 w-12 bg-blue-500 rounded"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    }
-    return(
-      <div
-        className={`
-          flex
-          justify-center
-          px-1
-          mb-4
-          ${localStorage.getItem("unsupported-titles-"+props.manga.secondary_source_id) ? "hidden" : "block"}
-        `}
-        key={`${props.idx}-${props.manga.id}`}
-      >
-        <div className="w-[175px] h-[265px]">
-          <div className="flex flex-col justify-end relative z-10">
-            <img
-              className="w-full h-[265px] rounded"
-              src={props.manga.cover_image[0].image_urls[0]}
-              onError={(e) => handleImageFallback(props.manga, e)}
-              alt="thumb"
-            />
-            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full" onClick={() => router.push(`/mangas/${props.manga.id}?secondary_source_id=${props.manga.secondary_source_id}`)}>
-              <span className="text-sm font-sans">{props.manga.title.slice(0, 50)}</span>
-              <div className="text-sm text-[#75b5f0]"><b>Ch {props.manga.latest_chapter_id}</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
 }

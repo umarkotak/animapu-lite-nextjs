@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 
-import BottomMenuBar from "../../../../components/BottomMenuBar"
-import animapuApi from "../../../../apis/AnimapuApi"
+import BottomMenuBar from "../../../../../components/BottomMenuBar"
+import animapuApi from "../../../../../apis/AnimapuApi"
 
 var onApiCall = false
 var onApiCall2 = false
@@ -12,6 +12,7 @@ export default function ReadManga() {
   let router = useRouter()
 
   const query = router.query
+  var manga_source = query.manga_source
   var manga_id = query.id
   var secondary_source_id = query.secondary_source_id
   var chapter_id = query.chapter_id
@@ -25,12 +26,14 @@ export default function ReadManga() {
     onApiCall = true
     try {
       const response = await animapuApi.GetMangaDetail({
-        manga_source: animapuApi.GetActiveMangaSource(),
+        manga_source: manga_source,
         manga_id: manga_id,
         secondary_source_id: secondary_source_id
       })
       const body = await response.json()
-      setManga(body.data)
+      if (response.status == 200) {
+        setManga(body.data)
+      }
       console.log(body)
       onApiCall = false
 
@@ -50,7 +53,9 @@ export default function ReadManga() {
         secondary_source_id: secondary_source_id
       })
       const body = await response.json()
-      setChapter(body.data)
+      if (response.status == 200) {
+        setChapter(body.data)
+      }
       console.log(body)
       onApiCall2 = false
 

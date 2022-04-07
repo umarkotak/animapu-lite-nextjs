@@ -1,6 +1,8 @@
 import { useRouter } from "next/router"
 import Link from 'next/link'
 
+import animapuApi from "../apis/AnimapuApi"
+
 export default function MangaCard(props) {
   let router = useRouter()
 
@@ -31,7 +33,7 @@ export default function MangaCard(props) {
 
   function goToManga(manga) {
     if (!router) {return}
-    router.push(`/mangas/${manga.id}?secondary_source_id=${manga.secondary_source_id}`)
+    router.push(`/mangas/${animapuApi.GetActiveMangaSource()}/${manga.id}?secondary_source_id=${manga.secondary_source_id}`)
   }
 
   if (props.manga.shimmer) {

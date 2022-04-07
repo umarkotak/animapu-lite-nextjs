@@ -26,7 +26,7 @@ export default function BottomMenuBar(props) {
       if (props.chapter_id === chapter.id) {
         currentIdx = idx
       }
-      return { value: `/mangas/${props.manga.source_id}/read/${chapter.id}?secondary_source_id=${props.manga.secondary_source_id}`, label: chapter.title }
+      return { value: `/mangas/${props.manga.source}/${props.manga.source_id}/read/${chapter.id}?secondary_source_id=${props.manga.secondary_source_id}`, label: chapter.title }
     })
     setChapters(chapterOpts)
   // eslint-disable-next-line
@@ -55,17 +55,11 @@ export default function BottomMenuBar(props) {
 
   function toManga() {
     if (!props.manga) { return "" }
-    return `/mangas/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
+    return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
   }
 
   return(
-    <div className="w-full h-screen pt-[120px]">
-      <div className="h-[140px] mb-[-140px]">
-        <img src="/images/bg-image.png" />
-      </div>
-      <div className="h-[140px] mb-[-140px] ml-[280px] mt-[100px]">
-      </div>
-
+    <div className="w-full h-screen">
       <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>
@@ -79,6 +73,12 @@ export default function BottomMenuBar(props) {
             </a>
           </Link>
         </div>
+      </div>
+
+      <div className="h-[140px] mb-[-140px] pt-[120px]">
+        <img src="/images/bg-image.png" />
+      </div>
+      <div className="h-[140px] mb-[-140px] ml-[280px] mt-[100px]">
       </div>
 
       <div className="block fixed inset-x-0 bottom-0 z-10">

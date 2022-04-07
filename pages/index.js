@@ -9,6 +9,7 @@ import animapuApi from "../apis/AnimapuApi"
 var onApiCall = false
 export default function Home() {
   let router = useRouter()
+  const [activeSource, setActiveSource] = useState("")
 
   const [mangas, setMangas] = useState([
     {id: "dummy-1", shimmer: true},
@@ -25,7 +26,10 @@ export default function Home() {
       })
       const body = await response.json()
       console.log(body)
-      setMangas(body.data)
+      setActiveSource(animapuApi.GetActiveMangaSource())
+      if (response.status == 200) {
+        setMangas(body.data)
+      }
       onApiCall = false
 
     } catch (e) {
@@ -41,8 +45,10 @@ export default function Home() {
 
   return (
     <div className="bg-[#d6e0ef]">
-      <div className="bg-[#2b2d42] h-[140px] mb-[-140px]">
-
+      <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
+        <div className="container mx-auto max-w-[1040px] pt-2">
+          <span className="px-4 mb-4 text-white">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+        </div>
       </div>
       <Head>
         <title>Create Next App</title>
