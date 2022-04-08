@@ -120,6 +120,8 @@ export default function ReadManga() {
     tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
     historyArray.unshift(tempManga)
 
+    historyArray = historyArray.slice(0,40)
+
     localStorage.setItem(listKey, JSON.stringify(historyArray))
   }
   useEffect(() => {
