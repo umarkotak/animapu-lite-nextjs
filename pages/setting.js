@@ -53,12 +53,12 @@ export default function Home() {
 
       <div className="pt-4">
         <div className="container mx-auto max-w-[1040px]">
-          <h2 className="text-xl mb-2">Select Manga Source</h2>
-          <span className="float-right mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+          <h2 className="text-xl mb-2 px-4">Select Manga Source</h2>
+          <span className="mb-2 px-4">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
           {sources.map((source, idx) => (
-            <div className="" key={idx}>
+            <div className="px-4" key={idx}>
               <button
-                className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mb-2 p-2 text-center"
+                className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
                 onClick={() => changeMangaSource(source)}
               >
                 {source}

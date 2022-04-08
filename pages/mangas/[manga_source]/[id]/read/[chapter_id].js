@@ -72,7 +72,6 @@ export default function ReadManga() {
   // eslint-disable-next-line
   }, [query])
 
-  var unsupportedTitles = []
   var hist = {}
   function handleImageFallback(imageObj, e) {
     var found = false
@@ -91,7 +90,6 @@ export default function ReadManga() {
       if (err !== BreakException) throw err
 
       if (found) {
-        console.log(selectedImageUrl)
         e.target.src = selectedImageUrl
         return
       } else {
@@ -101,6 +99,32 @@ export default function ReadManga() {
     e.target.style.display = "none"
 
   }
+
+  function recordLocalHistory() {
+    // var detailKey = `HISTORY:LOCAL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    // localStorage.setItem(detailKey, "")
+
+    var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
+    var historyArrayString = localStorage.getItem(listKey)
+
+    var historyArray
+    if (historyArrayString) {
+      historyArray = JSON.parse(historyArrayString)
+    } else {
+      historyArray = []
+    }
+
+    var tempManga = manga
+    tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
+    historyArray.unshift(tempManga)
+
+    localStorage.setItem(listKey, JSON.stringify(historyArray))
+  }
+  useEffect(() => {
+    if (!query) {return}
+    if (!manga.title) {return}
+    recordLocalHistory()
+  }, [manga])
 
   return (
     <div className="bg-[#d6e0ef]">

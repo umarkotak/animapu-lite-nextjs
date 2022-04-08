@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import animapuApi from "../apis/AnimapuApi"
+import MangaCard from "../components/MangaCard"
 
 var onApiCall = false
 export default function Home() {
@@ -16,21 +17,14 @@ export default function Home() {
   ])
 
   async function GetLatestManga() {
-    if (onApiCall) {return}
-    onApiCall = true
-    try {
-      const response = await animapuApi.GetLatestManga({
-        manga_source: animapuApi.GetActiveMangaSource(),
-        page: 1
-      })
-      const body = await response.json()
-      console.log(body)
-      setMangas(body.data)
-      onApiCall = false
+    var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
+    var historyArrayString = localStorage.getItem(listKey)
 
-    } catch (e) {
-      console.log(e)
-      onApiCall = false
+    if (historyArrayString) {
+      setMangas(JSON.parse(historyArrayString))
+      console.log("HISTORY LIST", JSON.parse(historyArrayString))
+    } else {
+      setMangas([])
     }
   }
 
@@ -47,7 +41,22 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
+        <div className="container mx-auto max-w-[1040px] pt-2">
+          <span className="px-4 mb-4 text-white text-xl">History</span>
+        </div>
+      </div>
+
       <div className="pt-4">
+        <div className="container mx-auto max-w-[1040px]">
+          <div className="grid grid-rows-1 grid-flow-col">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+              {mangas.map((manga, idx) => (
+                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       <BottomMenuBar />
