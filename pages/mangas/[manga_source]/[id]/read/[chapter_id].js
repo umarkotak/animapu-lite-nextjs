@@ -114,6 +114,8 @@ export default function ReadManga() {
       historyArray = []
     }
 
+    historyArray = historyArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+
     var tempManga = manga
     tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
     historyArray.unshift(tempManga)
