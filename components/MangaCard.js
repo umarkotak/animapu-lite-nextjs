@@ -35,6 +35,9 @@ export default function MangaCard(props) {
 
   function goToManga(manga) {
     if (!router) {return "#"}
+    if (manga.last_link) {
+      return manga.last_link
+    }
     return `/mangas/${animapuApi.GetActiveMangaSource()}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
   }
 
@@ -86,7 +89,9 @@ export default function MangaCard(props) {
           <Link href={goToManga(props.manga)}>
             <a className="absolute p-2 text-white z-3 rounded w-full bg-gradient-to-t from-black">
               <span className="text-sm font-sans">{props.manga.title.slice(0, 50)}</span>
-              <div className="text-sm text-[#75b5f0]"><b>Ch {props.manga.latest_chapter_number}</b></div>
+              <div className="text-sm text-[#75b5f0]"><b>
+                {props.manga.last_link ? "Continue Read" : "Ch"} {props.manga.last_link ? "" : props.manga.latest_chapter_number}
+              </b></div>
             </a>
           </Link>
         </div>
