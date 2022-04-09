@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }) {
         <meta name="og:description" property="og:description" content="Baca komik gratis tanpa iklan" />
         <meta name="og:image:secure_url" property="og:image:secure_url" itemProp="image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
         <meta name="og:updated_time" property="og:updated_time" content="1649491674" />
+        <meta name="og:image:type" property="og:image:type" content="image/jpeg"></meta>
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Animapu - Lite" />
