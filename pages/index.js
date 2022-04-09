@@ -67,9 +67,9 @@ export default function Home() {
         <title>Animapu - Lite</title>
         <meta name="description" content="Baca komik gratis tanpa iklan" />
 
-        <meta itemprop="name" content="Animapu - Lite" />
-        <meta itemprop="description" content="Baca komik gratis tanpa iklan" />
-        <meta itemprop="image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
+        <meta itemProp="name" content="Animapu - Lite" />
+        <meta itemProp="description" content="Baca komik gratis tanpa iklan" />
+        <meta itemProp="image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
 
         <meta name="og:url" property="og:url" content="https://animapu-lite.vercel.app/" />
         <meta name="og:type" property="og:type" content="website" />
