@@ -8,8 +8,8 @@ import animapuApi from "../../../apis/AnimapuApi"
 
 export default function MangaDetail() {
   let router = useRouter()
-
   const query = router.query
+
   var manga_source = query.manga_source
   var manga_id = query.id
   var secondary_source_id = query.secondary_source_id
