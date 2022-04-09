@@ -55,7 +55,7 @@ export default function MangaDetail() {
         <meta name="og:type" property="og:type" content="website" />
         <meta name="og:title" property="og:title" content="Animapu - Lite" />
         <meta name="og:description" property="og:description" content="Baca komik gratis tanpa iklan" />
-        <meta name="og:image" property="og:image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
+        <meta name="og:image:secure_url" property="og:image:secure_url" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Animapu - Lite" />
