@@ -65,14 +65,14 @@ export default function Home() {
       </div>
       <Head>
         <title>Animapu - Lite</title>
-        <meta name="description" content="Tempat baca komik gratis tanpa iklan" />
         <link rel="icon" href="/favicon.ico" />
 
-        <meta property="og:title" content="Animapu - Lite" />
-        <meta property="og:type" content="book" />
-        <meta property="og:url" content="https://animapu-lite.vercel.app/" />
-        <meta property="og:image" content="/images/cover.jpeg" />
-        <meta property="og:description" content="Tempat baca komik gratis tanpa iklan"></meta>
+        <meta name="description" property="description" key="description" content="Tempat baca komik gratis tanpa iklan" />
+        <meta name="og:title" property="og:title" key="og:title" content="Animapu - Lite" />
+        <meta name="og:type" property="og:type" key="og:type" content="book" />
+        <meta name="og:url" property="og:url" key="og:url" content="https://animapu-lite.vercel.app/" />
+        <meta name="og:image" property="og:image" key="og:image" content="/images/cover.jpeg" />
+        <meta name="og:description" property="og:description" key="og:description" content="Tempat baca komik gratis tanpa iklan" />
       </Head>
 
       <div className="pt-4">
