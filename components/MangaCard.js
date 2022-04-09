@@ -80,12 +80,16 @@ export default function MangaCard(props) {
     >
       <div className="w-[175px] h-[265px]">
         <div className="flex flex-col justify-end relative z-10 shadow-xl">
-          <img
-            className="w-full h-[265px] rounded"
-            src={props.manga.cover_image[0].image_urls[0]}
-            onError={(e) => handleImageFallback(props.manga, e)}
-            alt="thumb"
-          />
+          <Link href={goToManga(props.manga)}>
+            <a>
+              <img
+                className="w-full h-[265px] rounded"
+                src={props.manga.cover_image[0].image_urls[0]}
+                onError={(e) => handleImageFallback(props.manga, e)}
+                alt="thumb"
+              />
+            </a>
+          </Link>
           <Link href={goToManga(props.manga)}>
             <a className="absolute p-2 text-white z-3 rounded w-full bg-gradient-to-t from-black">
               <span className="text-sm font-sans">{props.manga.title.slice(0, 50)}</span>
