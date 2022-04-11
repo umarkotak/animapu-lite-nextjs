@@ -44,12 +44,7 @@ export default function MangaCard(props) {
   if (props.manga.shimmer) {
     return(
       <div
-        className={`
-          flex
-          justify-center
-          px-1
-          mb-4
-        `}
+        className={`flex justify-center px-1 mb-4`}
         key={`${props.idx}-${props.manga.id}`}
       >
         <div className="w-[175px] h-[265px]">
