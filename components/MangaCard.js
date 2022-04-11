@@ -76,7 +76,7 @@ export default function MangaCard(props) {
       <div className="w-[175px] h-[265px]">
         <div className="flex flex-col justify-end relative z-10 shadow-xl">
           <Link href={goToManga(props.manga)}>
-            <a>
+            <a className="bg-gray-600">
               <img
                 className="w-full h-[265px] rounded"
                 src={props.manga.cover_image[0].image_urls[0]}
