@@ -93,7 +93,7 @@ export default function BottomMenuBar(props) {
 
         <div className="flex justify-between mx-4 mb-2">
           <div>
-            <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} bg-[#2b2d42] bg-opacity-50 py-1 px-1 rounded`}>
+            <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} bg-[#2b2d42] bg-opacity-50 py-1 px-1 rounded mr-1`}>
               <div className={`flex justify-between`}>
                 <Link href={prevChapter()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-2">
@@ -122,7 +122,7 @@ export default function BottomMenuBar(props) {
               </div>
             </div>
           </div>
-          <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded">
+          <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded ml-1">
             <div className="h-1"></div>
             <button className="focus:text-teal-500 hover:text-teal-500" onClick={() => {setIsOpen(!isOpen)}}>
               <i className="fi fi-rr-grid text-white" width="25" height="25"></i>
@@ -130,7 +130,8 @@ export default function BottomMenuBar(props) {
           </div>
         </div>
 
-        <div className={`${isOpen ? "block" : "hidden"} flex justify-between bg-[#2b2d42] pb-2`}>
+        <div className={`${isOpen ? "block" : "hidden"} bg-[#2b2d42] pb-2`}>
+          <div className="flex justify-between container mx-auto max-w-[1040px]">
           <Link href="/">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
               <i className="fi fi-rr-home" width="25" height="25"></i>
@@ -161,6 +162,7 @@ export default function BottomMenuBar(props) {
               <span className="tab tab-home block text-xs">Account</span>
             </a>
           </Link>
+          </div>
         </div>
       </div>
     </div>

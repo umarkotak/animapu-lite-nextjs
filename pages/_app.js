@@ -1,5 +1,5 @@
 import '../styles/globals.css'
-// import '../styles/uicons-regular-rounded.css'
+import '../styles/uicons-regular-rounded.css'
 import Head from 'next/head'
 
 function MyApp({ Component, pageProps }) {

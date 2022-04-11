@@ -130,7 +130,7 @@ export default function ReadManga() {
           {chapter.chapter_images.map((imageObj, idx) => (
             <div key={`${chapter.id}-${idx}`}>
               <img
-                className="w-full mb-1"
+                className="w-full mb-1 bg-gray-600"
                 src={imageObj.image_urls[0]}
                 onError={(e) => handleImageFallback(imageObj, e)}
                 alt="thumb"
