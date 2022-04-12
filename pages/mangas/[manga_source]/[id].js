@@ -106,7 +106,7 @@ export default function MangaDetail(props) {
               </Link>
             </div>
             <div className="col-span-2 p-2">
-              <button className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"><i class="fi fi-rr-share"></i> | Share</button>
+              <button className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"><i className="fi fi-rr-share"></i> | Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">
                 { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
               </h1>
