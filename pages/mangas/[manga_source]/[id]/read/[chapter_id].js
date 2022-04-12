@@ -91,9 +91,6 @@ export default function ReadManga() {
   }
 
   function recordLocalHistory() {
-    // var detailKey = `HISTORY:LOCAL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    // localStorage.setItem(detailKey, "")
-
     var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
     var historyArrayString = localStorage.getItem(listKey)
 
@@ -113,6 +110,9 @@ export default function ReadManga() {
     historyArray = historyArray.slice(0,40)
 
     localStorage.setItem(listKey, JSON.stringify(historyArray))
+
+    var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    localStorage.setItem(detailKey, JSON.stringify(tempManga))
   }
   useEffect(() => {
     if (!query) {return}

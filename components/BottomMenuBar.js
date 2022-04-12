@@ -75,11 +75,11 @@ export default function BottomMenuBar(props) {
         </div>
       </div>
 
-      <div className="h-[140px] mb-[-140px] pt-[120px]">
+      {/* <div className="h-[140px] mb-[-140px] pt-[120px]">
         <img src="/images/bg-image.png" />
       </div>
       <div className="h-[140px] mb-[-140px] ml-[280px] mt-[100px]">
-      </div>
+      </div> */}
 
       <div className="block fixed inset-x-0 bottom-0 z-10">
         <div className="flex justify-end mx-4 mb-2">
@@ -142,6 +142,12 @@ export default function BottomMenuBar(props) {
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
               <i className="fi fi-rr-search" width="25" height="25"></i>
               <span className="tab tab-home block text-xs">Search</span>
+            </a>
+          </Link>
+          <Link href="/library">
+            <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
+              <i className="fi fi-rr-apps" width="25" height="25"></i>
+              <span className="tab tab-home block text-xs">Library</span>
             </a>
           </Link>
           <Link href="/history">
