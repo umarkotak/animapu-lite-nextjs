@@ -18,10 +18,14 @@ export default function MangaDetail(props) {
 
   var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
   var continueManga = {last_link: "#"}
-  if (typeof window !== "undefined") {
-    if (localStorage.getItem(detailKey)) {
-      continueManga = JSON.parse(localStorage.getItem(detailKey))
+
+  try {
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem(detailKey)) {
+        continueManga = JSON.parse(localStorage.getItem(detailKey))
+      }
     }
+  } catch (e) {
   }
 
   useEffect(() => {
