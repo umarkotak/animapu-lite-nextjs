@@ -51,6 +51,16 @@ export default function MangaCard(props) {
     return false
   }
 
+  function showLatestChapter(manga) {
+    var latestChapter = manga.latest_chapter_number
+    if (latestChapter <= 0) {
+      if (manga.chapters.length > 0) {
+        latestChapter = manga.chapters[0].number
+      }
+    }
+    return latestChapter
+  }
+
   if (props.manga.shimmer) {
     return(
       <div
@@ -99,7 +109,7 @@ export default function MangaCard(props) {
             <a className="absolute p-2 text-white z-3 rounded w-full bg-black bg-opacity-70">
               <p className="rounded text-sm leading-5 font-sans pb-1">{props.manga.title.slice(0, 50)}</p>
               <div className={`text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}><b>
-                {props.manga.last_link ? "Continue Read" : "Ch"} {props.manga.last_link ? "" : props.manga.latest_chapter_number}
+                {props.manga.last_link ? "Continue Read" : "Ch"} {props.manga.last_link ? "" : showLatestChapter(props.manga)}
               </b></div>
             </a>
           </Link>
