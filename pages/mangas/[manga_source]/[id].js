@@ -16,8 +16,10 @@ export default function MangaDetail(props) {
   const manga = props.manga
   const [chapters, setChapters] = useState([{id: 1}])
 
-  var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
   var continueManga = {last_link: "#"}
+
+  const [followed, setFollowed] = useState(false)
 
   try {
     if (typeof window !== "undefined") {
@@ -28,12 +30,23 @@ export default function MangaDetail(props) {
   } catch (e) {
   }
 
+  function isInLibrary() {
+    try {
+      console.log(typeof window, localStorage.getItem(detailKey))
+      if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+    } catch (e) {}
+    return false
+  }
+
   useEffect(() => {
     setChapters(manga.chapters)
+    setFollowed(isInLibrary())
   }, [manga])
 
   function handleFollow() {
     var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+    var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+
     var libraryArrayString = localStorage.getItem(listKey)
 
     var libraryArray
@@ -45,13 +58,19 @@ export default function MangaDetail(props) {
 
     libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
 
+    if (followed) {
+      localStorage.setItem(listKey, JSON.stringify(libraryArray))
+      localStorage.removeItem(detailKey)
+      setFollowed(isInLibrary())
+      return
+    }
+
     var tempManga = manga
     libraryArray.unshift(tempManga)
 
     localStorage.setItem(listKey, JSON.stringify(libraryArray))
-
-    var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
     localStorage.setItem(detailKey, JSON.stringify(tempManga))
+    setFollowed(isInLibrary())
   }
 
   return (
@@ -94,7 +113,7 @@ export default function MangaDetail(props) {
             <div className="h-full z-5 p-2 mt-[-125px]">
               <img className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`} src={manga.cover_image[0].image_urls[0]}/>
               <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full" onClick={() => handleFollow()}>
-                <i className="fi fi-rr-heart"></i> Follow
+                <i className="fi fi-rr-heart"></i> {followed ? "Un-Follow" : "Follow"}
               </button>
               <Link
                 href={`/mangas/${manga_source}/${manga_id}/read/${chapters.at(-1) ? chapters.at(-1).id : 1}?secondary_source_id=${secondary_source_id}`}
@@ -103,7 +122,7 @@ export default function MangaDetail(props) {
                   <i className="fi fi-rr-book-alt"></i> Start Read
                 </a>
               </Link>
-              <Link href={continueManga.last_link}>
+              <Link href={continueManga.last_link || "#"}>
                 <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
                   <i className="fi fi-rr-play"></i> Continue
                 </a>

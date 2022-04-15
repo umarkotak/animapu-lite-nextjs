@@ -43,11 +43,11 @@ export default function MangaCard(props) {
 
   function showMark(manga) {
     var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    if (typeof window !== "undefined") {
-      if (localStorage.getItem(detailKey)) {
-        return true
-      }
-    }
+    if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+
+    detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+
     return false
   }
 

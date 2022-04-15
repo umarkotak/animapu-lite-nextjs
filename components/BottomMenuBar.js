@@ -59,7 +59,7 @@ export default function BottomMenuBar(props) {
   }
 
   return(
-    <div className="w-full h-screen">
+    <div className={`w-full h-screen`}>
       <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>

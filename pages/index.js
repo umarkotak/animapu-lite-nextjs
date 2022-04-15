@@ -6,6 +6,7 @@ import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 
 var page
+var targetPage
 var onApiCall = false
 export default function Home({}) {
   let router = useRouter()
@@ -53,12 +54,28 @@ export default function Home({}) {
 
   useEffect(() => {
     if (!query) {return}
+    targetPage = query.page
     GetLatestManga(false)
   // eslint-disable-next-line
   }, [query])
 
+  useEffect(() => {
+    if (page === 1) {
+      if (typeof window !== "undefined") { window.scrollTo(0, 0) }
+    }
+    if (page < targetPage) {
+      GetLatestManga(true)
+    }
+  // eslint-disable-next-line
+  }, [mangas])
+
   function GetLatestMangaNextPage() {
     GetLatestManga(true)
+    router.push({
+      pathname: '/',
+      query: { page: page }
+    },
+    undefined, { shallow: true })
   }
 
   return (

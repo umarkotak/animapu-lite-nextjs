@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 
-export default function Home() {
+export default function Library() {
   const [mangas, setMangas] = useState([
     {id: "dummy-1", shimmer: true},
     {id: "dummy-2", shimmer: true},
@@ -11,12 +11,12 @@ export default function Home() {
   ])
 
   async function GetLatestManga() {
-    var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
+    var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
     var historyArrayString = localStorage.getItem(listKey)
 
     if (historyArrayString) {
       setMangas(JSON.parse(historyArrayString))
-      console.log("HISTORY LIST", JSON.parse(historyArrayString))
+      console.log("LIBRARY LIST", JSON.parse(historyArrayString))
     } else {
       setMangas([])
     }
@@ -31,7 +31,7 @@ export default function Home() {
     <div className="bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
-          <span className="px-4 mb-4 text-white text-xl">History</span>
+          <span className="px-4 mb-4 text-white text-xl">Library</span>
         </div>
       </div>
 
