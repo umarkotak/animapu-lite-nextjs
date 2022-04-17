@@ -79,6 +79,7 @@ export default function Library() {
             libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
 
             var tempManga = mangaDetail
+            tempManga.local_updated_at = Math.floor(Date.now() / 1000)
             libraryArray.unshift(tempManga)
 
             localStorage.setItem(listKey, JSON.stringify(libraryArray))
