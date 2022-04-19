@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import Head from 'next/head'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from "next/router"
 
 import BottomMenuBar from "../components/BottomMenuBar"
@@ -43,6 +42,25 @@ export default function Home() {
     }
   }
 
+  const downloadFileRef = useRef(null)
+  async function downloadLibrary() {
+    try {
+        var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+        var libraryArrayString = localStorage.getItem(listKey)
+        if (libraryArrayString) {
+          const blob = new Blob([libraryArrayString], {type: 'application/json'})
+          const href = window.URL.createObjectURL(blob)
+          const link = downloadFileRef.current
+          link.download = 'library.json'
+          link.href = href
+          link.click()
+          link.href = '#'
+        }
+    } catch (e) {
+      console.log(e.message)
+    }
+  }
+
   return (
     <div className="bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
@@ -80,12 +98,12 @@ export default function Home() {
             <h2 className="text-xl mb-2">Library</h2>
             <button
               className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
-              onClick={() => {}}
-            >Export</button>
+              onClick={() => {downloadLibrary()}}
+            ><i class="fi fi-rr-download"></i> Download</button>
             <button
               className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
               onClick={() => {}}
-            >Import</button>
+            ><i class="fi fi-rr-upload"></i> Load From File</button>
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
@@ -97,6 +115,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <a className="invisible" href="#" ref={downloadFileRef} target="_blank">_</a>
 
       <BottomMenuBar />
     </div>
