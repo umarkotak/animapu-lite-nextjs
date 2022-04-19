@@ -16,18 +16,22 @@ export default function MangaDetail(props) {
   const manga = props.manga
   const [chapters, setChapters] = useState([{id: 1}])
 
+  var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+  var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
   var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-  var continueManga = {last_link: "#"}
+  const [continueManga, setContinueManga] = useState({last_link: "#"})
 
   const [followed, setFollowed] = useState(false)
 
-  try {
-    if (typeof window !== "undefined") {
-      if (localStorage.getItem(detailKey)) {
-        continueManga = JSON.parse(localStorage.getItem(detailKey))
+  function isContinuePossible() {
+    try {
+      if (typeof window !== "undefined") {
+        if (localStorage.getItem(historyDetailKey)) {
+          setContinueManga(JSON.parse(localStorage.getItem(historyDetailKey)))
+        }
       }
+    } catch (e) {
     }
-  } catch (e) {
   }
 
   function isInLibrary() {
@@ -41,12 +45,10 @@ export default function MangaDetail(props) {
   useEffect(() => {
     setChapters(manga.chapters)
     setFollowed(isInLibrary())
+    isContinuePossible()
   }, [manga])
 
   function handleFollow() {
-    var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-    var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-
     var libraryArrayString = localStorage.getItem(listKey)
 
     var libraryArray

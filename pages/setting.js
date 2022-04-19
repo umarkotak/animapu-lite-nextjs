@@ -61,6 +61,25 @@ export default function Home() {
     }
   }
 
+  var loadLibraryPayload
+  async function initLibraryFile(e) {
+    e.preventDefault()
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const text = (e.target.result)
+      loadLibraryPayload = text
+    }
+    reader.readAsText(e.target.files[0])
+  }
+
+  function loadLibraryFile() {
+    var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+    if (loadLibraryPayload && loadLibraryPayload !== "") {
+      localStorage.setItem(listKey, loadLibraryPayload)
+    }
+    alert("Load library success!")
+  }
+
   return (
     <div className="bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
@@ -96,14 +115,23 @@ export default function Home() {
 
           <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
             <h2 className="text-xl mb-2">Library</h2>
-            <button
-              className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
-              onClick={() => {downloadLibrary()}}
-            ><i class="fi fi-rr-download"></i> Download</button>
-            <button
-              className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
-              onClick={() => {}}
-            ><i className="fi fi-rr-upload"></i> Load From File</button>
+            <div>
+              <button
+                className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
+                onClick={() => {downloadLibrary()}}
+              ><i className="fi fi-rr-download"></i> Download</button>
+            </div>
+            <div>
+              <span className="block mt-2">Load From File</span>
+              <input
+                className=" p-2 text-center w-2/3 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" type="file"
+                onChange={(e)=>initLibraryFile(e)}
+              />
+              <button
+                className="w-1/3 bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
+                onClick={() => {loadLibraryFile()}}
+              ><i className="fi fi-rr-upload"></i> Load</button>
+            </div>
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
