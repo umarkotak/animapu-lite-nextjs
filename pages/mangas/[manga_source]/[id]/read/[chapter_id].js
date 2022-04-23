@@ -140,7 +140,7 @@ export default function ReadManga() {
         </div>
       </div>
 
-      <BottomMenuBar isPaginateNavOn={true} manga={manga} chapter_id={chapter_id} />
+      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter_id} />
     </div>
   )
 }

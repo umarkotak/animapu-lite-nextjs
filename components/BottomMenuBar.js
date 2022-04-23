@@ -60,7 +60,7 @@ export default function BottomMenuBar(props) {
 
   return(
     <div className={`w-full h-screen`}>
-      <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
+      <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>
             <a className="focus:text-teal-500 hover:text-teal-500 mx-2 w-full bg-[#2b2d42] py-1 pr-1 rounded text-center">
@@ -83,9 +83,9 @@ export default function BottomMenuBar(props) {
 
       <div className="block fixed inset-x-0 bottom-0 z-10">
         <div className="flex justify-end mx-4 mb-2">
-          <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded">
+          <div className="bg-[#2b2d42] bg-opacity-50 rounded">
             <div className="h-1"></div>
-            <button className="focus:text-teal-500 hover:text-teal-500" onClick={() => window.scrollTo(0, 0)}>
+            <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
               <i className="fi fi-rr-angle-up text-white" width="25" height="25"></i>
             </button>
           </div>
@@ -122,9 +122,9 @@ export default function BottomMenuBar(props) {
               </div>
             </div>
           </div>
-          <div className="bg-[#2b2d42] bg-opacity-50 py-1 px-2 rounded ml-1">
+          <div className="bg-[#2b2d42] bg-opacity-50 rounded ml-1">
             <div className="h-1"></div>
-            <button className="focus:text-teal-500 hover:text-teal-500" onClick={() => {setIsOpen(!isOpen)}}>
+            <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => {setIsOpen(!isOpen)}}>
               <i className="fi fi-rr-grid text-white" width="25" height="25"></i>
             </button>
           </div>
