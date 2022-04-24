@@ -54,7 +54,7 @@ export default function BottomMenuBar(props) {
   }
 
   function toManga() {
-    if (!props.manga) { return "" }
+    if (!props.manga) { return "#" }
     return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
   }
 
@@ -106,6 +106,8 @@ export default function BottomMenuBar(props) {
                   </a>
                 </Link>
                 <Select
+                  id="select manga chapter"
+                  instanceId="select manga chapter"
                   options={chapters}
                   menuPlacement={"top"}
                   className="mx-2"
@@ -162,12 +164,12 @@ export default function BottomMenuBar(props) {
               <span className="tab tab-home block text-xs">Setting</span>
             </a>
           </Link>
-          <Link href="/account">
+          {/* <Link href="/account">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
               <i className="fi fi-rr-user" width="25" height="25"></i>
               <span className="tab tab-home block text-xs">Account</span>
             </a>
-          </Link>
+          </Link> */}
           </div>
         </div>
       </div>

@@ -1,15 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
+import Select from 'react-select'
 import { useRouter } from "next/router"
+import Link from 'next/link'
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import animapuApi from "../apis/AnimapuApi"
 
 var onApiCall = false
+var activeSourceIdxDirect = 0
 export default function Home() {
   let router = useRouter()
 
   const [sources, setSources] = useState([])
   const [activeSource, setActiveSource] = useState("")
+  const [activeSourceIdx, setActiveSourceIdx] = useState(activeSourceIdxDirect)
+  const [formattedSources, setFormattedSources] = useState([{value: "mangabat", label: "select source"}])
 
   async function GetSourceList() {
     if (onApiCall) {return}
@@ -21,6 +26,26 @@ export default function Home() {
       if (response.status == 200) {
         setSources(body.data)
         setActiveSource(animapuApi.GetActiveMangaSource())
+
+        var tempFormattedSources = body.data.map((source, idx) => {
+          if (source.id === animapuApi.GetActiveMangaSource()) {
+            activeSourceIdxDirect = idx
+          }
+            return {
+              value: source.id,
+              idx: idx,
+              disabled: !source.active,
+              label: <div className="flex flex-row justify-between">
+                <div className="flex flex-row">
+                  <img className="mr-2" src={`/images/flags/${source.language}.png`} alt="" height="15px" width="23px"/> {source.title}
+                </div>
+                <Link href={source.web_link || "#"}>
+                  <a><i className="fi fi-rr-link"></i></a>
+                </Link>
+              </div>
+            }
+        })
+        setFormattedSources(tempFormattedSources)
       }
       onApiCall = false
 
@@ -35,12 +60,19 @@ export default function Home() {
   // eslint-disable-next-line
   }, [])
 
-  function changeMangaSource(source) {
+  useEffect(() => {
+    setActiveSourceIdx(activeSourceIdxDirect)
+  // eslint-disable-next-line
+  }, [formattedSources])
+
+  function handleSelectSource(e) {
     if (typeof window !== "undefined") {
-      localStorage.setItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE", source)
-      setActiveSource(source)
+      setActiveSourceIdx(e.idx)
+      localStorage.setItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE", e.value)
+      setActiveSource(e.value)
     }
   }
+
 
   const downloadFileRef = useRef(null)
   async function downloadLibrary() {
@@ -93,24 +125,15 @@ export default function Home() {
           <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
             <h2 className="text-xl mb-2">Select Manga Source</h2>
             <span className="mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
-            {sources.map((source, idx) => (
-              <div key={idx}>
-                <button
-                  className="w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 items-center hover:disabled:bg-[#2b2d42] disabled:opacity-50 inline-flex justify-center"
-                  onClick={() => changeMangaSource(source.id)}
-                  disabled={!source.active}
-                >
-                  <img src={`/images/flags/${
-                    {
-                      "id": "indonesia.png",
-                      "en": "united-kingdom.png",
-                      "mix": "united-kingdom.png",
-                    }[source.language]
-                  }`} className="w-3 h-3" />
-                  <span className="ml-2">{source.title}</span>
-                </button>
-              </div>
-            ))}
+            <Select
+              id="select manga source"
+              instanceId="select manga source"
+              options={formattedSources}
+              className=""
+              onChange={(e) => handleSelectSource(e)}
+              isOptionDisabled={(option) => option.disabled}
+              value={formattedSources[activeSourceIdx]}
+            />
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">

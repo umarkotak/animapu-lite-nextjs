@@ -4,7 +4,7 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 
-var mangaSynced
+var mangaSynced = true
 export default function Library() {
   const [mangas, setMangas] = useState([])
 
@@ -46,48 +46,55 @@ export default function Library() {
 
   async function CheckForUpdates() {
     if (mangas.length <= 0) { return }
+    if (mangaSynced) { return }
 
     var idx = 1
     var anyUpdate = false
     var libraryArray
+    var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+
     for (const manga of mangas) {
-      if (!mangaSynced) {
-        if (!manga.local_updated_at || (manga.local_updated_at+3600) <= Math.floor(Date.now() / 1000) ) {
-          const response = await animapuApi.GetMangaDetail({
-            manga_source: manga.source,
-            manga_id: manga.source_id,
-            secondary_source_id: manga.secondary_source_id
-          })
-          const body = await response.json()
-          var mangaDetail
-          if (response.status == 200) {
-            mangaDetail = body.data
-          }
+      var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
-          if (showLatestChapter(mangaDetail) > showLatestChapter(manga)) {
-            var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-            var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+      if (manga.local_updated_at && (manga.local_updated_at+3600) > Math.floor(Date.now() / 1000)) { continue }
 
-            var libraryArrayString = localStorage.getItem(listKey)
-
-            if (libraryArrayString) {
-              libraryArray = JSON.parse(libraryArrayString)
-            } else {
-              libraryArray = []
-            }
-
-            libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
-
-            var tempManga = mangaDetail
-            tempManga.local_updated_at = Math.floor(Date.now() / 1000)
-            libraryArray.unshift(tempManga)
-
-            localStorage.setItem(listKey, JSON.stringify(libraryArray))
-            localStorage.setItem(detailKey, JSON.stringify(tempManga))
-            anyUpdate = true
-          }
-        }
+      const response = await animapuApi.GetMangaDetail({
+        manga_source: manga.source,
+        manga_id: manga.source_id,
+        secondary_source_id: manga.secondary_source_id
+      })
+      const body = await response.json()
+      var mangaDetail
+      if (response.status == 200) {
+        mangaDetail = body.data
       }
+
+      var tempManga = mangaDetail
+      tempManga.local_updated_at = Math.floor(Date.now() / 1000)
+
+      var libraryArrayString = localStorage.getItem(listKey)
+
+      if (libraryArrayString) {
+        libraryArray = JSON.parse(libraryArrayString)
+      } else {
+        libraryArray = []
+      }
+
+      if (showLatestChapter(mangaDetail) > showLatestChapter(manga)) {
+        libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+        libraryArray.unshift(tempManga)
+        anyUpdate = true
+      } else {
+        libraryArray = libraryArray.map(arrManga => {
+          if (`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) {
+            arrManga = tempManga
+          }
+          return arrManga
+        })
+      }
+
+      localStorage.setItem(listKey, JSON.stringify(libraryArray))
+      localStorage.setItem(detailKey, JSON.stringify(tempManga))
 
       setUpdateStatus({
         current: idx, currentTitle: manga.title, max: mangas.length, percent: ((idx)/mangas.length)*100, finished: false
