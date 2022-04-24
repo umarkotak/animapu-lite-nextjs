@@ -161,7 +161,12 @@ export default function Home() {
             <h2 className="text-xl mb-2">History</h2>
             <button
               className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
-              onClick={() => {}}
+              onClick={() => {
+                if(confirm("Are you sure?")) {
+                  localStorage.removeItem(`ANIMAPU_LITE:HISTORY:LOCAL:LIST`)
+                }
+                alert("Clear history success!")
+              }}
             >Clear</button>
           </div>
         </div>
