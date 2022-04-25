@@ -12,7 +12,7 @@ export default function Home({}) {
   let router = useRouter()
   const query = router.query
 
-  const [activeSource, setActiveSource] = useState(animapuApi.GetActiveMangaSource())
+  const [activeSource, setActiveSource] = useState("")
   const [mangas, setMangas] = useState([
     {id: "dummy-1", shimmer: true},
     {id: "dummy-2", shimmer: true},
@@ -25,6 +25,7 @@ export default function Home({}) {
     if (append) {
       page = page + 1
     } else {
+      setActiveSource(animapuApi.GetActiveMangaSource())
       page = 1
     }
 
