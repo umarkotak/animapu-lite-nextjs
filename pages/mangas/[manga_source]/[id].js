@@ -75,6 +75,17 @@ export default function MangaDetail(props) {
     setFollowed(isInLibrary())
   }
 
+  function startReadDecider(chapters) {
+    try {
+      if (!chapters) { return 1 }
+      if (!chapters.at(-1)) { return 1 }
+      if (!chapters.at(-1).id) { return 1 }
+      return chapters.at(-1).id
+    } catch {
+      return 1
+    }
+  }
+
   return (
     <div className="bg-[#d6e0ef]">
       <Head>
@@ -118,7 +129,7 @@ export default function MangaDetail(props) {
                 <i className="fi fi-rr-heart"></i> {followed ? "Un-Follow" : "Follow"}
               </button>
               <Link
-                href={`/mangas/${manga_source}/${manga_id}/read/${chapters && chapters.at(-1) ? chapters.at(-1).id : 1}?secondary_source_id=${secondary_source_id}`}
+                href={`/mangas/${manga_source}/${manga_id}/read/${startReadDecider(chapters)}?secondary_source_id=${secondary_source_id}`}
               >
                 <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full">
                   <i className="fi fi-rr-book-alt"></i> Start Read
@@ -131,7 +142,12 @@ export default function MangaDetail(props) {
               </Link>
             </div>
             <div className="col-span-2 p-2">
-              <button className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"><i className="fi fi-rr-share"></i> | Share</button>
+              <button
+                className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
+                onClick={(e)=>{
+                  navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                }}
+              ><i className="fi fi-rr-share"></i> | Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">
                 { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
               </h1>
