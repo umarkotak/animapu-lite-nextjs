@@ -118,7 +118,7 @@ export default function MangaDetail(props) {
                 <i className="fi fi-rr-heart"></i> {followed ? "Un-Follow" : "Follow"}
               </button>
               <Link
-                href={`/mangas/${manga_source}/${manga_id}/read/${chapters.at(-1) ? chapters.at(-1).id : 1}?secondary_source_id=${secondary_source_id}`}
+                href={`/mangas/${manga_source}/${manga_id}/read/${chapters && chapters.at(-1) ? chapters.at(-1).id : 1}?secondary_source_id=${secondary_source_id}`}
               >
                 <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full">
                   <i className="fi fi-rr-book-alt"></i> Start Read
