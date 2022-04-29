@@ -124,7 +124,10 @@ export default function MangaDetail(props) {
         <div className="container mx-auto py-4 px-[50px] max-w-[1040px]">
           <div className="backdrop-blur-sm grid grid-cols-1 sm:grid-cols-3">
             <div className="h-full z-5 p-2 mt-[-125px]">
-              <img className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`} src={manga.cover_image[0].image_urls[0]}/>
+              <img
+                className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`}
+                src={manga.cover_image[0].image_urls[0]}
+              />
               <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full" onClick={() => handleFollow()}>
                 <i className="fi fi-rr-heart"></i> {followed ? "Un-Follow" : "Follow"}
               </button>
@@ -147,7 +150,7 @@ export default function MangaDetail(props) {
                 onClick={(e)=>{
                   navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
                 }}
-              ><i className="fi fi-rr-share"></i> | Share</button>
+              ><i className="fi fi-rr-share"></i> Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">
                 { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
               </h1>
