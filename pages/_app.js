@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import '../styles/uicons-regular-rounded.css'
 import Head from 'next/head'
 import NProgress from 'nprogress'
 import "nprogress/nprogress.css"
