@@ -40,7 +40,7 @@ export default function Home() {
                   <img className="mr-2" src={`/images/flags/${source.language}.png`} alt="" height="15px" width="23px"/> {source.title}
                 </div>
                 <Link href={source.web_link || "#"}>
-                  <a><i className="fi fi-rr-link"></i></a>
+                  <a><i className="fa-solid fa-up-right-from-square"></i></a>
                 </Link>
               </div>
             }
@@ -142,7 +142,7 @@ export default function Home() {
               <button
                 className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
                 onClick={() => {downloadLibrary()}}
-              ><i className="fi fi-rr-download"></i> Download</button>
+              ><i className="fa-solid fa-file-arrow-down"></i> Download</button>
             </div>
             <div>
               <span className="block mt-2">Load From File</span>
@@ -153,7 +153,7 @@ export default function Home() {
               <button
                 className="w-1/3 bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
                 onClick={() => {loadLibraryFile()}}
-              ><i className="fi fi-rr-upload"></i> Load</button>
+              ><i className="fa-solid fa-file-arrow-up"></i> Load</button>
             </div>
           </div>
 

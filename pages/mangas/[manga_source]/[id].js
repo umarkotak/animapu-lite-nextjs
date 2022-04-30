@@ -129,18 +129,18 @@ export default function MangaDetail(props) {
                 src={manga.cover_image[0].image_urls[0]}
               />
               <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full" onClick={() => handleFollow()}>
-                <i className="fi fi-rr-heart"></i> {followed ? "Un-Follow" : "Follow"}
+                <i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}
               </button>
               <Link
                 href={`/mangas/${manga_source}/${manga_id}/read/${startReadDecider(chapters)}?secondary_source_id=${secondary_source_id}`}
               >
                 <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full">
-                  <i className="fi fi-rr-book-alt"></i> Start Read
+                  <i className="fa-solid fa-book"></i> Start Read
                 </a>
               </Link>
               <Link href={continueManga.last_link || "#"}>
                 <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
-                  <i className="fi fi-rr-play"></i> Continue
+                  <i className="fa-solid fa-play"></i> Continue
                 </a>
               </Link>
             </div>
@@ -150,7 +150,7 @@ export default function MangaDetail(props) {
                 onClick={(e)=>{
                   navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
                 }}
-              ><i className="fi fi-rr-share"></i> Share</button>
+              ><i className="fa-solid fa-share-nodes"></i> Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">
                 { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
               </h1>

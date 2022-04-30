@@ -64,12 +64,12 @@ export default function BottomMenuBar(props) {
         <div className="flex justify-between">
           <Link href={prevChapter()}>
             <a className="focus:text-teal-500 hover:text-teal-500 mx-2 w-full bg-[#2b2d42] py-1 pr-1 rounded text-center">
-              <i className="fi fi-rr-angle-left text-white" width="25" height="25"></i>
+              <i className="fa-solid fa-angle-left text-white"></i>
             </a>
           </Link>
           <Link href={nextChapter()}>
             <a className="focus:text-teal-500 hover:text-teal-500 mx-1 w-full bg-[#2b2d42] py-1 pl-1 rounded text-center">
-              <i className="fi fi-rr-angle-right text-white" width="25" height="25"></i>
+              <i className="fa-solid fa-angle-right text-white"></i>
             </a>
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function BottomMenuBar(props) {
           <div className="bg-[#2b2d42] bg-opacity-50 rounded">
             <div className="h-1"></div>
             <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
-              <i className="fi fi-rr-angle-up text-white" width="25" height="25"></i>
+              <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
             </button>
           </div>
         </div>
@@ -97,12 +97,12 @@ export default function BottomMenuBar(props) {
               <div className={`flex justify-between`}>
                 <Link href={prevChapter()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-2">
-                    <i className="fi fi-rr-angle-left text-white" width="25" height="25"></i>
+                    <i className="fa-solid fa-angle-left text-white align-middle"></i>
                   </a>
                 </Link>
                 <Link href={toManga()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-2">
-                    <i className="fi fi-rr-book text-white" width="25" height="25"></i>
+                    <i className="fa-solid fa-book text-white align-middle"></i>
                   </a>
                 </Link>
                 <Select
@@ -118,7 +118,7 @@ export default function BottomMenuBar(props) {
                 />
                 <Link href={nextChapter()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-1">
-                    <i className="fi fi-rr-angle-right text-white" width="25" height="25"></i>
+                    <i className="fa-solid fa-angle-right text-white align-middle"></i>
                   </a>
                 </Link>
               </div>
@@ -127,7 +127,7 @@ export default function BottomMenuBar(props) {
           <div className="bg-[#2b2d42] bg-opacity-50 rounded ml-1">
             <div className="h-1"></div>
             <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => {setIsOpen(!isOpen)}}>
-              <i className="fi fi-rr-grid text-white" width="25" height="25"></i>
+              <i className="fa-solid fa-bars text-white min-w-[15px]"></i>
             </button>
           </div>
         </div>
@@ -136,37 +136,37 @@ export default function BottomMenuBar(props) {
           <div className="flex justify-between container mx-auto max-w-[1040px]">
           <Link href="/">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-              <i className="fi fi-rr-home" width="25" height="25"></i>
+              <i className="fa-solid fa-house"></i>
               <span className="tab tab-home block text-xs">Home</span>
             </a>
           </Link>
           <Link href="/search">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-              <i className="fi fi-rr-search" width="25" height="25"></i>
+              <i className="fa-solid fa-magnifying-glass"></i>
               <span className="tab tab-home block text-xs">Search</span>
             </a>
           </Link>
           <Link href="/library">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-              <i className="fi fi-rr-apps" width="25" height="25"></i>
+              <i className="fa-solid fa-book-bookmark"></i>
               <span className="tab tab-home block text-xs">Library</span>
             </a>
           </Link>
           <Link href="/history">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-              <i className="fi fi-rr-time-past" width="25" height="25"></i>
+              <i className="fa-solid fa-clock-rotate-left"></i>
               <span className="tab tab-home block text-xs">History</span>
             </a>
           </Link>
           <Link href="/setting">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-              <i className="fi fi-rr-settings" width="25" height="25"></i>
+              <i className="fa-solid fa-gear"></i>
               <span className="tab tab-home block text-xs">Setting</span>
             </a>
           </Link>
           {/* <Link href="/account">
             <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-              <i className="fi fi-rr-user" width="25" height="25"></i>
+              <i className="fa-solid fa-user"></i>
               <span className="tab tab-home block text-xs">Account</span>
             </a>
           </Link> */}
