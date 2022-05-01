@@ -49,6 +49,8 @@ export default function MangaDetail(props) {
   }, [manga])
 
   function handleFollow() {
+    if (!manga.id || !manga.source_id) { return }
+
     var libraryArrayString = localStorage.getItem(listKey)
 
     var libraryArray

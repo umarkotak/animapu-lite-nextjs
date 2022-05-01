@@ -61,6 +61,15 @@ export default function MangaCard(props) {
     return latestChapter
   }
 
+  function formatTitle(manga) {
+    try {
+      if (!manga.title) { return manga.title }
+      return manga.title.slice(0, 50)
+    } catch {
+      return "Untitled"
+    }
+  }
+
   if (props.manga.shimmer) {
     return(
       <div
@@ -107,7 +116,7 @@ export default function MangaCard(props) {
           </Link>
           <Link href={goToManga(props.manga)}>
             <a className="absolute p-2 text-white z-3 rounded w-full bg-black bg-opacity-70">
-              <p className="rounded text-sm leading-5 font-sans pb-1">{props.manga.title.slice(0, 50)}</p>
+              <p className="rounded text-sm leading-5 font-sans pb-1">{formatTitle(props.manga)}</p>
               <div className={`text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}><b>
                 {props.manga.last_link ? "Continue Read" : "Ch"} {props.manga.last_link ? "" : showLatestChapter(props.manga)}
               </b></div>
