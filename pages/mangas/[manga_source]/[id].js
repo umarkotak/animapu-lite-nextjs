@@ -36,7 +36,6 @@ export default function MangaDetail(props) {
 
   function isInLibrary() {
     try {
-      console.log(typeof window, localStorage.getItem(detailKey))
       if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
     } catch (e) {}
     return false
@@ -49,7 +48,7 @@ export default function MangaDetail(props) {
   }, [manga])
 
   function handleFollow() {
-    if (!manga.id || !manga.source_id) { return }
+    if (!manga.source_id) { return }
 
     var libraryArrayString = localStorage.getItem(listKey)
 
