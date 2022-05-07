@@ -30,10 +30,10 @@ export default function ReadManga() {
       if (response.status == 200) {
         setManga(body.data)
       }
-      console.log(body)
+      // console.log(body)
 
     } catch (e) {
-      console.log(e)
+      alert(e)
     }
   }
   async function GetReadManga() {
@@ -48,10 +48,10 @@ export default function ReadManga() {
       if (response.status == 200) {
         setChapter(body.data)
       }
-      console.log(body)
+      // console.log(body)
 
     } catch (e) {
-      console.log(e)
+      alert(e)
     }
   }
 
@@ -64,55 +64,62 @@ export default function ReadManga() {
 
   var hist = {}
   function handleImageFallback(imageObj, e) {
-    var found = false
-    var selectedImageUrl = ""
-
     try {
-      imageObj.image_urls.forEach((imageUrl,idx) => {
-        if (!hist[`${imageUrl}-${idx}`]) {
-          hist[`${imageUrl}-${idx}`] = true
-          found = true
-          selectedImageUrl = imageUrl
-          throw BreakException
+      var found = false
+      var selectedImageUrl = ""
+
+      try {
+        imageObj.image_urls.forEach((imageUrl,idx) => {
+          if (!hist[`${imageUrl}-${idx}`]) {
+            hist[`${imageUrl}-${idx}`] = true
+            found = true
+            selectedImageUrl = imageUrl
+            throw BreakException
+          }
+        })
+      } catch(err) {
+        if (err !== BreakException) throw err
+
+        if (found) {
+          e.target.src = selectedImageUrl
+          return
+        } else {
+          e.target.style.display = "none"
         }
-      })
-    } catch(err) {
-      if (err !== BreakException) throw err
-
-      if (found) {
-        e.target.src = selectedImageUrl
-        return
-      } else {
-        e.target.style.display = "none"
       }
+      e.target.style.display = "none"
+    } catch(err) {
+      alert(err)
     }
-    e.target.style.display = "none"
-
   }
 
   function recordLocalHistory() {
-    var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
-    var historyArrayString = localStorage.getItem(listKey)
+    try {
+      var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
+      var historyArrayString = localStorage.getItem(listKey)
 
-    var historyArray
-    if (historyArrayString) {
-      historyArray = JSON.parse(historyArrayString)
-    } else {
-      historyArray = []
+      var historyArray
+      if (historyArrayString) {
+        historyArray = JSON.parse(historyArrayString)
+      } else {
+        historyArray = []
+      }
+
+      historyArray = historyArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+
+      var tempManga = manga
+      tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
+      historyArray.unshift(tempManga)
+
+      historyArray = historyArray.slice(0,40)
+
+      localStorage.setItem(listKey, JSON.stringify(historyArray))
+
+      var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+      localStorage.setItem(detailKey, JSON.stringify(tempManga))
+    } catch(e) {
+      alert(e)
     }
-
-    historyArray = historyArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
-
-    var tempManga = manga
-    tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
-    historyArray.unshift(tempManga)
-
-    historyArray = historyArray.slice(0,40)
-
-    localStorage.setItem(listKey, JSON.stringify(historyArray))
-
-    var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    localStorage.setItem(detailKey, JSON.stringify(tempManga))
   }
   useEffect(() => {
     if (!query) {return}
