@@ -4,6 +4,7 @@ import { useRouter } from "next/router"
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
+import Manga from "../models/Manga"
 
 var page
 var targetPage
