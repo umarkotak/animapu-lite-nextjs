@@ -113,6 +113,12 @@ export default function ReadManga() {
 
       historyArray = historyArray.slice(0,40)
 
+      historyArray = historyArray.map((val, idx) => {
+        val.chapters = []
+        val.description = ""
+        return val
+      })
+
       localStorage.setItem(listKey, JSON.stringify(historyArray))
 
       var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
