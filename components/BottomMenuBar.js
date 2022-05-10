@@ -63,12 +63,12 @@ export default function BottomMenuBar(props) {
       <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>
-            <a className="focus:text-teal-500 hover:text-teal-500 mx-2 w-full bg-[#2b2d42] py-1 pr-1 rounded text-center">
+            <a className="focus:text-teal-500 hover:text-teal-500 ml-1 mr-2 w-full bg-[#2b2d42] py-1 pr-1 rounded text-center">
               <i className="fa-solid fa-angle-left text-white"></i>
             </a>
           </Link>
           <Link href={nextChapter()}>
-            <a className="focus:text-teal-500 hover:text-teal-500 mx-1 w-full bg-[#2b2d42] py-1 pl-1 rounded text-center">
+            <a className="focus:text-teal-500 hover:text-teal-500 mr-1 ml-2  w-full bg-[#2b2d42] py-1 pl-1 rounded text-center">
               <i className="fa-solid fa-angle-right text-white"></i>
             </a>
           </Link>
@@ -83,7 +83,7 @@ export default function BottomMenuBar(props) {
 
       <div className="block fixed inset-x-0 bottom-0 z-10">
         <div className="flex justify-end mx-4 mb-2">
-          <div className="bg-[#2b2d42] bg-opacity-50 rounded">
+          <div className="bg-[#2b2d42] bg-opacity-50 rounded-lg">
             <div className="h-1"></div>
             <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
               <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
@@ -124,7 +124,7 @@ export default function BottomMenuBar(props) {
               </div>
             </div>
           </div>
-          <div className="bg-[#2b2d42] bg-opacity-50 rounded ml-1">
+          <div className="bg-[#2b2d42] bg-opacity-50 rounded-lg ml-1">
             <div className="h-1"></div>
             <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => {setIsOpen(!isOpen)}}>
               <i className="fa-solid fa-bars text-white min-w-[15px]"></i>

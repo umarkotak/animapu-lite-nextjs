@@ -90,23 +90,12 @@ export default function MangaDetail(props) {
   return (
     <div className="bg-[#d6e0ef]">
       <Head>
-        <title>Animapu - Lite</title>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta name="description" content="Baca komik gratis tanpa iklan" />
-
-        <meta itemProp="name" content="Animapu - Lite" />
         <meta itemProp="description" content={`${manga.title}`} />
         <meta itemProp="image" content={`${manga.cover_image[0].image_urls[0]}`} />
 
-        <meta name="og:url" content="https://animapu-lite.vercel.app/" />
-        <meta name="og:type" content="website" />
-        <meta name="og:title" content="Animapu - Lite" />
         <meta name="og:description" content={`${manga.title}`} />
         <meta name="og:image" content={`${manga.cover_image[0].image_urls[0]}`} />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Animapu - Lite" />
         <meta name="twitter:description" content={`${manga.title}`} />
         <meta name="twitter:image" content={`${manga.cover_image[0].image_urls[0]}`} />
       </Head>

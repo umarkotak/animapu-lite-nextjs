@@ -6,7 +6,7 @@ import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
 
 var BreakException = {}
-export default function ReadManga() {
+export default function ReadManga(props) {
   let router = useRouter()
 
   const query = router.query
@@ -19,46 +19,10 @@ export default function ReadManga() {
   })
   const [chapter, setChapter] = useState({chapter_images:[]})
 
-  async function GetMangaDetail() {
-    try {
-      const response = await animapuApi.GetMangaDetail({
-        manga_source: manga_source,
-        manga_id: manga_id,
-        secondary_source_id: secondary_source_id
-      })
-      const body = await response.json()
-      if (response.status == 200) {
-        setManga(body.data)
-      }
-      // console.log(body)
-
-    } catch (e) {
-      alert(e)
-    }
-  }
-  async function GetReadManga() {
-    try {
-      const response = await animapuApi.GetReadManga({
-        manga_source: animapuApi.GetActiveMangaSource(),
-        manga_id: manga_id,
-        chapter_id: chapter_id,
-        secondary_source_id: secondary_source_id
-      })
-      const body = await response.json()
-      if (response.status == 200) {
-        setChapter(body.data)
-      }
-      // console.log(body)
-
-    } catch (e) {
-      alert(e)
-    }
-  }
-
   useEffect(() => {
     if (!query) {return}
-    GetMangaDetail()
-    GetReadManga()
+    setManga(props.manga)
+    setChapter(props.chapter)
   // eslint-disable-next-line
   }, [query])
 
@@ -135,10 +99,29 @@ export default function ReadManga() {
 
   return (
     <div className="bg-[#d6e0ef]">
+      <Head>
+        <meta itemProp="description" content={`${props.manga.title}`} />
+        <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+
+        <meta name="og:title" content={`${props.manga.title}`} />
+        <meta name="og:description" content={`Read chapter ${props.chapter.number}`} />
+        <meta name="og:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+
+        <meta name="twitter:title" content={`${props.manga.title}`} />
+        <meta name="twitter:description" content={`Read chapter ${props.chapter.number}`} />
+        <meta name="twitter:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+      </Head>
+
       <div>
         <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
-          <div className="mb-2">
-            <span className="bg-white rounded p-1">Chapter {chapter.number}</span>
+          <div className="mt-1 mb-2">
+            <button className="bg-white rounded-lg p-1">Chapter {chapter.number}</button>
+            <button
+              className="bg-white rounded-lg ml-2 p-1 height-[27px]"
+              onClick={(e)=>{
+                navigator.clipboard.writeText(`Read *${manga.title}* Chapter *${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${props.chapter.id}?secondary_source_id=${manga.secondary_source_id}`)
+              }}
+            ><i className="fa-solid fa-share-nodes"></i> Share</button>
           </div>
           {chapter.chapter_images.map((imageObj, idx) => (
             <div key={`${chapter.id}-${idx}`}>
@@ -156,4 +139,44 @@ export default function ReadManga() {
       <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter_id} />
     </div>
   )
+}
+
+export async function getServerSideProps(context) {
+  var query = context.query
+
+  var manga = {}
+  var chapter = {}
+
+  try {
+    const response = await animapuApi.GetMangaDetail({
+      manga_source: query.manga_source,
+      manga_id: query.id,
+      secondary_source_id: query.secondary_source_id
+    })
+    const body = await response.json()
+    if (response.status == 200) {
+      manga = body.data
+    }
+
+  } catch (e) {
+    console.log(e)
+  }
+
+  try {
+    const response = await animapuApi.GetReadManga({
+      manga_source: query.manga_source,
+      manga_id: query.id,
+      chapter_id: query.chapter_id,
+      secondary_source_id: query.secondary_source_id
+    })
+    const body = await response.json()
+    if (response.status == 200) {
+      chapter = body.data
+    }
+
+  } catch (e) {
+    console.log(e)
+  }
+
+  return { props: { manga: manga, chapter: chapter } }
 }

@@ -9,7 +9,7 @@ import Manga from "../models/Manga"
 var page
 var targetPage
 var onApiCall = false
-export default function Home({}) {
+export default function Home() {
   let router = useRouter()
   const query = router.query
 
