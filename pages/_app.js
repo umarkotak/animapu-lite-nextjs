@@ -28,6 +28,8 @@ function MyApp({ Component, pageProps }) {
         <meta itemProp="description" content="Baca komik gratis tanpa iklan" />
         <meta itemProp="image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
 
+        <link rel='manifest' href='/manifest.json' />
+
         <meta name="og:url" content="https://animapu-lite.vercel.app/" />
         <meta name="og:type" content="website" />
         <meta name="og:title" content="Animapu - Lite" />
