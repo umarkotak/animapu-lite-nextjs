@@ -54,7 +54,7 @@ export default function MangaCard(props) {
   function showLatestChapter(manga) {
     var latestChapter = manga.latest_chapter_number
     if (latestChapter <= 0) {
-      if (manga.chapters.length > 0) {
+      if (manga.chapters && manga.chapters.length > 0) {
         latestChapter = manga.chapters[0].number
       }
     }
