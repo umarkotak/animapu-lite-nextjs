@@ -38,7 +38,12 @@ export default function MangaCard(props) {
     if (manga.last_link) {
       return manga.last_link
     }
-    return `/mangas/${animapuApi.GetActiveMangaSource()}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
+
+    var mangaSource = manga.source
+    if (!mangaSource || mangaSource == "") {
+      mangaSource = animapuApi.GetActiveMangaSource()
+    }
+    return `/mangas/${mangaSource}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
   }
 
   function showMark(manga) {
@@ -51,6 +56,15 @@ export default function MangaCard(props) {
     return false
   }
 
+  function formatTitle(manga) {
+    try {
+      if (!manga.title) { return manga.title }
+      return manga.title.slice(0, 50)
+    } catch {
+      return "Untitled"
+    }
+  }
+
   function showLatestChapter(manga) {
     var latestChapter = manga.latest_chapter_number
     if (latestChapter <= 0) {
@@ -61,13 +75,16 @@ export default function MangaCard(props) {
     return latestChapter
   }
 
-  function formatTitle(manga) {
-    try {
-      if (!manga.title) { return manga.title }
-      return manga.title.slice(0, 50)
-    } catch {
-      return "Untitled"
+  function subTextDecider(manga) {
+    if (manga.last_link) { return "Continue Read" }
+
+    var latestChapter = showLatestChapter(manga)
+
+    if (latestChapter <= 0) {
+      return "Read"
     }
+
+    return `Ch ${latestChapter}`
   }
 
   if (props.manga.shimmer) {
@@ -118,7 +135,7 @@ export default function MangaCard(props) {
             <a className="absolute p-2 text-white z-3 rounded w-full bg-black bg-opacity-70">
               <p className="rounded text-sm leading-5 font-sans pb-1">{formatTitle(props.manga)}</p>
               <div className={`text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}><b>
-                {props.manga.last_link ? "Continue Read" : "Ch"} {props.manga.last_link ? "" : showLatestChapter(props.manga)}
+                {subTextDecider(props.manga)}
               </b></div>
             </a>
           </Link>

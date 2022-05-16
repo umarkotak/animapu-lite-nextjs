@@ -70,6 +70,9 @@ export default function Library() {
       }
 
       var tempManga = mangaDetail
+      if (mangaDetail.title && mangaDetail.title === "") {
+        tempManga = manga
+      }
       tempManga.local_updated_at = Math.floor(Date.now() / 1000)
 
       var libraryArrayString = localStorage.getItem(listKey)
