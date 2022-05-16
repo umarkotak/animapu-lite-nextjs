@@ -18,12 +18,13 @@ export default function Library() {
 
   function GetLatestManga() {
     var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-    var historyArrayString = localStorage.getItem(listKey)
+    var libraryArrayString = localStorage.getItem(listKey)
     mangaSynced = false
 
-    if (historyArrayString) {
-      setMangas(JSON.parse(historyArrayString))
-      // console.log("LIBRARY LIST", JSON.parse(historyArrayString))
+    if (libraryArrayString) {
+      console.log(JSON.parse(libraryArrayString))
+      setMangas(JSON.parse(libraryArrayString))
+      // console.log("LIBRARY LIST", JSON.parse(libraryArrayString))
     } else {
       setMangas([])
     }
@@ -70,10 +71,14 @@ export default function Library() {
       }
 
       var tempManga = mangaDetail
-      if (mangaDetail.title && mangaDetail.title === "") {
+      if (mangaDetail.title === "" || !mangaDetail.title) {
         tempManga = manga
+        tempManga.unavailable = true
       }
       tempManga.local_updated_at = Math.floor(Date.now() / 1000)
+      if (tempManga.chapters && tempManga.chapters.length > 0) {
+        tempManga.chapters = [tempManga.chapters[0]]
+      }
 
       var libraryArrayString = localStorage.getItem(listKey)
 
@@ -83,7 +88,7 @@ export default function Library() {
         libraryArray = []
       }
 
-      if (showLatestChapter(mangaDetail) > showLatestChapter(manga)) {
+      if (showLatestChapter(tempManga) > showLatestChapter(manga)) {
         libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
         libraryArray.unshift(tempManga)
         anyUpdate = true
@@ -91,6 +96,9 @@ export default function Library() {
         libraryArray = libraryArray.map(arrManga => {
           if (`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) {
             arrManga = tempManga
+          }
+          if (arrManga.chapters && arrManga.chapters.length > 0) {
+            arrManga.chapters = [arrManga.chapters[0]]
           }
           return arrManga
         })

@@ -124,7 +124,7 @@ export default function MangaCard(props) {
           <Link href={goToManga(props.manga)}>
             <a className="bg-gray-600 rounded">
               <img
-                className="w-full h-[265px] rounded"
+                className={`w-full h-[265px] rounded ${props.manga.unavailable ? "grayscale" : ""}`}
                 src={props.manga.cover_image[0].image_urls[0]}
                 onError={(e) => handleImageFallback(props.manga, e)}
                 alt="thumb"
