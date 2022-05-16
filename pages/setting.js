@@ -169,6 +169,13 @@ export default function Home() {
               }}
             >Clear</button>
           </div>
+
+          <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
+            <h2 className="text-xl mb-2">Developer</h2>
+            <Link href="/errlogs">
+              <a className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Logs</a>
+            </Link>
+          </div>
         </div>
       </div>
 
