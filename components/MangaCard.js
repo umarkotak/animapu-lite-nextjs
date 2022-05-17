@@ -28,7 +28,7 @@ export default function MangaCard(props) {
     } else {
       if (manga.cover_image[0].image_urls.length > 1) {
         e.target.src = "/images/default-book.png"
-        localStorage.setItem(`unsupported-title-${manga.source}-${manga.source_id}-${manga.secondary_source_id}`, "true")
+        // localStorage.setItem(`unsupported-title-${manga.source}-${manga.source_id}-${manga.secondary_source_id}`, "true")
       }
     }
   }
