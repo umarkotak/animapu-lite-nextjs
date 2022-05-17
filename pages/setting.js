@@ -39,8 +39,8 @@ export default function Home() {
                 <div className="flex flex-row">
                   <img className="mr-2" src={`/images/flags/${source.language}.png`} alt="" height="15px" width="23px"/> {source.title}
                 </div>
-                <Link href={source.web_link || "#"}>
-                  <a><i className="fa-solid fa-up-right-from-square"></i></a>
+                <Link href={source.web_link || "#"} target="_blank">
+                  <a target="_blank"><i className="fa-solid fa-up-right-from-square"></i></a>
                 </Link>
               </div>
             }
