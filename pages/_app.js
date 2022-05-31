@@ -3,6 +3,7 @@ import Head from 'next/head'
 import NProgress from 'nprogress'
 import "nprogress/nprogress.css"
 import Router from 'next/router'
+import { usePanelbear } from '@panelbear/panelbear-nextjs'
 
 NProgress.configure({
   minimum: 0.3,
@@ -16,6 +17,10 @@ Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
 function MyApp({ Component, pageProps }) {
+  usePanelbear('1ldX7qgR0Bq', {
+    // debug: true,
+  })
+
   return (
     <>
       <Head>

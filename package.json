@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@panelbear/panelbear-nextjs": "^1.0.3",
     "next": "12.1.4",
     "next-pwa": "^5.5.2",
     "nprogress": "^0.2.0",

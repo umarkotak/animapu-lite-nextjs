@@ -15,6 +15,7 @@ export default function Home() {
   const [activeSource, setActiveSource] = useState("")
   const [activeSourceIdx, setActiveSourceIdx] = useState(activeSourceIdxDirect)
   const [formattedSources, setFormattedSources] = useState([{value: "mangabat", label: "select source"}])
+  const [panelbearDisable, setPanelbearDisable] = useState('false')
 
   async function GetSourceList() {
     if (onApiCall) {return}
@@ -56,6 +57,10 @@ export default function Home() {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      console.log("PANEL", localStorage.getItem("panelbear_disable"))
+      setPanelbearDisable(localStorage.getItem("panelbear_disable") || 'false')
+    }
     GetSourceList()
   // eslint-disable-next-line
   }, [])
@@ -147,7 +152,7 @@ export default function Home() {
             <div>
               <span className="block mt-2">Load From File</span>
               <input
-                className=" p-2 text-center w-2/3 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" type="file"
+                className="p-2 text-center w-2/3 px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" type="file"
                 onChange={(e)=>initLibraryFile(e)}
               />
               <button
@@ -175,6 +180,18 @@ export default function Home() {
             <Link href="/errlogs">
               <a className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Logs</a>
             </Link>
+            <div>
+              <span className="block mt-2 mb-2">
+                PanelBear ({panelbearDisable === 'true' ? 'Off' : 'On'})
+                <Link href="https://app.panelbear.com/" target="_blank">
+                  <a target="_blank"> <i className="fa-solid fa-up-right-from-square"></i></a>
+                </Link>
+              </span>
+              <div className="grid grid-cols-2">
+                <a href="?panelbear_enable" className="bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center mr-1">On</a>
+                <a href="?panelbear_disable" className="bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center ml-1">Off</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

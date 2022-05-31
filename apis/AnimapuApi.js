@@ -63,6 +63,17 @@ class AnimapuApi {
     return response
   }
 
+  async GetLogs(params) {
+    var uri = `${this.AnimapuApiHost}/logs`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    return response
+  }
+
   GetActiveMangaSource() {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE")) {
