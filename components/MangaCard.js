@@ -76,7 +76,12 @@ export default function MangaCard(props) {
   }
 
   function subTextDecider(manga) {
-    if (manga.last_link) { return "Continue Read" }
+    if (manga.last_link) {
+      if (manga.last_chapter_read) {
+        return `Cont Ch ${manga.last_chapter_read}`
+      }
+      return "Continue Read"
+    }
 
     var latestChapter = showLatestChapter(manga)
 

@@ -19,7 +19,7 @@ export default function MangaDetail(props) {
   var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
   var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
   var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-  const [continueManga, setContinueManga] = useState({last_link: "#"})
+  const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
 
   const [followed, setFollowed] = useState(false)
 
@@ -130,7 +130,9 @@ export default function MangaDetail(props) {
               </Link>
               <Link href={continueManga.last_link || "#"}>
                 <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
-                  <i className="fa-solid fa-play"></i> Continue
+                  <i className="fa-solid fa-play"></i> {
+                    continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
+                  }
                 </a>
               </Link>
             </div>

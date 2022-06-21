@@ -73,6 +73,7 @@ export default function ReadManga(props) {
 
       var tempManga = manga
       tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
+      tempManga.last_chapter_read = chapter.number
       historyArray.unshift(tempManga)
 
       historyArray = historyArray.slice(0,40)
