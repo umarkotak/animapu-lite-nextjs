@@ -4,6 +4,7 @@ import NProgress from 'nprogress'
 import "nprogress/nprogress.css"
 import Router from 'next/router'
 import { usePanelbear } from '@panelbear/panelbear-nextjs'
+import { transitions, positions, Provider as AlertProvider } from 'react-alert'
 
 NProgress.configure({
   minimum: 0.3,
@@ -20,6 +21,39 @@ function MyApp({ Component, pageProps }) {
   usePanelbear('1ldX7qgR0Bq', {
     // debug: true,
   })
+
+  const AlertTemplate = ({ style, options, message, close }) => {
+    var title = "Error"
+    var description = message
+    var tempArr = message.split(" || ")
+    if (tempArr.length >= 2) {
+      title = tempArr[0]
+      description = tempArr[1]
+    }
+
+    if (options.type === "info" || options.type === "success") {
+      return(
+        <div class={`bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative`} role="info" style={style} onClick={close}>
+          <strong class="font-bold">{title + ": "}</strong>
+          <span class="block sm:inline">{description}</span>
+        </div>
+      )
+    } else {
+      return(
+        <div class={`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative`} role="alert" style={style} onClick={close}>
+          <strong class="font-bold">{title + ": "}</strong>
+          <span class="block sm:inline">{description}</span>
+        </div>
+      )
+    }
+  }
+
+  const options = {
+    position: positions.BOTTOM_CENTER,
+    timeout: 5000,
+    offset: '-55px 30px 75px 30px',
+    transition: transitions.FADE
+  }
 
   return (
     <>
@@ -47,7 +81,9 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
       </Head>
 
-      <Component {...pageProps} />
+      <AlertProvider template={AlertTemplate} {...options}>
+        <Component {...pageProps} />
+      </AlertProvider>
     </>
   )
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { useRouter } from "next/router"
 import Link from 'next/link'
+import { useAlert } from 'react-alert'
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import animapuApi from "../apis/AnimapuApi"
@@ -9,6 +10,7 @@ import animapuApi from "../apis/AnimapuApi"
 var onApiCall = false
 var activeSourceIdxDirect = 0
 export default function Home() {
+  const alert = useAlert()
   let router = useRouter()
 
   const [sources, setSources] = useState([])
@@ -47,11 +49,13 @@ export default function Home() {
             }
         })
         setFormattedSources(tempFormattedSources)
+      } else {
+        alert.error(body.error.message)
       }
       onApiCall = false
 
     } catch (e) {
-      console.log(e)
+      alert.error(e.message)
       onApiCall = false
     }
   }

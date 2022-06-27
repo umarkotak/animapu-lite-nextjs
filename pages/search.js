@@ -5,9 +5,11 @@ import { useRouter } from "next/router"
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
+import { useAlert } from 'react-alert'
 
 var onApiCall = false
 export default function Home() {
+  const alert = useAlert()
   let router = useRouter()
 
   const [mangas, setMangas] = useState([])
@@ -30,6 +32,7 @@ export default function Home() {
         console.log(body)
         setMangas(body.data)
       } else {
+        alert.error(body.error.message)
         console.log("FAIL", body)
       }
       onApiCall = false
@@ -38,6 +41,7 @@ export default function Home() {
     } catch (e) {
       console.log(e)
       onApiCall = false
+      alert.error(e.message)
       setIsLoadMoreLoading(false)
     }
   }

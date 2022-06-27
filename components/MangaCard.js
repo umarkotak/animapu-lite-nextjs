@@ -5,6 +5,7 @@ import animapuApi from "../apis/AnimapuApi"
 
 export default function MangaCard(props) {
   let router = useRouter()
+  const query = router.query
 
   var hist = {}
   var unsupportedTitles = []
@@ -44,6 +45,18 @@ export default function MangaCard(props) {
       mangaSource = animapuApi.GetActiveMangaSource()
     }
     return `/mangas/${mangaSource}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
+  }
+
+  function changeUrl(manga) {
+    if (typeof window !== "undefined") {
+      router.push({
+        pathname: window.location.pathname,
+        query: {
+          selected: manga.source_id,
+          page: query.page || 1
+        }
+      }, undefined, { shallow: true })
+    }
   }
 
   function showMark(manga) {
@@ -124,8 +137,8 @@ export default function MangaCard(props) {
       `}
       key={`${props.idx}-${props.manga.id}`}
     >
-      <div className="w-[175px] h-[265px]">
-        <div className="flex flex-col justify-end relative z-10 shadow-xl">
+      <div className="w-[175px] h-[265px]" id={props.manga.source_id}>
+        <div className="flex flex-col justify-end relative z-10 shadow-xl" onClick={()=>changeUrl(props.manga)}>
           <Link href={goToManga(props.manga)}>
             <a className="bg-gray-600 rounded">
               <img
