@@ -33,16 +33,16 @@ function MyApp({ Component, pageProps }) {
 
     if (options.type === "info" || options.type === "success") {
       return(
-        <div class={`bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative`} role="info" style={style} onClick={close}>
-          <strong class="font-bold">{title + ": "}</strong>
-          <span class="block sm:inline">{description}</span>
+        <div className={`bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative`} role="info" style={style} onClick={close}>
+          <strong className="font-bold">{title + ": "}</strong>
+          <span className="block sm:inline">{description}</span>
         </div>
       )
     } else {
       return(
-        <div class={`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative`} role="alert" style={style} onClick={close}>
-          <strong class="font-bold">{title + ": "}</strong>
-          <span class="block sm:inline">{description}</span>
+        <div className={`bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative`} role="alert" style={style} onClick={close}>
+          <strong className="font-bold">{title + ": "}</strong>
+          <span className="block sm:inline">{description}</span>
         </div>
       )
     }
