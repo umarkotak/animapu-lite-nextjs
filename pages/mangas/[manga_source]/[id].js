@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 import Link from 'next/link'
+import { useAlert } from 'react-alert'
 
 import BottomMenuBar from "../../../components/BottomMenuBar"
 import animapuApi from "../../../apis/AnimapuApi"
 
 export default function MangaDetail(props) {
+  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -76,6 +78,25 @@ export default function MangaDetail(props) {
     setFollowed(isInLibrary())
   }
 
+  async function handleUpvote() {
+    if (!manga.source_id) { return }
+
+    try {
+      const response = await animapuApi.PostUpvoteManga(manga)
+      const body = await response.json()
+      console.log(body)
+      if (response.status !== 200) {
+        alert.error(`${body.error.error_code} || ${body.error.message}`)
+        return
+      }
+      alert.info("Info || Upvote sukses!")
+
+    } catch (e) {
+      alert.error(e.message)
+      setMangas([])
+    }
+  }
+
   function startReadDecider(chapters) {
     try {
       if (!chapters) { return 1 }
@@ -118,9 +139,14 @@ export default function MangaDetail(props) {
                 className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`}
                 src={manga.cover_image[0].image_urls[0]}
               />
-              <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full" onClick={() => handleFollow()}>
-                <i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}
-              </button>
+              <div className='flex'>
+                <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-2 text-center rounded-full mr-1" onClick={() => handleUpvote()}>
+                  <i className="fa-solid fa-star"></i> Upvote
+                </button>
+                <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full ml-1" onClick={() => handleFollow()}>
+                  <i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}
+                </button>
+              </div>
               <Link
                 href={`/mangas/${manga_source}/${manga_id}/read/${startReadDecider(chapters)}?secondary_source_id=${secondary_source_id}`}
               >
@@ -141,6 +167,7 @@ export default function MangaDetail(props) {
                 className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
                 onClick={(e)=>{
                   navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                  alert.info("Info || Link berhasil dicopy!")
                 }}
               ><i className="fa-solid fa-share-nodes"></i> Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">

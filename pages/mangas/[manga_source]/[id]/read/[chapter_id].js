@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
+import { useAlert } from 'react-alert'
 
 import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
 
 var BreakException = {}
 export default function ReadManga(props) {
+  const alert = useAlert()
   let router = useRouter()
 
   const query = router.query
@@ -121,6 +123,7 @@ export default function ReadManga(props) {
               className="bg-white rounded-lg ml-2 p-1 height-[27px]"
               onClick={(e)=>{
                 navigator.clipboard.writeText(`Read *${manga.title}* Chapter *${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${props.chapter.id}?secondary_source_id=${manga.secondary_source_id}`)
+                alert.info("Info || Link berhasil dicopy!")
               }}
             ><i className="fa-solid fa-share-nodes"></i> Share</button>
           </div>

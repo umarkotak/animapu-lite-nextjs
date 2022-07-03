@@ -3,13 +3,14 @@ class AnimapuApi {
     // if (window.location.protocol === "https:") {
     //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // } else {
-      this.AnimapuApiHost = "http://localhost:6001"
       this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
+      this.AnimapuApiHost = "http://localhost:6001"
     // }
   }
 
   async GetLatestManga(params) {
     var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?page=${params.page}`
+    // var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?` + new URLSearchParams(params)
     const response = await fetch(uri, {
       method: 'GET',
       headers: {
@@ -70,6 +71,29 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
       }
+    })
+    return response
+  }
+
+  async GetPopularMangas(params) {
+    var uri = `${this.AnimapuApiHost}/mangas/popular`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    return response
+  }
+
+  async PostUpvoteManga(params) {
+    var uri = `${this.AnimapuApiHost}/mangas/upvote`
+    const response = await fetch(uri, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params)
     })
     return response
   }

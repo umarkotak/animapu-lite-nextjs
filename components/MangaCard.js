@@ -89,6 +89,10 @@ export default function MangaCard(props) {
   }
 
   function subTextDecider(manga) {
+    if (manga.popularity_point) {
+      return(<span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point}</span>)
+    }
+
     if (manga.last_link) {
       if (manga.last_chapter_read) {
         return `Cont Ch ${manga.last_chapter_read}`

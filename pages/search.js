@@ -11,6 +11,7 @@ var onApiCall = false
 export default function Home() {
   const alert = useAlert()
   let router = useRouter()
+  const query = router.query
 
   const [mangas, setMangas] = useState([])
   const [title, setTitle] = useState("")
@@ -49,6 +50,28 @@ export default function Home() {
   function handleKeyDown(e) {
     if (e.key === "Enter") SearchManga()
   }
+
+  async function GetPopularMangas() {
+    try {
+      const response = await animapuApi.GetPopularMangas({})
+      const body = await response.json()
+
+      if (response.status == 200) {
+        setMangas(body.data)
+      } else {
+        alert.error(body.error.message)
+      }
+
+    } catch (e) {
+      alert.error(e.message)
+    }
+  }
+
+  useEffect(() => {
+    if (!query) {return}
+    GetPopularMangas()
+  // eslint-disable-next-line
+  }, [query])
 
   return (
     <div className="bg-[#d6e0ef]">
