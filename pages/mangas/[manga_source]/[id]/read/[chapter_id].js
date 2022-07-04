@@ -100,6 +100,25 @@ export default function ReadManga(props) {
     recordLocalHistory()
   }, [manga])
 
+  async function handleUpvote() {
+    if (!manga.source_id) { return }
+
+    try {
+      const response = await animapuApi.PostUpvoteManga(manga)
+      const body = await response.json()
+      console.log(body)
+      if (response.status !== 200) {
+        alert.error(`${body.error.error_code} || ${body.error.message}`)
+        return
+      }
+      alert.info("Info || Upvote sukses!")
+
+    } catch (e) {
+      alert.error(e.message)
+      setMangas([])
+    }
+  }
+
   return (
     <div className="bg-[#d6e0ef]">
       <Head>
@@ -119,7 +138,7 @@ export default function ReadManga(props) {
         <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
           <div className="mt-1 mb-2">
             <button className="bg-white rounded-lg p-1">Chapter {chapter.number}</button>
-            <button className="bg-[#ebb62d] rounded-lg ml-2 p-1"><i className="fa-solid fa-star"></i> Upvote</button>
+            <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote()}><i className="fa-solid fa-star"></i> Upvote</button>
             <button
               className="bg-white rounded-lg ml-2 p-1 height-[27px]"
               onClick={(e)=>{
