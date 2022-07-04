@@ -51,28 +51,6 @@ export default function Home() {
     if (e.key === "Enter") SearchManga()
   }
 
-  async function GetPopularMangas() {
-    try {
-      const response = await animapuApi.GetPopularMangas({})
-      const body = await response.json()
-
-      if (response.status == 200) {
-        setMangas(body.data)
-      } else {
-        alert.error(body.error.message)
-      }
-
-    } catch (e) {
-      alert.error(e.message)
-    }
-  }
-
-  useEffect(() => {
-    if (!query) {return}
-    GetPopularMangas()
-  // eslint-disable-next-line
-  }, [query])
-
   return (
     <div className="bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
