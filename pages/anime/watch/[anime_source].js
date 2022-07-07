@@ -18,11 +18,14 @@ export default function WatchFromSource() {
 
     if (query.anime_source === "animepahe") {
       setAnimeSource("https://animepahe.com/")
-    } else if (query.anime_source === "gogoanime") {
-      setAnimeSource("https://ww4.gogoanimes.org/")
+
+    } else if (query.anime_source === "animeindo") {
+      setAnimeSource("https://185.224.82.193/")
+
     } else if (query.anime_source === "animension") {
       setSandboxMode("allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups")
       setAnimeSource("https://animension.to/")
+
     } else {
       setAnimeSource("https://animepahe.com/")
     }
