@@ -34,7 +34,7 @@ export default function WatchFromSource() {
 
   return (
     <div className="bg-[#d6e0ef]">
-      <div className="pb-6">
+      <div className="h-screen">
         <iframe
           className="h-screen"
           title={animeSource}
@@ -51,8 +51,9 @@ export default function WatchFromSource() {
           frameBorder="0"
         />
       </div>
+      <div className="mb-4"></div>
 
-      <BottomMenuBar need_screen={false} />
+      <BottomMenuBar no_need_screen={true} />
     </div>
   )
 }
