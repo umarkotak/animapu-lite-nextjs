@@ -9,7 +9,7 @@ import animapuApi from "../apis/AnimapuApi"
 
 var onApiCall = false
 var activeSourceIdxDirect = 0
-export default function Home() {
+export default function Setting() {
   const alert = useAlert()
   let router = useRouter()
 
@@ -81,7 +81,6 @@ export default function Home() {
       setActiveSource(e.value)
     }
   }
-
 
   const downloadFileRef = useRef(null)
   async function downloadLibrary() {
