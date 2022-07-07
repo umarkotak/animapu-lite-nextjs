@@ -244,13 +244,13 @@ export default function BottomMenuBar(props) {
                 <span className="tab tab-home block text-xs">AnimePahe</span>
               </a>
             </Link>
-            <Link href="/anime">
+            <Link href="/anime/watch/gogoanime">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-g"></i>
                 <span className="tab tab-home block text-xs">GoGoAnime</span>
               </a>
             </Link>
-            <Link href="/anime">
+            <Link href="/anime/watch/animension">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-m"></i>
                 <span className="tab tab-home block text-xs">Animension</span>
