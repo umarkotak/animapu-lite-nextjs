@@ -109,6 +109,25 @@ export default function MangaCard(props) {
     return `Ch ${latestChapter}`
   }
 
+  function smallTextDecider(manga) {
+    try {
+      var continueManga = {last_link: "#", last_chapter_read: null}
+      if (typeof window !== "undefined") {
+        var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+        if (localStorage.getItem(historyDetailKey)) {
+          continueManga = JSON.parse(localStorage.getItem(historyDetailKey))
+        }
+      }
+
+      if (!continueManga.last_chapter_read) { return }
+      return(<>
+        last read: ch {continueManga.last_chapter_read}
+      </>)
+    } catch (e) {
+      return
+    }
+  }
+
   if (props.manga.shimmer) {
     return(
       <div
@@ -155,10 +174,11 @@ export default function MangaCard(props) {
           </Link>
           <Link href={goToManga(props.manga)}>
             <a className="absolute p-2 text-white z-3 rounded w-full bg-black bg-opacity-70">
-              <p className="rounded text-sm leading-5 font-sans pb-1">{formatTitle(props.manga)}</p>
-              <div className={`text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}><b>
-                {subTextDecider(props.manga)}
-              </b></div>
+              <p className="rounded text-sm leading-5 font-sans pb-1 overflow-hidden">{formatTitle(props.manga)}</p>
+              <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}>
+                <b>{subTextDecider(props.manga)}</b>
+                <small className="mt-[-5px]">{smallTextDecider(props.manga)}</small>
+              </div>
             </a>
           </Link>
         </div>
