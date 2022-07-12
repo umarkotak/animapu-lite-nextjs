@@ -68,7 +68,8 @@ export default function Home() {
               type="text"
               placeholder="Search"
               onChange={(e) => setTitle(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e)} />
+              onKeyDown={(e) => handleKeyDown(e)}
+            />
           </div>
         </div>
       </div>
