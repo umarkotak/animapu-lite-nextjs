@@ -17,6 +17,7 @@
     "react-alert": "^7.0.3",
     "react-alert-template-basic": "^1.0.2",
     "react-dom": "18.0.0",
+    "react-image": "^4.0.3",
     "react-select": "^5.3.0"
   },
   "devDependencies": {

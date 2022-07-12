@@ -93,14 +93,16 @@ export default function MangaCard(props) {
       return(<span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point}</span>)
     }
 
+    var latestChapter = showLatestChapter(manga)
+
     if (manga.last_link) {
       if (manga.last_chapter_read) {
-        return `Cont Ch ${manga.last_chapter_read}`
+        // return `Cont Ch ${manga.last_chapter_read}`
+        return `Ch ${latestChapter}`
       }
-      return "Continue Read"
+      // return "Continue Read"
+      return `Ch ${latestChapter}`
     }
-
-    var latestChapter = showLatestChapter(manga)
 
     if (latestChapter <= 0) {
       return "Read"

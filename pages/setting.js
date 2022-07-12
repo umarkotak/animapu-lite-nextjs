@@ -117,7 +117,7 @@ export default function Setting() {
     if (loadLibraryPayload && loadLibraryPayload !== "") {
       localStorage.setItem(listKey, loadLibraryPayload)
     }
-    alert("Load library success!")
+    alert.info("Load library success!")
   }
 
   return (
@@ -187,7 +187,7 @@ export default function Setting() {
                 if(confirm("Are you sure?")) {
                   localStorage.removeItem(`ANIMAPU_LITE:HISTORY:LOCAL:LIST`)
                 }
-                alert("Clear history success!")
+                alert.info("Clear history success!")
               }}
             >Clear</button>
           </div>

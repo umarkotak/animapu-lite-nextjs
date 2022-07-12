@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 import { useAlert } from 'react-alert'
+import { Img } from 'react-image'
 
 import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
 
-var BreakException = {}
+// var BreakException = {}
 export default function ReadManga(props) {
   const alert = useAlert()
   let router = useRouter()
@@ -20,6 +21,7 @@ export default function ReadManga(props) {
     cover_image:[{image_urls:["/images/default-book.png"]}], chapters:[]
   })
   const [chapter, setChapter] = useState({chapter_images:[]})
+  const [successRender, setSuccessRender] = useState(false)
 
   useEffect(() => {
     if (!query) {return}
@@ -28,36 +30,36 @@ export default function ReadManga(props) {
   // eslint-disable-next-line
   }, [query])
 
-  var hist = {}
-  function handleImageFallback(imageObj, e) {
-    try {
-      var found = false
-      var selectedImageUrl = ""
+  // var hist = {}
+  // function handleImageFallback(imageObj, e) {
+  //   try {
+  //     var found = false
+  //     var selectedImageUrl = ""
 
-      try {
-        imageObj.image_urls.forEach((imageUrl,idx) => {
-          if (!hist[`${imageUrl}-${idx}`]) {
-            hist[`${imageUrl}-${idx}`] = true
-            found = true
-            selectedImageUrl = imageUrl
-            throw BreakException
-          }
-        })
-      } catch(err) {
-        if (err !== BreakException) throw err
+  //     try {
+  //       imageObj.image_urls.forEach((imageUrl,idx) => {
+  //         if (!hist[`${imageUrl}-${idx}`]) {
+  //           hist[`${imageUrl}-${idx}`] = true
+  //           found = true
+  //           selectedImageUrl = imageUrl
+  //           throw BreakException
+  //         }
+  //       })
+  //     } catch(err) {
+  //       if (err !== BreakException) throw err
 
-        if (found) {
-          e.target.src = selectedImageUrl
-          return
-        } else {
-          e.target.style.display = "none"
-        }
-      }
-      e.target.style.display = "none"
-    } catch(err) {
-      alert(err)
-    }
-  }
+  //       if (found) {
+  //         e.target.src = selectedImageUrl
+  //         return
+  //       } else {
+  //         e.target.style.display = "none"
+  //       }
+  //     }
+  //     e.target.style.display = "none"
+  //   } catch(err) {
+  //     alert(err)
+  //   }
+  // }
 
   function recordLocalHistory() {
     try {
@@ -149,14 +151,20 @@ export default function ReadManga(props) {
           </div>
           {chapter.chapter_images.map((imageObj, idx) => (
             <div key={`${chapter.id}-${idx}`}>
-              <img
+              {/* <img
                 className="w-full mb-1 bg-gray-600"
                 src={imageObj.image_urls[0]}
                 onError={(e) => handleImageFallback(imageObj, e)}
                 alt="thumb"
+              /> */}
+              <Img
+                className="w-full mb-1 bg-gray-600"
+                src={imageObj.image_urls}
+                onLoad={()=>{setSuccessRender(true)}}
               />
             </div>
           ))}
+          {successRender ? null : <p className="text-center">please wait for 1 minute, or the image might be broken. sorry for the inconvenience.</p>}
         </div>
       </div>
 
