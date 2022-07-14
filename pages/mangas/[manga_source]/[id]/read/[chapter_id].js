@@ -22,6 +22,8 @@ export default function ReadManga(props) {
   })
   const [chapter, setChapter] = useState({chapter_images:[]})
   const [successRender, setSuccessRender] = useState(false)
+  var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
   useEffect(() => {
     if (!query) {return}
@@ -117,8 +119,29 @@ export default function ReadManga(props) {
 
     } catch (e) {
       alert.error(e.message)
-      setMangas([])
     }
+  }
+
+  function handleFollow() {
+    if (!manga.source_id) { return }
+
+    var libraryArrayString = localStorage.getItem(listKey)
+
+    var libraryArray
+    if (libraryArrayString) {
+      libraryArray = JSON.parse(libraryArrayString)
+    } else {
+      libraryArray = []
+    }
+
+    libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+
+    var tempManga = manga
+    libraryArray.unshift(tempManga)
+
+    localStorage.setItem(listKey, JSON.stringify(libraryArray))
+    localStorage.setItem(detailKey, JSON.stringify(tempManga))
+    alert.info("Info || Manga ini udah masuk library kamu!")
   }
 
   return (
@@ -140,6 +163,7 @@ export default function ReadManga(props) {
         <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
           <div className="mt-1 mb-2">
             <button className="bg-white rounded-lg p-1">Chapter {chapter.number}</button>
+            <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
             <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote()}><i className="fa-solid fa-star"></i> Upvote</button>
             <button
               className="bg-white rounded-lg ml-2 p-1 height-[27px]"
