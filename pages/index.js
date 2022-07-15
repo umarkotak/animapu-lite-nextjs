@@ -5,6 +5,7 @@ import Link from 'next/link'
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
+import ChangeSourceModal from "../components/ChangeSourceModal"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 
@@ -100,7 +101,10 @@ export default function Home() {
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[1040px] pt-2">
             <div className="flex justify-between">
-              <span className="px-4 mb-4 text-white"><i className="fa fa-globe"></i> <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+              <span className="px-4 mb-4 text-white">
+                {/* <i className="fa fa-globe"></i> <span className="text-[#3db3f2] font-bold">{activeSource}</span> */}
+                <ChangeSourceModal text={activeSource} />
+              </span>
               <span className="px-4 mb-4 text-white">
                 <Link href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
                 <Link href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link>

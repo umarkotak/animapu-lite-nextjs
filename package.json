@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^1.0.0-beta.1",
     "@panelbear/panelbear-nextjs": "^1.0.3",
     "next": "12.1.4",
     "next-pwa": "^5.5.2",
