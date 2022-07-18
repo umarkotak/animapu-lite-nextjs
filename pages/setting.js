@@ -202,7 +202,7 @@ export default function Setting() {
             <div>
               <span className="block mt-2 mb-2">
                 PanelBear ({panelbearDisable === 'true' ? 'Off' : 'On'})
-                <Link href="https://app.panelbear.com/" target="_blank">
+                <Link href={"https://app.panelbear.com/sites/1ldX7qgR0Bq/traffic/?period=7d&timeseriesCompareDimension=event_count"} target="_blank">
                   <a target="_blank"> <i className="fa-solid fa-up-right-from-square"></i></a>
                 </Link>
               </span>
