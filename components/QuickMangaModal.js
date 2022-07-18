@@ -149,7 +149,7 @@ export default function QuickMangaModal(props) {
                   <i className="fa fa-xmark"></i> <span className="sr-only">Close modal</span>
                 </button>
                 <div className="bg-[#fafafa]">
-                  <div className="container mx-auto py-4 px-[50px] max-w-[1040px]">
+                  <div className="container mx-auto py-4 px-[20px] max-w-[1040px]">
                     <div className="backdrop-blur-sm grid grid-cols-1">
                       <div className="h-full z-5 p-2 mt-[-100px]">
                         <div className="grid justify-items-center">
@@ -201,7 +201,7 @@ export default function QuickMangaModal(props) {
                   </div>
                 </div>
                 <div>
-                  <div className="container mx-auto py-4 px-[50px] max-w-[1040px]">
+                  <div className="container mx-auto py-4 px-[20px] max-w-[1040px]">
                     <div className="grid grid-cols-1">
                       <div className="p-2 max-h-60 overflow-hidden overflow-y-scroll">
                         {manga.chapters.map((chapter, idx) => (
