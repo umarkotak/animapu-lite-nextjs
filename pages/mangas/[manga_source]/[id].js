@@ -76,6 +76,8 @@ export default function MangaDetail(props) {
     localStorage.setItem(listKey, JSON.stringify(libraryArray))
     localStorage.setItem(detailKey, JSON.stringify(tempManga))
     setFollowed(isInLibrary())
+
+    alert.info("Info || Manga ini udah masuk library kamu!")
   }
 
   async function handleUpvote() {
@@ -93,7 +95,6 @@ export default function MangaDetail(props) {
 
     } catch (e) {
       alert.error(e.message)
-      setMangas([])
     }
   }
 
