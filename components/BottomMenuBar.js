@@ -72,7 +72,8 @@ export default function BottomMenuBar(props) {
   }
 
   return(
-    <div className={`w-full ${props.no_need_screen ? "" : "h-screen"}`}>
+    <div className={`w-full flex justify-center fixed inset-x-0 bottom-0 z-10`}>
+    {/* <div className={`w-full ${props.no_need_screen ? "" : "h-screen"}`}> */}
       <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>
@@ -95,12 +96,10 @@ export default function BottomMenuBar(props) {
   function barManga() {
     return(
       <div className="block fixed inset-x-0 bottom-0 z-10">
-        <div className="flex justify-end mx-4 mb-2">
-          <div className="bg-[#2b2d42] bg-opacity-50 rounded-lg">
-            <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
-              <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
-            </button>
-          </div>
+        <div className={`fixed ${isOpen ? "bottom-[105px]" : "bottom-[45px]"} right-4`}>
+          <button className="bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
+            <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
+          </button>
         </div>
 
         <div className="flex justify-between mx-4 mb-2">

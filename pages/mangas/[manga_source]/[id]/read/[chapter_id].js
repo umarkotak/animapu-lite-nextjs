@@ -145,7 +145,7 @@ export default function ReadManga(props) {
   }
 
   return (
-    <div className="bg-[#d6e0ef]">
+    <div className="min-h-screen pb-40 bg-[#d6e0ef]">
       <Head>
         <meta itemProp="description" content={`${props.manga.title}`} />
         <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
