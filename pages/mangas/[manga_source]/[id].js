@@ -110,7 +110,7 @@ export default function MangaDetail(props) {
   }
 
   return (
-    <div className="min-h-screen pb-40 bg-[#d6e0ef]">
+    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <Head>
         <meta itemProp="description" content={`${manga.title}`} />
         <meta itemProp="image" content={`${manga.cover_image[0].image_urls[0]}`} />

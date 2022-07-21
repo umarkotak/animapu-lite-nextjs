@@ -166,7 +166,7 @@ export default function Setting() {
   }
 
   return (
-    <div className="min-h-screen pb-40 bg-[#d6e0ef]">
+    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
           <span className="px-4 mb-4 text-white text-xl">Setting</span>
@@ -175,7 +175,7 @@ export default function Setting() {
 
       <div className="pt-4 mx-2">
         <div className="container mx-auto max-w-[1040px]">
-          <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
+          <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">Select Manga Source</h2>
             <span className="mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
             <Select
@@ -189,7 +189,7 @@ export default function Setting() {
             />
           </div>
 
-          <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
+          <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">Profile</h2>
 
             <div>
@@ -224,7 +224,7 @@ export default function Setting() {
             </div>
           </div>
 
-          <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
+          <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">Library</h2>
             <div>
               <button
@@ -245,7 +245,7 @@ export default function Setting() {
             </div>
           </div>
 
-          <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
+          <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">History</h2>
             <button
               className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
@@ -258,7 +258,7 @@ export default function Setting() {
             >Clear</button>
           </div>
 
-          <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
+          <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">Developer</h2>
             <Link href="/errlogs">
               <a className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Logs</a>

@@ -27,7 +27,10 @@ export default function BottomMenuBar(props) {
       if (props.chapter_id === chapter.id) {
         currentIdx = idx
       }
-      return { value: `/mangas/${props.manga.source}/${props.manga.source_id}/read/${chapter.id}?secondary_source_id=${props.manga.secondary_source_id}`, label: chapter.title }
+      return {
+        value: `/mangas/${props.manga.source}/${props.manga.source_id}/read/${chapter.id}?secondary_source_id=${props.manga.secondary_source_id}`,
+        label: chapter.title
+      }
     })
     setChapters(chapterOpts)
 
@@ -56,13 +59,17 @@ export default function BottomMenuBar(props) {
 
   function nextChapter() {
     if (!props.manga) { return "#" }
-    if (!chapters[currentIdx-1]) { return "#" }
+    if (!chapters[currentIdx-1]) {
+      return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
+    }
     return chapters[currentIdx-1].value
   }
 
   function prevChapter() {
     if (!props.manga) { return "#" }
-    if (!chapters[currentIdx+1]) { return "#" }
+    if (!chapters[currentIdx+1]) {
+      return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
+    }
     return chapters[currentIdx+1].value
   }
 
@@ -72,8 +79,7 @@ export default function BottomMenuBar(props) {
   }
 
   return(
-    <div className={`w-full flex justify-center fixed inset-x-0 bottom-0 z-10`}>
-    {/* <div className={`w-full ${props.no_need_screen ? "" : "h-screen"}`}> */}
+    <>
       <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>
@@ -89,14 +95,17 @@ export default function BottomMenuBar(props) {
         </div>
       </div>
 
-      { barMode === "manga" ? barManga() : barAnime() }
-    </div>
+      <div className={`w-full flex justify-center fixed inset-x-0 bottom-0 z-10`}>
+      {/* <div className={`w-full ${props.no_need_screen ? "" : "h-screen"}`}> */}
+        { barMode === "manga" ? barManga() : barAnime() }
+      </div>
+    </>
   )
 
   function barManga() {
     return(
       <div className="block fixed inset-x-0 bottom-0 z-10">
-        <div className={`fixed ${isOpen ? "bottom-[105px]" : "bottom-[45px]"} right-4`}>
+        <div className={`fixed ${isOpen ? "bottom-[110px]" : "bottom-[45px]"} right-4`}>
           <button className="bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
             <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
           </button>

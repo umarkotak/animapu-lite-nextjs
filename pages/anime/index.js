@@ -20,7 +20,7 @@ export default function Anime() {
   const [panelbearDisable, setPanelbearDisable] = useState('false')
 
   return (
-    <div className="bg-[#d6e0ef]">
+    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
           <span className="px-4 mb-4 text-white text-xl">Setting</span>
