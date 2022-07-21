@@ -3,12 +3,18 @@ import Select from 'react-select'
 import { useRouter } from "next/router"
 import Link from 'next/link'
 import { useAlert } from 'react-alert'
+import { GoogleLogin, GoogleLogout } from 'react-google-login'
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import animapuApi from "../apis/AnimapuApi"
 
+var sha512 = require('js-sha512').sha512
+
 var onApiCall = false
 var activeSourceIdxDirect = 0
+
+var G_CLIENT_ID = "334886517586-djci4jil803sqjk042f6nne3016bngni.apps.googleusercontent.com"
+
 export default function Setting() {
   const alert = useAlert()
   let router = useRouter()
@@ -18,6 +24,8 @@ export default function Setting() {
   const [activeSourceIdx, setActiveSourceIdx] = useState(activeSourceIdxDirect)
   const [formattedSources, setFormattedSources] = useState([{value: "mangabat", label: "select source"}])
   const [panelbearDisable, setPanelbearDisable] = useState('false')
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedInUser, setLoggedInUser] = useState({})
 
   async function GetSourceList() {
     if (onApiCall) {return}
@@ -66,6 +74,7 @@ export default function Setting() {
       setPanelbearDisable(localStorage.getItem("panelbear_disable") || 'false')
     }
     GetSourceList()
+    LoginCheck()
   // eslint-disable-next-line
   }, [])
 
@@ -120,6 +129,42 @@ export default function Setting() {
     alert.info("Load library success!")
   }
 
+  function GoogleLoginCallback(response) {
+    var googleData = response
+
+    if (googleData.googleId) {
+      var initialString = `${googleData.googleId}-${googleData.profileObj.email}`
+      localStorage.setItem("ANIMAPU_LITE:USER:LOGGED_IN", "true")
+      localStorage.setItem("ANIMAPU_LITE:USER:UNIQUE_SHA", sha512(initialString))
+      localStorage.setItem("ANIMAPU_LITE:USER:EMAIL", googleData.profileObj.email)
+      setLoggedInUser({
+        email: googleData.profileObj.email,
+      })
+      setLoggedIn(true)
+    }
+
+    alert.info("Info || Login sukses!")
+  }
+
+  function GoogleLogoutCallback(response) {
+    localStorage.removeItem("ANIMAPU_LITE:USER:LOGGED_IN")
+    localStorage.removeItem("ANIMAPU_LITE:USER:UNIQUE_SHA")
+    localStorage.removeItem("ANIMAPU_LITE:USER:EMAIL")
+    setLoggedIn(false)
+    alert.info("Info || Logout sukses!")
+  }
+
+  function LoginCheck() {
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+        setLoggedInUser({
+          email: localStorage.getItem("ANIMAPU_LITE:USER:EMAIL"),
+        })
+        setLoggedIn(true)
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen pb-40 bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
@@ -148,14 +193,33 @@ export default function Setting() {
             <h2 className="text-xl mb-2">Profile</h2>
 
             <div>
-              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Profile code</label>
-              <input
-                type="text"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="secret_jhon_special"
-              />
+              {
+                !loggedIn ?
+                <GoogleLogin
+                  className="block w-full text-center"
+                  clientId={G_CLIENT_ID}
+                  buttonText="Continue With Google"
+                  onSuccess={GoogleLoginCallback}
+                  onFailure={GoogleLoginCallback}
+                  cookiePolicy={'single_host_origin'}
+                /> :
+                <GoogleLogout
+                  className="block w-full text-center"
+                  clientId={G_CLIENT_ID}
+                  buttonText="Logout"
+                  onLogoutSuccess={GoogleLogoutCallback}
+                />
+              }
               <small>
-                your secret prase to be used as an identity if you want to save your read history online. leave it blank if you do not want to save your history online.
+                {
+                  loggedIn ?
+                  <>
+                    Hello, <b>{loggedInUser.email}</b>
+                  </> :
+                  <>
+                    you can login with google. we are not storing your email on our server, instead we use one way hashing algorithm to generate unique identifier based on google id and email.
+                  </>
+                }
               </small>
             </div>
           </div>
