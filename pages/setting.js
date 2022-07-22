@@ -165,6 +165,26 @@ export default function Setting() {
     }
   }
 
+  function HandleSyncHistoryFromCloudToLocal() {
+    // TODO: Implement sync mechanism
+    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+  }
+
+  function HandleSyncHistoryFromLocalToCloud() {
+    // TODO: Implement sync mechanism
+    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+  }
+
+  function HandleSyncLibraryFromCloudToLocal() {
+    // TODO: Implement sync mechanism
+    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+  }
+
+  function HandleSyncLibraryFromLocalToCloud() {
+    // TODO: Implement sync mechanism
+    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+  }
+
   return (
     <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
@@ -176,7 +196,7 @@ export default function Setting() {
       <div className="pt-4 mx-2">
         <div className="container mx-auto max-w-[1040px]">
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
-            <h2 className="text-xl mb-2">Select Manga Source</h2>
+            <h2 className="text-xl mb-2"><i className="fa fa-globe"></i> Select Manga Source</h2>
             <span className="mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
             <Select
               id="select manga source"
@@ -190,7 +210,7 @@ export default function Setting() {
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
-            <h2 className="text-xl mb-2">Profile</h2>
+            <h2 className="text-xl mb-2"><i className="fa fa-user"></i> Profile</h2>
 
             <div>
               {
@@ -222,10 +242,41 @@ export default function Setting() {
                 }
               </small>
             </div>
+
+            {
+              loggedIn && <div>
+                <div className="border-t mt-1">
+                  <span>Sync History</span>
+                  <div className="grid grid-cols-2">
+                    <button
+                      className="block bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mr-1 mt-2 p-2 text-center"
+                      onClick={() => {HandleSyncHistoryFromCloudToLocal()}}
+                    ><i className="fa-solid fa-cloud-arrow-down"></i> To Local</button>
+                    <button
+                      className="block bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded ml-1 mt-2 p-2 text-center"
+                      onClick={() => {HandleSyncHistoryFromLocalToCloud()}}
+                      ><i className="fa-solid fa-cloud-arrow-up"></i> To Cloud</button>
+                  </div>
+                </div>
+                <div className="border-t mt-3">
+                  <span>Sync Library</span>
+                  <div className="grid grid-cols-2">
+                    <button
+                      className="block bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mr-1 mt-2 p-2 text-center"
+                      onClick={() => {HandleSyncLibraryFromCloudToLocal()}}
+                    ><i className="fa-solid fa-cloud-arrow-down"></i> To Local</button>
+                    <button
+                      className="block bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded ml-1 mt-2 p-2 text-center"
+                      onClick={() => {HandleSyncLibraryFromLocalToCloud()}}
+                      ><i className="fa-solid fa-cloud-arrow-up"></i> To Cloud</button>
+                  </div>
+                </div>
+              </div>
+            }
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
-            <h2 className="text-xl mb-2">Library</h2>
+            <h2 className="text-xl mb-2"><i className="fa-solid fa-book-bookmark"></i> Library</h2>
             <div>
               <button
                 className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
@@ -246,7 +297,7 @@ export default function Setting() {
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
-            <h2 className="text-xl mb-2">History</h2>
+            <h2 className="text-xl mb-2"><i className="fa-solid fa-clock-rotate-left"></i> History</h2>
             <button
               className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center"
               onClick={() => {

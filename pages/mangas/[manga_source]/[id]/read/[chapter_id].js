@@ -98,10 +98,16 @@ export default function ReadManga(props) {
       alert(e)
     }
   }
+  function recordOnlineHistory() {
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") { return }
+
+    // TODO: Implement record online history
+  }
   useEffect(() => {
     if (!query) {return}
     if (!manga.title) {return}
     recordLocalHistory()
+    recordOnlineHistory()
   }, [manga])
 
   async function handleUpvote() {
