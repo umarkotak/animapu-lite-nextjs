@@ -165,13 +165,21 @@ export default function QuickMangaModal(props) {
                 }}>
                   <div className="backdrop-blur-md h-full"></div>
                 </div>
-                <button type="button" className="absolute z-10 top-3 right-2.5 bg-[#ec294b] text-white rounded-full text-sm py-1.5 px-2 inline-flex" onClick={()=>setShow(!show)}>
+                <button type="button" className="absolute z-10 top-3 right-2.5 bg-[#ec294b] hover:bg-[#] text-white rounded-full text-sm py-1.5 px-2 inline-flex" onClick={()=>setShow(!show)}>
                   <i className="fa fa-xmark"></i>
                 </button>
+                <button
+                  className="absolute z-10 top-3 right-[45px] text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
+                  onClick={(e)=>{
+                    navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                    alert.info("Info || Link berhasil dicopy!")
+                  }}
+                ><i className="fa-solid fa-share-nodes"></i> Share</button>
+
                 <div className="bg-[#fafafa]">
                   <div className="container mx-auto py-4 px-[20px] max-w-[1040px]">
-                    <div className="backdrop-blur-sm grid grid-cols-1">
-                      <div className="h-full z-5 p-2 mt-[-100px]">
+                    <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
+                      <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
                         <div className="grid justify-items-center">
                           {/* <Link href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}> */}
                             <a>
@@ -182,42 +190,44 @@ export default function QuickMangaModal(props) {
                             </a>
                           {/* </Link> */}
                         </div>
-                        <div className='flex'>
-                          <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-2 text-center rounded-full mr-1" onClick={() => handleUpvote()}>
-                            <i className="fa-solid fa-star"></i> Upvote
+                        <div className=''>
+                          <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-1 text-center rounded-full" onClick={() => handleUpvote()}>
+                            <small><i className="fa-solid fa-star"></i> Upvote</small>
                           </button>
-                          <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full ml-1" onClick={() => handleFollow()}>
-                            <i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}
+                          <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-1 text-center rounded-full" onClick={() => handleFollow()}>
+                            <small><i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}</small>
                           </button>
-                        </div>
-                        <div onClick={()=>changeUrl(props.manga)}>
-                          <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
-                          >
-                            <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full">
-                              <i className="fa-solid fa-book"></i> Start Read
-                            </a>
-                          </Link>
-                          <Link href={continueManga.last_link || "#"}>
-                            <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
-                              <i className="fa-solid fa-play"></i> {
-                                continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
-                              }
-                            </a>
-                          </Link>
+                          <small>
+                            <Link
+                              href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
+                            >
+                              <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full">
+                                <i className="fa-solid fa-book"></i> Start Read
+                              </a>
+                            </Link>
+                          </small>
+                          <div onClick={()=>changeUrl(props.manga)}>
+                            <small>
+                              <Link href={continueManga.last_link || "#"}>
+                                <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
+                                  <i className="fa-solid fa-play"></i> {
+                                    continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
+                                  }
+                                </a>
+                              </Link>
+                            </small>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-span-2 p-2">
-                        <button
-                          className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
-                          onClick={(e)=>{
-                            navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
-                            alert.info("Info || Link berhasil dicopy!")
-                          }}
-                        ><i className="fa-solid fa-share-nodes"></i> Share</button>
+                      <div className="col-span-3 p-2">
                         <h1 className="text-[#5c728a] text-xl mb-1">
                           { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
                         </h1>
+                        {
+                          manga.description ?
+                          <p className="text-xs text-[#7a858f] text-justify max-h-40 overflow-hidden overflow-y-scroll">{manga.description}</p> :
+                          <div></div>
+                        }
                       </div>
                     </div>
                   </div>
