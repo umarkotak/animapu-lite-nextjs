@@ -92,8 +92,8 @@ export default function ChangeSourceModal(props) {
         <div tabIndex="-1" className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center flex block " aria-modal="true" role="dialog">
           <div className="relative p-4 w-full max-w-md h-full md:h-auto">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <button type="button" className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" onClick={reveal}>
-                  <i className="fa fa-xmark"></i> <span className="sr-only">Close modal</span>
+                <button type="button" className="absolute z-10 top-3 right-2.5 bg-[#ec294b] text-white rounded-full text-sm py-1.5 px-2 inline-flex" onClick={()=>setShow(!show)}>
+                  <i className="fa fa-xmark"></i>
                 </button>
                 <div className="py-4 px-6 rounded-t border-b dark:border-gray-600">
                   <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
@@ -106,9 +106,9 @@ export default function ChangeSourceModal(props) {
                     <ul className="my-4 space-y-3">
                       {formattedSources.map((oneSource) => (
                         <li key={oneSource.value}>
-                          <a href="#" className="flex items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                          <button className="flex w-full items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
                             <span className="flex-1 ml-3 whitespace-nowrap" onClick={()=>handleSelectSource(oneSource.value)}>{oneSource.label}</span>
-                          </a>
+                          </button>
                         </li>
                       ))}
                     </ul>
