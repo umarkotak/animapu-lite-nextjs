@@ -50,7 +50,7 @@ export default function Anime() {
         frameBorder="0"
       />
     </div>
-    <div className="mb-4"></div>
+    {/* <div className="mb-4"></div> */}
 
     <BottomMenuBar no_need_screen={true} />
   </div>
