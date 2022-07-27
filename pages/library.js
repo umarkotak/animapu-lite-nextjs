@@ -5,6 +5,7 @@ import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 
 var mangaSynced = true
+var onCheck = false
 export default function Library() {
   const [mangas, setMangas] = useState([])
 
@@ -16,17 +17,15 @@ export default function Library() {
     finished: false
   })
 
-  function GetLatestManga() {
+  function GetLibraryMangas() {
     var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
     var libraryArrayString = localStorage.getItem(listKey)
     mangaSynced = false
 
     if (libraryArrayString) {
-      console.log(JSON.parse(libraryArrayString))
-      setMangas(JSON.parse(libraryArrayString))
-      // console.log("LIBRARY LIST", JSON.parse(libraryArrayString))
+      return JSON.parse(libraryArrayString)
     } else {
-      setMangas([])
+      return []
     }
   }
 
@@ -45,8 +44,8 @@ export default function Library() {
     return 0
   }
 
-  async function CheckForUpdates() {
-    if (mangas.length <= 0) { return }
+  async function CheckForUpdates(libraryMangas) {
+    if (libraryMangas.length <= 0) { return }
     if (mangaSynced) { return }
 
     var idx = 1
@@ -54,7 +53,12 @@ export default function Library() {
     var libraryArray
     var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
-    for (const manga of mangas) {
+    var tempMangas = libraryMangas.filter((v) => {
+      return v.local_updated_at && Math.floor(Date.now() / 1000) > (v.local_updated_at+3600)
+    })
+
+    for (const manga of tempMangas) {
+      var thisUpdated = false
       var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
       if (manga.local_updated_at && (manga.local_updated_at+3600) > Math.floor(Date.now() / 1000)) { continue }
@@ -92,8 +96,9 @@ export default function Library() {
         libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
         libraryArray.unshift(tempManga)
         anyUpdate = true
+        thisUpdated = true
       } else {
-        libraryArray = libraryArray.map(arrManga => {
+        libraryArray = libraryArray.filter((v) => (v.title !== "")).map(arrManga => {
           if (`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) {
             arrManga = tempManga
           }
@@ -108,9 +113,16 @@ export default function Library() {
       localStorage.setItem(detailKey, JSON.stringify(tempManga))
 
       setUpdateStatus({
-        current: idx, currentTitle: manga.title, max: mangas.length, percent: ((idx)/mangas.length)*100, finished: false
+        current: idx,
+        currentTitle: manga.title,
+        max: tempMangas.length,
+        percent: ((idx)/tempMangas.length)*100,
+        finished: false
       })
       idx = idx+1
+      if (anyUpdate && thisUpdated) {
+        setMangas(libraryArray)
+      }
     }
     mangaSynced = true
 
@@ -124,12 +136,13 @@ export default function Library() {
   }
 
   useEffect(() => {
-    GetLatestManga()
-  // eslint-disable-next-line
+    var libraryMangas = GetLibraryMangas()
+    setMangas(libraryMangas)
+    CheckForUpdates(libraryMangas)
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
-    CheckForUpdates()
   // eslint-disable-next-line
   }, [mangas])
 
@@ -145,10 +158,16 @@ export default function Library() {
         <div className="container mx-auto max-w-[1040px]">
           <div className={`px-4 ${updateStatus.finished ? "hidden" : "block"}`}>
             <div className="mb-1 text-base font-medium text-white">
-              Checking for updates ({updateStatus.currentTitle}) {updateStatus.current}/{updateStatus.max}
+              <div className='flex justify-between'>
+                <span>Checking for updates</span>
+                <span>{updateStatus.current}/{updateStatus.max}</span>
+              </div>
+              <small>{updateStatus.currentTitle.length > 40 ? updateStatus.currentTitle.slice(0, 38)+"..." : updateStatus.currentTitle}</small>
             </div>
-            <div className="w-full h-1.5 bg-gray-200 rounded-full dark:bg-gray-700 mb-8">
-              <div className="h-1.5 bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" style={{width: `${updateStatus.percent}%`}}></div>
+            <div className="w-full bg-gray-200 rounded-full mb-8">
+              <div className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.2 leading-none rounded-full" style={{width: `${updateStatus.percent}%`}}>
+                {Math.floor(updateStatus.percent)}%
+              </div>
             </div>
           </div>
           <div className="grid grid-rows-1 grid-flow-col">

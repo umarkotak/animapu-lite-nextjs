@@ -126,7 +126,7 @@ export default function Setting() {
     if (loadLibraryPayload && loadLibraryPayload !== "") {
       localStorage.setItem(listKey, loadLibraryPayload)
     }
-    alert.info("Load library success!")
+    alert.info("Info || Load library success!")
   }
 
   function GoogleLoginCallback(response) {

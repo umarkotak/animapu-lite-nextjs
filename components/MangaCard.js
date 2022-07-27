@@ -54,8 +54,8 @@ export default function MangaCard(props) {
       router.push({
         pathname: window.location.pathname,
         query: {
+          page: query.page,
           selected: manga.source_id,
-          page: query.page || 1
         }
       }, undefined, { shallow: true })
     }

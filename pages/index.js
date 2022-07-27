@@ -54,6 +54,13 @@ export default function Home() {
         setMangas(body.data)
       }
 
+      query.page = page
+      router.push({
+        pathname: '/',
+        query: query
+      },
+      undefined, { shallow: true })
+
     } catch (e) {
       alert.error(e.message)
       setMangas([])
@@ -68,18 +75,19 @@ export default function Home() {
     targetPage = query.page
     GetLatestManga(false)
   // eslint-disable-next-line
-  }, [query])
+  }, [])
 
   useEffect(() => {
-    if (page === 1) {
+    if (page === 1 && mangas.length <= 2) {
       if (typeof window !== "undefined") { window.scrollTo(0, 0) }
     }
     if (page < targetPage) {
       GetLatestManga(true)
     }
-    if (typeof window !== "undefined" && query.selected && page >= targetPage) {
+    if (typeof window !== "undefined" && query.selected && query.selected !== "") {
       const section = document.querySelector(`#${query.selected}`)
       if (section) {
+        query.selected = ""
         section.scrollIntoView( { behavior: 'smooth', block: 'start' } )
       }
     }
@@ -88,12 +96,27 @@ export default function Home() {
 
   function GetLatestMangaNextPage() {
     GetLatestManga(true)
-    router.push({
-      pathname: '/',
-      query: { page: page }
-    },
-    undefined, { shallow: true })
   }
+
+  const [triggerNextPage, setTriggerNextPage] = useState(0)
+  const handleScroll = () => {
+      var position = window.pageYOffset
+      var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
+
+      if (maxPosition-position <= 1200) {
+        if (onApiCall) {return}
+        setTriggerNextPage(position)
+      }
+  }
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+        window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+  useEffect(() => {
+    GetLatestMangaNextPage()
+  }, [triggerNextPage])
 
   return (
     <Fragment>
