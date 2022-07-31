@@ -126,6 +126,14 @@ export default function Setting() {
     if (loadLibraryPayload && loadLibraryPayload !== "") {
       localStorage.setItem(listKey, loadLibraryPayload)
     }
+
+    var libraryPayload = JSON.parse(loadLibraryPayload)
+
+    libraryPayload.map((manga) => {
+      var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+      localStorage.setItem(detailKey, JSON.stringify(manga))
+    })
+
     alert.info("Info || Load library success!")
   }
 

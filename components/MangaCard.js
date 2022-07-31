@@ -71,10 +71,19 @@ export default function MangaCard(props) {
     return false
   }
 
+  function followed(manga) {
+    var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+
+    return false
+  }
+
   function formatTitle(manga) {
     try {
+      var maxLength = 40
       if (!manga.title) { return manga.title }
-      return manga.title.slice(0, 50)
+      if (manga.title.length > maxLength) { return manga.title.slice(0, maxLength-3) +  " ..." }
+      return manga.title
     } catch {
       return "Untitled"
     }
@@ -164,6 +173,13 @@ export default function MangaCard(props) {
       <div className="w-[175px] h-[265px]" id={props.manga.source_id}>
         <div className="flex flex-col relative shadow-xl rounded-lg">
           <QuickMangaModal manga={props.manga} />
+
+          {
+            followed(props.manga) &&
+            <div className="absolute top-6 right-0 p-1 rounded-lg text-[#ec294b]">
+              <button className="shadow-sm bg-white bg-opacity-75 rounded-full w-[18px] h-[18px] leading-none"><i className="text-sm fa-solid fa-heart"></i></button>
+            </div>
+          }
 
           <div onClick={()=>changeUrl(props.manga)}>
             <Link href={goToManga(props.manga)}>
