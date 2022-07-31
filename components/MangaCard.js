@@ -158,24 +158,18 @@ export default function MangaCard(props) {
   }
   return(
     <div
-      className={`
-        flex
-        justify-center
-        px-1
-        mb-4
-        ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}
-      `}
+      className={`flex justify-center px-1 mb-4 ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}`}
       key={`${props.idx}-${props.manga.id}`}
     >
       <div className="w-[175px] h-[265px]" id={props.manga.source_id}>
-        <div className="flex flex-col relative shadow-xl">
+        <div className="flex flex-col relative shadow-xl rounded-lg">
           <QuickMangaModal manga={props.manga} />
 
           <div onClick={()=>changeUrl(props.manga)}>
             <Link href={goToManga(props.manga)}>
-              <a className="bg-gray-600 rounded">
+              <a className="bg-gray-600 rounded-lg">
                 <img
-                  className={`w-full h-[265px] rounded ${props.manga.unavailable ? "grayscale" : ""}`}
+                  className={`w-full h-[265px] rounded-lg ${props.manga.unavailable ? "grayscale" : ""}`}
                   src={props.manga.cover_image[0].image_urls[0]}
                   onError={(e) => handleImageFallback(props.manga, e)}
                   alt="thumb"
@@ -186,8 +180,8 @@ export default function MangaCard(props) {
 
           <div onClick={()=>changeUrl(props.manga)}>
             <Link href={goToManga(props.manga)}>
-              <a className="absolute bottom-0 p-2 text-white z-3 rounded w-full bg-black bg-opacity-70">
-                <p className="rounded text-sm leading-5 font-sans pb-1 overflow-hidden">{formatTitle(props.manga)}</p>
+              <a className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
+                <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">{formatTitle(props.manga)}</p>
                 <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}>
                   <b>{subTextDecider(props.manga)}</b>
                   <small className="mt-[-5px]">{smallTextDecider(props.manga)}</small>

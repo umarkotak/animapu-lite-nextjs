@@ -148,12 +148,13 @@ export default function QuickMangaModal(props) {
   return(
     <div>
       <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b]" onClick={()=>setShow(!show)}>
-        <button className="drop-shadow-md"><i className="fa-solid fa-ellipsis"></i></button>
+        <button className="drop-shadow-sm bg-white rounded-full w-[18px] h-[18px] leading-none"><i className="text-sm fa-solid fa-ellipsis"></i></button>
       </div>
       {
         show &&
         <div>
-          <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-screen justify-center items-center flex block bg-black bg-opacity-70" aria-modal="true">
+          <div className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-screen justify-center items-center flex block" aria-modal="true">
+            <div className="bg-black bg-opacity-70 absolute z-0 h-screen w-full" onClick={()=>setShow(!show)}></div>
             <div className="relative p-4 w-full max-w-md h-full">
               <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                 <div className={`h-[100px] z-0 ${manga.title ? "" : "animate-pulse"}`} style={{
