@@ -82,7 +82,7 @@ export default function ReadManga(props) {
       tempManga.last_chapter_read = chapter.number
       historyArray.unshift(tempManga)
 
-      historyArray = historyArray.slice(0,40)
+      historyArray = historyArray.slice(0,80)
 
       historyArray = historyArray.map((val, idx) => {
         val.chapters = []
