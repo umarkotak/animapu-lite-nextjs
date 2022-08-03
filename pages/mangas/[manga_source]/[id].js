@@ -86,7 +86,6 @@ export default function MangaDetail(props) {
     try {
       const response = await animapuApi.PostUpvoteManga(manga)
       const body = await response.json()
-      console.log(body)
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
         return
@@ -113,17 +112,17 @@ export default function MangaDetail(props) {
     <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <Head>
         <meta itemProp="description" content={`${manga.title}`} />
-        <meta itemProp="image" content={`${manga.cover_image[0].image_urls[0]}`} />
+        <meta itemProp="image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
 
         <meta name="og:description" content={`${manga.title}`} />
-        <meta name="og:image" content={`${manga.cover_image[0].image_urls[0]}`} />
+        <meta name="og:image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
 
         <meta name="twitter:description" content={`${manga.title}`} />
-        <meta name="twitter:image" content={`${manga.cover_image[0].image_urls[0]}`} />
+        <meta name="twitter:image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
       </Head>
 
       <div className={`h-[200px] z-0 ${manga.title ? "" : "animate-pulse"}`} style={{
-        backgroundImage: `url(${manga.cover_image[0].image_urls[0]})`,
+        backgroundImage: `url(${manga?.cover_image[0]?.image_urls[0] || "#"})`,
         backgroundColor: "#d6e0ef",
         backgroundPosition: "50% 35%",
         backgroundRepeat: "no-repeat",
@@ -138,7 +137,7 @@ export default function MangaDetail(props) {
             <div className="h-full z-5 p-2 mt-[-125px]">
               <img
                 className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`}
-                src={manga.cover_image[0].image_urls[0]}
+                src={manga?.cover_image[0]?.image_urls[0] || "#"}
               />
               <div className='flex'>
                 <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-2 text-center rounded-full mr-1" onClick={() => handleUpvote()}>

@@ -24,8 +24,6 @@ export default function ReadManga(props) {
   var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
   var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
-  console.warn(chapter)
-
   function recordLocalHistory() {
     try {
       var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
@@ -93,7 +91,6 @@ export default function ReadManga(props) {
     try {
       const response = await animapuApi.PostUpvoteManga(manga)
       const body = await response.json()
-      console.log(body)
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
         return
