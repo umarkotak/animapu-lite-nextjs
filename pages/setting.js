@@ -8,6 +8,8 @@ import { GoogleLogin, GoogleLogout } from 'react-google-login'
 import BottomMenuBar from "../components/BottomMenuBar"
 import animapuApi from "../apis/AnimapuApi"
 
+var version = "v3.8.0"
+
 var sha512 = require('js-sha512').sha512
 
 var onApiCall = false
@@ -336,6 +338,8 @@ export default function Setting() {
             </div>
           </div>
         </div>
+
+        <p className="text-center">Animapu Lite {version} | 2020 - 2022</p>
       </div>
 
       <a className="invisible" href="#" ref={downloadFileRef} target="_blank">_</a>

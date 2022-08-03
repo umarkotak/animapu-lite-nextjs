@@ -157,7 +157,7 @@ export default function QuickMangaModal(props) {
           <div className="fixed mx-auto inset-x-0 top-[40px] p-4 w-full max-w-md z-10">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 z-10">
               <div className={`h-[100px] z-0 ${manga.title ? "" : "animate-pulse"}`} style={{
-                backgroundImage: `url(${manga.cover_image[0].image_urls[0]})`,
+                backgroundImage: `url(${manga?.cover_image[0]?.image_urls[0] || "#"})`,
                 backgroundColor: "#d6e0ef",
                 backgroundPosition: "50% 35%",
                 backgroundRepeat: "no-repeat",

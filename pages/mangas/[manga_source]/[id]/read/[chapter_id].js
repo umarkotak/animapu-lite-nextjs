@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { useRouter } from "next/router"
 import { useAlert } from 'react-alert'
 import { Img } from 'react-image'
+import Link from 'next/link'
 
 import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
@@ -17,51 +18,13 @@ export default function ReadManga(props) {
   var manga_id = query.id
   var secondary_source_id = query.secondary_source_id
   var chapter_id = query.chapter_id
-  const [manga, setManga] = useState({
-    cover_image:[{image_urls:["/images/default-book.png"]}], chapters:[]
-  })
-  const [chapter, setChapter] = useState({chapter_images:[]})
+  const manga = props.manga
+  const chapter = props.chapter
   const [successRender, setSuccessRender] = useState(false)
   var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
   var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
-  useEffect(() => {
-    if (!query) {return}
-    setManga(props.manga)
-    setChapter(props.chapter)
-  // eslint-disable-next-line
-  }, [query])
-
-  // var hist = {}
-  // function handleImageFallback(imageObj, e) {
-  //   try {
-  //     var found = false
-  //     var selectedImageUrl = ""
-
-  //     try {
-  //       imageObj.image_urls.forEach((imageUrl,idx) => {
-  //         if (!hist[`${imageUrl}-${idx}`]) {
-  //           hist[`${imageUrl}-${idx}`] = true
-  //           found = true
-  //           selectedImageUrl = imageUrl
-  //           throw BreakException
-  //         }
-  //       })
-  //     } catch(err) {
-  //       if (err !== BreakException) throw err
-
-  //       if (found) {
-  //         e.target.src = selectedImageUrl
-  //         return
-  //       } else {
-  //         e.target.style.display = "none"
-  //       }
-  //     }
-  //     e.target.style.display = "none"
-  //   } catch(err) {
-  //     alert(err)
-  //   }
-  // }
+  console.warn(chapter)
 
   function recordLocalHistory() {
     try {
@@ -99,9 +62,23 @@ export default function ReadManga(props) {
     }
   }
   function recordOnlineHistory() {
+    if (chapter && chapter.chapter_images.length <= 0) { return }
+
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") { return }
 
-    // TODO: Implement record online history
+    var tempManga = manga
+    tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
+    tempManga.last_chapter_read = chapter.number
+
+    var postUserHistoryParams = {
+      "manga": tempManga
+    }
+
+    try {
+      animapuApi.PostUserHistories({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, postUserHistoryParams)
+    } catch (e)  {
+      alert.error(e.message)
+    }
   }
   useEffect(() => {
     if (!query) {return}
@@ -168,7 +145,9 @@ export default function ReadManga(props) {
       <div>
         <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
           <div className="mt-1 mb-2">
-            <button className="bg-white rounded-lg p-1">Chapter {chapter.number}</button>
+            <Link href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
+              <i className="fa fa-globe"></i> Chapter {chapter.number}
+            </a></Link>
             <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
             <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote()}><i className="fa-solid fa-star"></i> Upvote</button>
             <button
@@ -182,12 +161,6 @@ export default function ReadManga(props) {
           <div>
             {chapter.chapter_images.map((imageObj, idx) => (
               <div key={`${chapter.id}-${idx}`}>
-                {/* <img
-                  className="w-full mb-1 bg-gray-600"
-                  src={imageObj.image_urls[0]}
-                  onError={(e) => handleImageFallback(imageObj, e)}
-                  alt="thumb"
-                /> */}
                 <Img
                   className="w-full mb-1 bg-gray-600"
                   src={imageObj.image_urls}

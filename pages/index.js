@@ -125,7 +125,6 @@ export default function Home() {
           <div className="container mx-auto max-w-[1040px] pt-2">
             <div className="flex justify-between">
               <span className="px-4 mb-4 text-white">
-                {/* <i className="fa fa-globe"></i> <span className="text-[#3db3f2] font-bold">{activeSource}</span> */}
                 <ChangeSourceModal text={activeSource} />
               </span>
               <span className="px-4 mb-4 text-white">

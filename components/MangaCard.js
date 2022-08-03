@@ -187,7 +187,6 @@ export default function MangaCard(props) {
                 <img
                   className={`w-full h-[265px] rounded-lg ${props.manga.unavailable ? "grayscale" : ""}`}
                   src={props.manga.cover_image[0].image_urls[0]}
-                  onError={(e) => handleImageFallback(props.manga, e)}
                   alt="thumb"
                 />
               </a>
