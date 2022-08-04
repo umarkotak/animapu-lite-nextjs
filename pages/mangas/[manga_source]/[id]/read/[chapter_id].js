@@ -8,26 +8,23 @@ import Link from 'next/link'
 import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
 
-// var BreakException = {}
 export default function ReadManga(props) {
   const alert = useAlert()
-  let router = useRouter()
 
-  const query = router.query
-  var manga_source = query.manga_source
-  var manga_id = query.id
-  var secondary_source_id = query.secondary_source_id
-  var chapter_id = query.chapter_id
-  const manga = props.manga
-  const chapter = props.chapter
+  var manga = props.manga
+  var chapter = props.chapter
+
   const [successRender, setSuccessRender] = useState(false)
-  var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+
+  useEffect(() => {
+    recordLocalHistory()
+    recordOnlineHistory()
+  }, [])
 
   function recordLocalHistory() {
     try {
-      var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
-      var historyArrayString = localStorage.getItem(listKey)
+      var historyListKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
+      var historyArrayString = localStorage.getItem(historyListKey)
 
       var historyArray
       if (historyArrayString) {
@@ -36,10 +33,10 @@ export default function ReadManga(props) {
         historyArray = []
       }
 
-      historyArray = historyArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+      historyArray = historyArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${props.manga.source}-${props.manga.source_id}`))
 
-      var tempManga = manga
-      tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
+      var tempManga = props.manga
+      tempManga.last_link = `/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`
       tempManga.last_chapter_read = chapter.number
       historyArray.unshift(tempManga)
 
@@ -51,39 +48,34 @@ export default function ReadManga(props) {
         return val
       })
 
-      localStorage.setItem(listKey, JSON.stringify(historyArray))
+      localStorage.setItem(historyListKey, JSON.stringify(historyArray))
 
-      var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-      localStorage.setItem(detailKey, JSON.stringify(tempManga))
+      var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+      localStorage.setItem(historyDetailKey, JSON.stringify(tempManga))
     } catch(e) {
       alert(e)
     }
   }
-  function recordOnlineHistory() {
-    if (chapter && chapter.chapter_images.length <= 0) { return }
 
-    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") { return }
-
-    var tempManga = manga
-    tempManga.last_link = `/mangas/${manga_source}/${manga_id}/read/${chapter_id}?secondary_source_id=${secondary_source_id}`
-    tempManga.last_chapter_read = chapter.number
-
-    var postUserHistoryParams = {
-      "manga": tempManga
-    }
-
+  async function recordOnlineHistory() {
     try {
+      if (chapter && chapter.chapter_images.length <= 0) { return }
+
+      if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") { return }
+
+      var tempManga = props.manga
+      tempManga.last_link = `/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`
+      tempManga.last_chapter_read = chapter.number
+
+      var postUserHistoryParams = {
+        "manga": tempManga
+      }
+
       animapuApi.PostUserHistories({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, postUserHistoryParams)
     } catch (e)  {
       alert.error(e.message)
     }
   }
-  useEffect(() => {
-    if (!query) {return}
-    if (!manga.title) {return}
-    recordLocalHistory()
-    recordOnlineHistory()
-  }, [manga])
 
   async function handleUpvote() {
     if (!manga.source_id) { return }
@@ -105,7 +97,8 @@ export default function ReadManga(props) {
   function handleFollow() {
     if (!manga.source_id) { return }
 
-    var libraryArrayString = localStorage.getItem(listKey)
+    var followListKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+    var libraryArrayString = localStorage.getItem(followListKey)
 
     var libraryArray
     if (libraryArrayString) {
@@ -119,8 +112,10 @@ export default function ReadManga(props) {
     var tempManga = manga
     libraryArray.unshift(tempManga)
 
-    localStorage.setItem(listKey, JSON.stringify(libraryArray))
-    localStorage.setItem(detailKey, JSON.stringify(tempManga))
+    localStorage.setItem(followListKey, JSON.stringify(libraryArray))
+
+    var followDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    localStorage.setItem(followDetailKey, JSON.stringify(tempManga))
     alert.info("Info || Manga ini udah masuk library kamu!")
   }
 
@@ -178,7 +173,7 @@ export default function ReadManga(props) {
         </div>
       </div>
 
-      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter_id} />
+      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter.id} />
     </div>
   )
 }

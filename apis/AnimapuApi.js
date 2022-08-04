@@ -110,6 +110,35 @@ class AnimapuApi {
     return "mangabat"
   }
 
+  async PostUserHistories(user, params) {
+    try {
+      var uri = `${this.AnimapuApiHost}/users/mangas/histories`
+      const response = await fetch(uri, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Animapu-User-Uid': user.uid,
+        },
+        body: JSON.stringify(params)
+      })
+      return response
+    } catch (e) {
+      console.error(e)
+      return {}
+    }
+  }
+
+  async GetUserReadHistories(user) {
+    var uri = `${this.AnimapuApiHost}/users/mangas/histories`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Animapu-User-Uid': user.uid,
+      }
+    })
+    return response
+  }
 }
 
 const animapuApi = new AnimapuApi()

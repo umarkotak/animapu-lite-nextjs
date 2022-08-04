@@ -3,11 +3,19 @@ import { useState, useEffect } from 'react'
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
+import { useAlert } from 'react-alert'
 
 export default function Home() {
+  const alert = useAlert()
+
   const [activeTab, setActiveTab] = useState("local")
 
   const [mangas, setMangas] = useState([
+    {id: "dummy-1", shimmer: true},
+    {id: "dummy-2", shimmer: true},
+    {id: "dummy-3", shimmer: true}
+  ])
+  const [onlineMangas, setOnlineMangas] = useState([
     {id: "dummy-1", shimmer: true},
     {id: "dummy-2", shimmer: true},
     {id: "dummy-3", shimmer: true}
@@ -26,7 +34,7 @@ export default function Home() {
 
   async function GetOnlineReadHistories() {
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") {
-      setMangas([])
+      setOnlineMangas([])
       return
     }
 
@@ -36,27 +44,24 @@ export default function Home() {
 
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
-        setMangas([])
+        setOnlineMangas([])
         setIsLoadMoreLoading(false)
         return
       }
 
-      setMangas(body.data.manga_histories)
+      setOnlineMangas(body.data.manga_histories)
 
     } catch (e) {
       alert.error(e.message)
-      setMangas([])
+      setOnlineMangas([])
     }
   }
 
   useEffect(() => {
-    if (activeTab === "online") {
-      GetOnlineReadHistories()
-    } else {
-      GetLocalReadHistories()
-    }
+    GetOnlineReadHistories()
+    GetLocalReadHistories()
   // eslint-disable-next-line
-  }, [activeTab])
+  }, [])
 
   function getTabColor(tabString) {
     if (activeTab === tabString) {
@@ -85,9 +90,16 @@ export default function Home() {
         <div className="container mx-auto max-w-[1040px]">
           <div className="grid grid-rows-1 grid-flow-col">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-              {mangas.map((manga, idx) => (
-                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
-              ))}
+              {(activeTab === "local") &&
+                mangas.map((manga, idx) => (
+                  <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} />
+                ))
+              }
+              {(activeTab === "online") &&
+                onlineMangas.map((manga, idx) => (
+                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} />
+                ))
+              }
             </div>
           </div>
         </div>
