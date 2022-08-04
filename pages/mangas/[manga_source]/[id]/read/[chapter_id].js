@@ -169,7 +169,12 @@ export default function ReadManga(props) {
               </div>
             ))}
           </div>
-          {successRender ? null : <p className="text-center">please wait for at most 1 minute, or the image might be broken. sorry for the inconvenience.</p>}
+          <p className="text-center"><Link href={chapter.source_link || "#"}>
+            <a target="_blank" className="hover:text-[#3db3f2]"><b><i className="fa fa-globe"></i> Read from original source</b></a>
+          </Link></p>
+          {successRender ? null : <div>
+            <p className="text-center">please wait for at most 1 minute, or the image might be broken. sorry for the inconvenience.</p>
+          </div>}
         </div>
       </div>
 

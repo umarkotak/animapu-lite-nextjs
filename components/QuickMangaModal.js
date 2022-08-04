@@ -221,7 +221,7 @@ export default function QuickMangaModal(props) {
                     </div>
                     <div className="col-span-3 p-2">
                       <h1 className="text-[#5c728a] text-xl mb-1">
-                        { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
+                        <b>{manga.source}</b> - { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
                       </h1>
                       {
                         manga.description ?

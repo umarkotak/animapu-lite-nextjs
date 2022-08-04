@@ -83,12 +83,12 @@ export default function BottomMenuBar(props) {
       <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
           <Link href={prevChapter()}>
-            <a className="focus:text-teal-500 hover:text-teal-500 ml-1 mr-2 w-full bg-[#2b2d42] py-1 pr-1 rounded text-center">
+            <a className="focus:text-teal-500 hover:text-teal-500 ml-1 mr-2 w-full bg-[#2b2d42] hover:bg-[#3db3f2] py-1 pr-1 rounded text-center">
               <i className="fa-solid fa-angle-left text-white"></i>
             </a>
           </Link>
           <Link href={nextChapter()}>
-            <a className="focus:text-teal-500 hover:text-teal-500 mr-1 ml-2  w-full bg-[#2b2d42] py-1 pl-1 rounded text-center">
+            <a className="focus:text-teal-500 hover:text-teal-500 mr-1 ml-2  w-full bg-[#2b2d42] hover:bg-[#3db3f2] py-1 pl-1 rounded text-center">
               <i className="fa-solid fa-angle-right text-white"></i>
             </a>
           </Link>

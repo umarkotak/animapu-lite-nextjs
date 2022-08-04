@@ -171,7 +171,7 @@ export default function MangaDetail(props) {
                 }}
               ><i className="fa-solid fa-share-nodes"></i> Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">
-                { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
+                <b>{manga.source}</b> - { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
               </h1>
               {manga.description ? <p className="text-sm text-[#7a858f] text-justify max-h-80 overflow-hidden overflow-y-scroll">{manga.description}</p> : <div className="animate-pulse">
                 <div className="h-2 bg-slate-500 rounded mb-4"></div>

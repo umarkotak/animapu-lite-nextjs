@@ -196,10 +196,15 @@ export default function MangaCard(props) {
           <div onClick={()=>changeUrl(props.manga)}>
             <Link href={goToManga(props.manga)}>
               <a className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
+                {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
+                  <small>{props.manga.source}</small>
+                </div> */}
                 <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">{formatTitle(props.manga)}</p>
                 <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}>
-                  <b>{subTextDecider(props.manga)}</b>
-                  <small className="mt-[-5px]">{smallTextDecider(props.manga)}</small>
+                  <div className="flex justify-between">
+                    <b>{subTextDecider(props.manga)}</b>
+                  </div>
+                  <small className="mt-[-4px]">{smallTextDecider(props.manga)}</small>
                 </div>
               </a>
             </Link>
