@@ -7,8 +7,8 @@ class AnimapuApi {
     //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // }
 
-    this.AnimapuApiHost = "http://localhost:6001"
     this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
+    // this.AnimapuApiHost = "http://localhost:6001"
   }
 
   async GetLatestManga(params) {

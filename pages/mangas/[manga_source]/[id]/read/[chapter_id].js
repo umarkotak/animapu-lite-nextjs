@@ -10,16 +10,22 @@ import animapuApi from "../../../../../apis/AnimapuApi"
 
 export default function ReadManga(props) {
   const alert = useAlert()
+  let router = useRouter()
+  const query = router.query
 
   var manga = props.manga
   var chapter = props.chapter
 
   const [successRender, setSuccessRender] = useState(false)
+  const [historySaved, setHistorySaved] = useState(false)
 
   useEffect(() => {
+    if (typeof window === "undefined") { return }
+    if (!query.chapter_id) { return }
+
     recordLocalHistory()
     recordOnlineHistory()
-  }, [])
+  }, [query])
 
   function recordLocalHistory() {
     try {
@@ -52,6 +58,9 @@ export default function ReadManga(props) {
 
       var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
       localStorage.setItem(historyDetailKey, JSON.stringify(tempManga))
+
+      setHistorySaved(true)
+      console.warn("HISTORY SAVED", tempManga)
     } catch(e) {
       alert(e)
     }
@@ -137,18 +146,25 @@ export default function ReadManga(props) {
       <div>
         <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
           <div className="mt-1 mb-2">
-            <Link href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
-              <i className="fa fa-globe"></i> Chapter {chapter.number}
-            </a></Link>
-            <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
-            <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote()}><i className="fa-solid fa-star"></i> Upvote</button>
-            <button
-              className="bg-white rounded-lg ml-2 p-1 height-[27px]"
-              onClick={(e)=>{
-                navigator.clipboard.writeText(`Read *${manga.title}* Chapter *${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${props.chapter.id}?secondary_source_id=${manga.secondary_source_id}`)
-                alert.info("Info || Link berhasil dicopy!")
-              }}
-            ><i className="fa-solid fa-share-nodes"></i> Share</button>
+            <div className="flex justify-between">
+              <div>
+                <Link href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
+                  <i className="fa fa-globe"></i> Chapter {chapter.number}
+                </a></Link>
+                <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
+                <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote()}><i className="fa-solid fa-star"></i> Upvote</button>
+                <button
+                  className="bg-white rounded-lg ml-2 p-1 height-[27px]"
+                  onClick={(e)=>{
+                    navigator.clipboard.writeText(`Read *${manga.title}* Chapter *${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${props.chapter.id}?secondary_source_id=${manga.secondary_source_id}`)
+                    alert.info("Info || Link berhasil dicopy!")
+                  }}
+                ><i className="fa-solid fa-share-nodes"></i> Share</button>
+              </div>
+              <div>
+                {historySaved && <i className="fa-solid fa-circle-check"></i>}
+              </div>
+            </div>
           </div>
           <div>
             {chapter.chapter_images.map((imageObj, idx) => (
