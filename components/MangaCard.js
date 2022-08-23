@@ -101,7 +101,11 @@ export default function MangaCard(props) {
 
   function subTextDecider(manga) {
     if (manga.popularity_point) {
-      return(<span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point}</span>)
+      return(
+        <div className="flex justify-between">
+          <span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point}</span>
+        </div>
+      )
     }
 
     var latestChapter = showLatestChapter(manga)
@@ -123,6 +127,18 @@ export default function MangaCard(props) {
     }
 
     return `Ch ${latestChapter}`
+  }
+
+  function extraSubTextDecider(manga) {
+    if (manga.popularity_point) {
+      return(
+        <div className="flex justify-between">
+          <span className="text-[#F0E68C]"><i className="fa fa-eye"></i> {manga.read_count || 0}</span>
+        </div>
+      )
+    }
+
+    return null
   }
 
   function smallTextDecider(manga) {
@@ -203,6 +219,7 @@ export default function MangaCard(props) {
                 <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}>
                   <div className="flex justify-between">
                     <b>{subTextDecider(props.manga)}</b>
+                    <b>{extraSubTextDecider(props.manga)}</b>
                   </div>
                   <small className="mt-[-4px]">{smallTextDecider(props.manga)}</small>
                 </div>
