@@ -32,15 +32,14 @@ export default function Library() {
   function showLatestChapter(manga) {
     if (!manga) { return 0 }
 
-    var latestChapter = manga.latest_chapter_number
-    if (latestChapter <= 0 || !latestChapter) {
-      if (manga.chapters.length > 0) {
-        latestChapter = manga.chapters[0].number
-      }
+    if (manga.latest_chapter_number && manga.latest_chapter_number > 0) {
+      return manga.latest_chapter_number
     }
-    if (latestChapter) {
-      return latestChapter
+
+    if (manga.chapters.length > 0 && manga.chapters[0] && manga.chapters[0].number > 0) {
+      return manga.chapters[0].number
     }
+
     return 0
   }
 
@@ -53,15 +52,16 @@ export default function Library() {
     var libraryArray
     var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
-    var tempMangas = libraryMangas.filter((v) => {
-      return v.local_updated_at && Math.floor(Date.now() / 1000) > (v.local_updated_at+3600)
+    var tempMangas = libraryMangas
+    tempMangas = libraryMangas.filter((v) => {
+      return (!v.local_updated_at || (v.local_updated_at && Math.floor(Date.now() / 1000) > (v.local_updated_at+3600)))
     })
 
     for (const manga of tempMangas) {
       var thisUpdated = false
       var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
-      if (manga.local_updated_at && (manga.local_updated_at+3600) > Math.floor(Date.now() / 1000)) { continue }
+      // if (manga.local_updated_at && (manga.local_updated_at+3600) > Math.floor(Date.now() / 1000)) { continue }
 
       const response = await animapuApi.GetMangaDetail({
         manga_source: manga.source,
@@ -75,10 +75,11 @@ export default function Library() {
       }
 
       var tempManga = mangaDetail
-      if (mangaDetail.title === "" || !mangaDetail.title) {
+      if (!mangaDetail.title || mangaDetail.title === "") {
         tempManga = manga
         tempManga.unavailable = true
       }
+
       tempManga.local_updated_at = Math.floor(Date.now() / 1000)
       if (tempManga.chapters && tempManga.chapters.length > 0) {
         tempManga.chapters = [tempManga.chapters[0]]
@@ -92,11 +93,13 @@ export default function Library() {
         libraryArray = []
       }
 
+      // Update library
       if (showLatestChapter(tempManga) > showLatestChapter(manga)) {
         libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
         libraryArray.unshift(tempManga)
         anyUpdate = true
         thisUpdated = true
+
       } else {
         libraryArray = libraryArray.filter((v) => (v.title !== "")).map(arrManga => {
           if (`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) {
@@ -107,6 +110,7 @@ export default function Library() {
           }
           return arrManga
         })
+
       }
 
       localStorage.setItem(listKey, JSON.stringify(libraryArray))
@@ -129,10 +133,6 @@ export default function Library() {
     setUpdateStatus({
       current: 0, currentTitle: "", max: 0, percent: 100, finished: true
     })
-
-    if (anyUpdate) {
-      setMangas(libraryArray)
-    }
   }
 
   useEffect(() => {

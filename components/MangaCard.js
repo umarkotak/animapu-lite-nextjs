@@ -38,15 +38,17 @@ export default function MangaCard(props) {
   function goToManga(manga) {
     if (!router) {return "#"}
 
-    if (manga.last_link) {
-      return manga.last_link
+    if (props.card_type === "history") {
+      if (manga.last_link) {
+        return manga.last_link
+      }
     }
 
-    var mangaSource = manga.source
-    if (!mangaSource || mangaSource == "") {
-      mangaSource = animapuApi.GetActiveMangaSource()
+    if (!manga.source || manga.source == "") {
+      manga.source = animapuApi.GetActiveMangaSource()
     }
-    return `/mangas/${mangaSource}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
+
+    return `/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
   }
 
   function changeUrl(manga) {
@@ -62,18 +64,18 @@ export default function MangaCard(props) {
   }
 
   function showMark(manga) {
-    var detailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+    var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    if (typeof window !== "undefined" && localStorage.getItem(historyDetailKey)) { return true }
 
-    detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+    var libraryDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    if (typeof window !== "undefined" && localStorage.getItem(libraryDetailKey)) { return true }
 
     return false
   }
 
   function followed(manga) {
-    var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
+    var libraryDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    if (typeof window !== "undefined" && localStorage.getItem(libraryDetailKey)) { return true }
 
     return false
   }
@@ -90,51 +92,34 @@ export default function MangaCard(props) {
   }
 
   function showLatestChapter(manga) {
-    var latestChapter = manga.latest_chapter_number
-    if (latestChapter <= 0) {
-      if (manga.chapters && manga.chapters.length > 0) {
-        latestChapter = manga.chapters[0].number
-      }
+    if (manga.latest_chapter_number && manga.latest_chapter_number > 0) {
+      return manga.latest_chapter_number
     }
-    return latestChapter
+
+    if (manga.chapters && manga.chapters.length > 0) {
+      return manga.chapters[0].number
+    }
+
+    return 0
   }
 
   function subTextDecider(manga) {
-    if (manga.popularity_point) {
+    if (props.card_type === "popular") {
       return(
-        <div className="flex justify-between">
-          <span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point}</span>
-        </div>
+        <span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point || 0}</span>
       )
     }
 
     var latestChapter = showLatestChapter(manga)
+    if (latestChapter > 0) { return `Ch ${latestChapter}` }
 
-    if (manga.last_link) {
-      // if (manga.last_chapter_read) {
-      //   // return `Cont Ch ${manga.last_chapter_read}`
-      //   // return `Latest Ch ${latestChapter}`
-      // }
-      if (latestChapter <= 0) {
-        return "Continue Read"
-      } else {
-        return `Latest Ch ${latestChapter}`
-      }
-    }
-
-    if (latestChapter <= 0) {
-      return "Read"
-    }
-
-    return `Ch ${latestChapter}`
+    return "Read"
   }
 
   function extraSubTextDecider(manga) {
-    if (manga.popularity_point) {
+    if (props.card_type === "popular") {
       return(
-        <div className="flex justify-between">
-          <span className="text-[#F0E68C]"><i className="fa fa-eye"></i> {manga.read_count || 0}</span>
-        </div>
+        <span className="text-[#F0E68C]"><i className="fa fa-eye"></i> {manga.read_count || 0}</span>
       )
     }
 
@@ -188,8 +173,19 @@ export default function MangaCard(props) {
     >
       <div className="w-[175px] h-[265px]" id={props.manga.source_id}>
         <div className="flex flex-col relative shadow-xl rounded-lg">
-          <QuickMangaModal manga={props.manga} />
+          {/* Kiri atas */}
+          {/* <div className="absolute top-0 left-0 text-black hover:text-[#ec294b] leading-0 m-1" onClick={()=>{}}>
+            <span className="text-[#F0E68C]"><i className="fa fa-star"></i> {props.manga.popularity_point || 0}</span>
+          </div>
+          {
+            followed(props.manga) &&
+            <div className="absolute top-6 left-0 p-1 rounded-lg text-[#ec294b]">
+              <button className="shadow-sm bg-white bg-opacity-75 rounded-full w-[18px] h-[18px] leading-none"><i className="text-sm fa-solid fa-heart"></i></button>
+            </div>
+          } */}
 
+          {/* Kanan atas */}
+          <QuickMangaModal manga={props.manga} />
           {
             followed(props.manga) &&
             <div className="absolute top-6 right-0 p-1 rounded-lg text-[#ec294b]">
@@ -215,13 +211,14 @@ export default function MangaCard(props) {
                 {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
                   <small>{props.manga.source}</small>
                 </div> */}
+
                 <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">{formatTitle(props.manga)}</p>
                 <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#ec294b]" : "text-[#75b5f0]"}`}>
                   <div className="flex justify-between">
                     <b>{subTextDecider(props.manga)}</b>
                     <b>{extraSubTextDecider(props.manga)}</b>
                   </div>
-                  <small className="mt-[-4px]">{smallTextDecider(props.manga)}</small>
+                  <small className="mt-[-3px]">{smallTextDecider(props.manga)}</small>
                 </div>
               </a>
             </Link>

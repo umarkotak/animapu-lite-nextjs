@@ -62,7 +62,7 @@ export default function Popular() {
             <div className="grid grid-rows-1 grid-flow-col">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
                 {mangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
+                  <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} card_type="popular" />
                 ))}
               </div>
             </div>
