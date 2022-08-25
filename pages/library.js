@@ -4,8 +4,7 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 
-var mangaSynced = true
-var onCheck = false
+var mangaSynced = false
 export default function Library() {
   const [mangas, setMangas] = useState([])
 
@@ -44,8 +43,18 @@ export default function Library() {
   }
 
   async function CheckForUpdates(libraryMangas) {
-    if (libraryMangas.length <= 0) { return }
-    if (mangaSynced) { return }
+    if (libraryMangas.length <= 0) {
+      setUpdateStatus({
+        current: 0, currentTitle: "", max: 0, percent: 100, finished: true
+      })
+      return
+    }
+    if (mangaSynced) {
+      setUpdateStatus({
+        current: 0, currentTitle: "", max: 0, percent: 100, finished: true
+      })
+      return
+    }
 
     var idx = 1
     var anyUpdate = false
