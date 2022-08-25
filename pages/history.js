@@ -50,6 +50,7 @@ export default function Home() {
       }
 
       setOnlineMangas(body.data.manga_histories)
+      SyncOnlineHistoriesToLocalStorage(body.data.manga_histories)
 
     } catch (e) {
       alert.error(e.message)
@@ -58,8 +59,8 @@ export default function Home() {
   }
 
   useEffect(() => {
-    GetOnlineReadHistories()
     GetLocalReadHistories()
+    GetOnlineReadHistories()
   // eslint-disable-next-line
   }, [])
 
@@ -68,6 +69,12 @@ export default function Home() {
       return "text-[#3db3f2]"
     }
     return "hover:text-[#3db3f2]"
+  }
+
+  function SyncOnlineHistoriesToLocalStorage(mangaHistories) {
+    mangaHistories.map((mangaHistory) => {
+      // TODO: Set to local storage
+    })
   }
 
   return (
@@ -92,12 +99,12 @@ export default function Home() {
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
               {(activeTab === "local") &&
                 mangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} />
+                  <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} card_type="history" />
                 ))
               }
               {(activeTab === "online") &&
                 onlineMangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} />
+                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
                 ))
               }
             </div>

@@ -8,33 +8,6 @@ export default function MangaCard(props) {
   let router = useRouter()
   const query = router.query
 
-  var hist = {}
-  var unsupportedTitles = []
-  function handleImageFallback(manga, e) {
-    if (!hist[manga.id]) { hist[manga.id] = {} }
-
-    var found = false
-    var selectedImageUrl = ""
-    manga.cover_image[0].image_urls.map((imageUrl) => {
-      if (!hist[manga.id][imageUrl]) {
-        hist[manga.id][imageUrl] = true
-        found = true
-        selectedImageUrl = imageUrl
-        return
-      }
-    })
-
-    if (found) {
-      e.target.src = selectedImageUrl
-      return
-    } else {
-      if (manga.cover_image[0].image_urls.length > 1) {
-        e.target.src = "/images/default-book.png"
-        // localStorage.setItem(`unsupported-title-${manga.source}-${manga.source_id}-${manga.secondary_source_id}`, "true")
-      }
-    }
-  }
-
   function goToManga(manga) {
     if (!router) {return "#"}
 
@@ -128,18 +101,34 @@ export default function MangaCard(props) {
 
   function smallTextDecider(manga) {
     try {
-      var continueManga = {last_link: "#", last_chapter_read: null}
+      if (manga.last_chapter_read) {
+        return(<>last read: ch {manga.last_chapter_read}</>)
+      }
+
       if (typeof window !== "undefined") {
-        var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-        if (localStorage.getItem(historyDetailKey)) {
-          continueManga = JSON.parse(localStorage.getItem(historyDetailKey))
+        var onlineHistoryDetailKey = `ANIMAPU_LITE:HISTORY:ONLINE:DETAIL:${"user_id"}:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+        if (localStorage.getItem(onlineHistoryDetailKey)) {
+          var onlineManga = JSON.parse(localStorage.getItem(onlineHistoryDetailKey))
+
+          if (onlineManga && onlineManga.last_chapter_read) {
+            return(<>last read: <i className="fa-solid fa-cloud"></i>ch {onlineManga.last_chapter_read}</>)
+          }
         }
       }
 
-      if (!continueManga.last_chapter_read) { return }
-      return(<>
-        last read: ch {continueManga.last_chapter_read}
-      </>)
+      if (typeof window !== "undefined") {
+        var localHistoryDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+        if (localStorage.getItem(localHistoryDetailKey)) {
+          var localManga = JSON.parse(localStorage.getItem(localHistoryDetailKey))
+
+          if (localManga && localManga.last_chapter_read) {
+            return(<>last read: ch {localManga.last_chapter_read}</>)
+          }
+        }
+      }
+
+      return null
+
     } catch (e) {
       return
     }
