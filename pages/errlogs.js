@@ -44,7 +44,7 @@ export default function Errlogs() {
       <div className="pt-4 mx-2">
         <div className="container mx-auto max-w-[1040px]">
           <div className="bg-[#fafafa] rounded p-4 mb-2 shadow-md">
-            {logs.length === 0 && <div className="mb-4">"No error found"</div>}
+            {logs.length === 0 && <div className="mb-4">No error found</div>}
 
             <div className="border p-1 rounded-lg">
               <table className="table-auto w-full text-sm text-left">
