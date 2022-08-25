@@ -165,7 +165,7 @@ export default function Library() {
 
       <div className="pt-4">
         <div className="container mx-auto max-w-[1040px]">
-          <div className={`px-4 ${updateStatus.finished || updateStatus.max > 0 ? "hidden" : "block"}`}>
+          <div className={`px-4 ${updateStatus.finished || updateStatus.max <= 0 ? "hidden" : "block"}`}>
             <div className="mb-1 text-base font-medium text-white">
               <div className='flex justify-between'>
                 <span>Checking for updates</span>
