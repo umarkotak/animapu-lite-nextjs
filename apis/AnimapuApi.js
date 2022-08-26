@@ -7,8 +7,8 @@ class AnimapuApi {
     //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // }
 
-    // this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
-    this.AnimapuApiHost = "https://animapu.site"
+    this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
+    // this.AnimapuApiHost = "https://animapu.site"
     // this.AnimapuApiHost = "http://localhost:6001"
   }
 
