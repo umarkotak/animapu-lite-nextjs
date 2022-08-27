@@ -6,6 +6,7 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import { useAlert } from 'react-alert'
+import ChangeSourceModal from "../components/ChangeSourceModal"
 
 var onApiCall = false
 export default function Home() {
@@ -15,8 +16,13 @@ export default function Home() {
 
   const [mangas, setMangas] = useState([])
   const [title, setTitle] = useState("")
-  const [activeSource, setActiveSource] = useState(animapuApi.GetActiveMangaSource())
+  const [activeSource, setActiveSource] = useState("")
   const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
+
+  useEffect(() => {
+    setActiveSource(animapuApi.GetActiveMangaSource())
+  // eslint-disable-next-line
+  }, [])
 
   async function SearchManga() {
     if (onApiCall) {return}
@@ -55,7 +61,13 @@ export default function Home() {
     <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
-          <span className="px-4 mb-4 text-white"><i className="fa fa-globe"></i> <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
+            <div className="flex justify-between">
+              <span className="px-4 mb-4 text-white">
+                <ChangeSourceModal text={activeSource} />
+              </span>
+              <span className="px-4 mb-4 text-white">
+              </span>
+            </div>
         </div>
       </div>
 

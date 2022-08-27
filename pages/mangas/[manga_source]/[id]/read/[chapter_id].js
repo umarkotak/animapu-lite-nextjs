@@ -15,7 +15,7 @@ export default function ReadManga(props) {
   const query = router.query
 
   var manga = props.manga
-  var chapter = props.chapter
+  const [chapter, setChapter] = useState({chapter_images: []})
 
   const [successRender, setSuccessRender] = useState(false)
   const [historySaved, setHistorySaved] = useState(false)
@@ -24,6 +24,7 @@ export default function ReadManga(props) {
     if (typeof window === "undefined") { return }
     if (!query.chapter_id) { return }
 
+    setChapter(props.chapter)
     recordLocalHistory()
     recordOnlineHistory()
     handleUpvote(false)
@@ -179,6 +180,7 @@ export default function ReadManga(props) {
             </div>
           </div>
           <div>
+
             {chapter.chapter_images.map((imageObj, idx) => (
               <div key={`${chapter.id}-${idx}`}>
                 <Img
@@ -206,7 +208,7 @@ export default function ReadManga(props) {
         </div>
       </div>
 
-      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter.id} />
+      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={props.chapter.id} />
     </div>
   )
 }

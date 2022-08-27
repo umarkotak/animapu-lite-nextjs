@@ -47,14 +47,18 @@ export default function ChangeSourceModal(props) {
             disabled: !source.active,
             language: source.language,
             title: source.title,
-            label: <div className="flex flex-row justify-between">
+            label: <div><div className="flex flex-row justify-between">
               <div className="flex flex-row">
-                <img className="mr-2" src={`/images/flags/${source.language}.png`} alt="" height="15px" width="23px"/> {source.title}
+                <img className="mr-2 mt-1 h-[25px] w-[25px]" src={`/images/flags/${source.language}.png`} alt=""/>
+                <div>
+                  <span>{source.title}</span>
+                  <div className='text-left font-light mt-[-7px] mb-[-5px]'><small>{source.status}</small></div>
+                </div>
               </div>
               <Link href={source.web_link || "#"} target="_blank">
                 <a target="_blank"><i className="fa-solid fa-up-right-from-square"></i></a>
               </Link>
-            </div>
+            </div></div>
           }
         })
         setFormattedSources(tempFormattedSources)
@@ -106,8 +110,10 @@ export default function ChangeSourceModal(props) {
                     <ul className="my-4 space-y-3">
                       {formattedSources.map((oneSource) => (
                         <li key={oneSource.value}>
-                          <button className="flex w-full items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                            <span className="flex-1 ml-3 whitespace-nowrap" onClick={()=>handleSelectSource(oneSource.value)}>{oneSource.label}</span>
+                          <button className="w-full items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                            <div className="flex">
+                              <span className="flex-1 ml-3 whitespace-nowrap" onClick={()=>handleSelectSource(oneSource.value)}>{oneSource.label}</span>
+                            </div>
                           </button>
                         </li>
                       ))}
