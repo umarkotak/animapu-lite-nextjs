@@ -4,6 +4,7 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import { useAlert } from 'react-alert'
+import Manga from "../models/Manga"
 
 export default function Home() {
   const alert = useAlert()
@@ -61,6 +62,10 @@ export default function Home() {
   useEffect(() => {
     GetLocalReadHistories()
     GetOnlineReadHistories()
+
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+      setActiveTab("online")
+    }
   // eslint-disable-next-line
   }, [])
 
@@ -73,7 +78,8 @@ export default function Home() {
 
   function SyncOnlineHistoriesToLocalStorage(mangaHistories) {
     mangaHistories.map((mangaHistory) => {
-      // TODO: Set to local storage
+      var mangaObj = new Manga(mangaHistory, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+      localStorage.setItem(mangaObj.GetOnlineHistoryKey(), JSON.stringify(mangaHistory))
     })
   }
 

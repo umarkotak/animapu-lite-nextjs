@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
 import QuickMangaModal from "./QuickMangaModal"
+import Manga from "../models/Manga"
 
 export default function MangaCard(props) {
   let router = useRouter()
@@ -101,17 +102,18 @@ export default function MangaCard(props) {
 
   function smallTextDecider(manga) {
     try {
+      var mangaObj = new Manga(manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+
       if (manga.last_chapter_read) {
         return(<>last read: ch {manga.last_chapter_read}</>)
       }
 
-      if (typeof window !== "undefined") {
-        var onlineHistoryDetailKey = `ANIMAPU_LITE:HISTORY:ONLINE:DETAIL:${"user_id"}:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-        if (localStorage.getItem(onlineHistoryDetailKey)) {
-          var onlineManga = JSON.parse(localStorage.getItem(onlineHistoryDetailKey))
+      if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+        if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
+          var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
 
           if (onlineManga && onlineManga.last_chapter_read) {
-            return(<>last read: <i className="fa-solid fa-cloud"></i>ch {onlineManga.last_chapter_read}</>)
+            return(<>last read: <i className="fa-solid fa-cloud"></i> ch {onlineManga.last_chapter_read}</>)
           }
         }
       }

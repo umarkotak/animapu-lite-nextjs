@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
+import Manga from "../../../../../models/Manga"
 
 export default function ReadManga(props) {
   const alert = useAlert()
@@ -81,7 +82,13 @@ export default function ReadManga(props) {
         "manga": tempManga
       }
 
-      animapuApi.PostUserHistories({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, postUserHistoryParams)
+      const response = await animapuApi.PostUserHistories({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, postUserHistoryParams)
+
+      if (response.status === 200) {
+        var mangaObj = new Manga(tempManga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+        localStorage.setItem(mangaObj.GetOnlineHistoryKey(), JSON.stringify(tempManga))
+      }
+
     } catch (e)  {
       alert.error(e.message)
     }

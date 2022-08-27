@@ -16,12 +16,13 @@
 // title: "Different Country Diary"
 
 class Manga {
-  constructor(manga = {}) {
+  constructor(manga = {}, userId = "") {
     this.manga = manga
+    this.userId = userId
   }
 
-  hello() {
-    console.log("Hello there from", this.manga)
+  GetOnlineHistoryKey() {
+    return `ANIMAPU_LITE:HISTORY:ONLINE:DETAIL:${this.userId}:${this.manga.source}:${this.manga.source_id}:${this.manga.secondary_source_id}`
   }
 }
 
