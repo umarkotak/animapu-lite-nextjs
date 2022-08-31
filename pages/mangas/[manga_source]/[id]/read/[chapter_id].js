@@ -25,10 +25,16 @@ export default function ReadManga(props) {
     if (!query.chapter_id) { return }
 
     setChapter(props.chapter)
+  }, [query])
+
+  useEffect(() => {
+    if (typeof window === "undefined") { return }
+    if (!query.chapter_id) { return }
+
     recordLocalHistory()
     recordOnlineHistory()
     handleUpvote(false)
-  }, [query])
+  }, [chapter])
 
   function recordLocalHistory() {
     try {
