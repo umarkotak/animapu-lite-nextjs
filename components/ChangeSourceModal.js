@@ -31,7 +31,6 @@ export default function ChangeSourceModal(props) {
     try {
       const response = await animapuApi.GetSourceList({})
       const body = await response.json()
-      console.log(body)
       if (response.status == 200) {
         setActiveSource(animapuApi.GetActiveMangaSource())
 

@@ -112,7 +112,7 @@ export default function MangaCard(props) {
         if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
           var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
 
-          if (onlineManga && onlineManga.last_chapter_read) {
+          if (onlineManga && onlineManga.last_chapter_read >= 0) {
             return(<>last read: <i className="fa-solid fa-cloud"></i> ch {onlineManga.last_chapter_read}</>)
           }
         }
@@ -188,7 +188,7 @@ export default function MangaCard(props) {
             <Link href={goToManga(props.manga)}>
               <a className="bg-gray-600 rounded-lg">
                 <img
-                  className={`w-full h-[265px] rounded-lg ${props.manga.unavailable ? "grayscale" : ""}`}
+                  className={`w-full h-[265px] rounded-lg`}
                   src={props.manga.cover_image[0].image_urls[0]}
                   alt="thumb"
                 />

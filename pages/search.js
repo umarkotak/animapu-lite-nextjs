@@ -36,17 +36,16 @@ export default function Home() {
       const body = await response.json()
 
       if (response.status == 200) {
-        console.log(body)
         setMangas(body.data)
       } else {
         alert.error(body.error.message)
-        console.log("FAIL", body)
+        console.error("FAIL", body)
       }
       onApiCall = false
       setIsLoadMoreLoading(false)
 
     } catch (e) {
-      console.log(e)
+      console.error(e)
       onApiCall = false
       alert.error(e.message)
       setIsLoadMoreLoading(false)

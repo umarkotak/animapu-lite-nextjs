@@ -24,12 +24,11 @@ export default function Home() {
         page: 1
       })
       const body = await response.json()
-      console.log(body)
       setMangas(body.data)
       onApiCall = false
 
     } catch (e) {
-      console.log(e)
+      console.error(e)
       onApiCall = false
     }
   }

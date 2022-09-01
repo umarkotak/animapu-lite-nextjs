@@ -35,7 +35,6 @@ export default function Setting() {
     try {
       const response = await animapuApi.GetSourceList({})
       const body = await response.json()
-      console.log(body)
       if (response.status == 200) {
         setSources(body.data)
         setActiveSource(animapuApi.GetActiveMangaSource())
@@ -72,7 +71,6 @@ export default function Setting() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      console.log("PANEL", localStorage.getItem("panelbear_disable"))
       setPanelbearDisable(localStorage.getItem("panelbear_disable") || 'false')
     }
     GetSourceList()
@@ -108,7 +106,7 @@ export default function Setting() {
           link.href = '#'
         }
     } catch (e) {
-      console.log(e.message)
+      console.error(e.message)
     }
   }
 

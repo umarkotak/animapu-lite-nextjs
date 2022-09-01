@@ -9,19 +9,16 @@ import ChangeSourceModal from "../components/ChangeSourceModal"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 
-var page
-var targetPage
 var onApiCall = false
+var page = 1
+var targetPage = 1
 export default function Home() {
   const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
   const [activeSource, setActiveSource] = useState("")
-  const [mangas, setMangas] = useState([
-    {id: "dummy-1", shimmer: true},
-    {id: "dummy-2", shimmer: true},
-  ])
+  const [mangas, setMangas] = useState([{id: "dummy-1", shimmer: true}, {id: "dummy-2", shimmer: true}])
   const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
 
   async function GetLatestManga(append) {
@@ -41,11 +38,11 @@ export default function Home() {
         page: page
       })
       const body = await response.json()
-      console.log(body)
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
         setMangas([])
         setIsLoadMoreLoading(false)
+        onApiCall = false
         return
       }
       if (append) {
@@ -85,11 +82,14 @@ export default function Home() {
       GetLatestManga(true)
     }
     if (typeof window !== "undefined" && query.selected && query.selected !== "") {
-      const section = document.querySelector(`#${query.selected}`)
-      if (section) {
-        query.selected = ""
-        section.scrollIntoView( { behavior: 'smooth', block: 'start' } )
-      }
+      try {
+        const section = document.querySelector(`#${query.selected}`)
+        if (section) {
+          query.selected = ""
+          section.scrollIntoView( { behavior: 'smooth', block: 'start' } )
+          // section.scrollIntoView( { block: 'start' } )
+        }
+      } catch(e) {}
     }
   // eslint-disable-next-line
   }, [mangas])
@@ -100,18 +100,18 @@ export default function Home() {
 
   const [triggerNextPage, setTriggerNextPage] = useState(0)
   const handleScroll = () => {
-      var position = window.pageYOffset
-      var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    var position = window.pageYOffset
+    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-      if (maxPosition-position <= 1200) {
-        if (onApiCall) {return}
-        setTriggerNextPage(position)
-      }
+    if (maxPosition-position <= 1200) {
+      if (onApiCall) {return}
+      setTriggerNextPage(position)
+    }
   }
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => {
-        window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', handleScroll)
     }
   }, [])
   useEffect(() => {

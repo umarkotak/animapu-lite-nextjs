@@ -32,7 +32,7 @@ export default function QuickMangaModal(props) {
       }
 
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
   }
 
@@ -110,7 +110,6 @@ export default function QuickMangaModal(props) {
     try {
       const response = await animapuApi.PostUpvoteManga(manga)
       const body = await response.json()
-      console.log(body)
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
         return
@@ -134,7 +133,7 @@ export default function QuickMangaModal(props) {
   }
 
   function changeUrl(manga) {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && (window.location.pathname === "/")) {
       router.push({
         pathname: window.location.pathname,
         query: {

@@ -15,7 +15,7 @@ export default function ReadManga(props) {
   const query = router.query
 
   var manga = props.manga
-  const [chapter, setChapter] = useState({chapter_images: []})
+  const [chapter, setChapter] = useState({id: "", chapter_images: []})
 
   const [successRender, setSuccessRender] = useState(false)
   const [historySaved, setHistorySaved] = useState(false)
@@ -23,8 +23,8 @@ export default function ReadManga(props) {
   useEffect(() => {
     if (typeof window === "undefined") { return }
     if (!query.chapter_id) { return }
+    getChapter()
 
-    setChapter(props.chapter)
   }, [query])
 
   useEffect(() => {
@@ -35,6 +35,23 @@ export default function ReadManga(props) {
     recordOnlineHistory()
     handleUpvote(false)
   }, [chapter])
+
+  async function getChapter() {
+    try {
+      const response = await animapuApi.GetReadManga({
+        manga_source: query.manga_source,
+        manga_id: query.id,
+        chapter_id: query.chapter_id,
+        secondary_source_id: query.secondary_source_id
+      })
+      const body = await response.json()
+      if (response.status == 200) {
+        setChapter(body.data)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
 
   function recordLocalHistory() {
     try {
@@ -50,7 +67,7 @@ export default function ReadManga(props) {
 
       historyArray = historyArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${props.manga.source}-${props.manga.source_id}`))
 
-      var tempManga = props.manga
+      var tempManga = {...props.manga}
       tempManga.last_link = `/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`
       tempManga.last_chapter_read = chapter.number
       historyArray.unshift(tempManga)
@@ -81,7 +98,7 @@ export default function ReadManga(props) {
 
       if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") { return }
 
-      var tempManga = props.manga
+      var tempManga = {...props.manga}
       tempManga.last_link = `/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`
       tempManga.last_chapter_read = chapter.number
 
@@ -214,7 +231,7 @@ export default function ReadManga(props) {
         </div>
       </div>
 
-      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={props.chapter.id} />
+      <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter.id} />
     </div>
   )
 }
@@ -237,23 +254,7 @@ export async function getServerSideProps(context) {
     }
 
   } catch (e) {
-    console.log(e)
-  }
-
-  try {
-    const response = await animapuApi.GetReadManga({
-      manga_source: query.manga_source,
-      manga_id: query.id,
-      chapter_id: query.chapter_id,
-      secondary_source_id: query.secondary_source_id
-    })
-    const body = await response.json()
-    if (response.status == 200) {
-      chapter = body.data
-    }
-
-  } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 
   return { props: { manga: manga, chapter: chapter } }

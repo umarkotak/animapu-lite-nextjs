@@ -51,7 +51,6 @@ export default function Home() {
       }
 
       setOnlineMangas(body.data.manga_histories)
-      SyncOnlineHistoriesToLocalStorage(body.data.manga_histories)
 
     } catch (e) {
       alert.error(e.message)
@@ -69,6 +68,12 @@ export default function Home() {
   // eslint-disable-next-line
   }, [])
 
+  useEffect(() => {
+    SyncOnlineHistoriesToLocalStorage(onlineMangas)
+
+  // eslint-disable-next-line
+  }, [onlineMangas])
+
   function getTabColor(tabString) {
     if (activeTab === tabString) {
       return "text-[#3db3f2]"
@@ -76,7 +81,7 @@ export default function Home() {
     return "hover:text-[#3db3f2]"
   }
 
-  function SyncOnlineHistoriesToLocalStorage(mangaHistories) {
+  async function SyncOnlineHistoriesToLocalStorage(mangaHistories) {
     mangaHistories.map((mangaHistory) => {
       var mangaObj = new Manga(mangaHistory, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
       localStorage.setItem(mangaObj.GetOnlineHistoryKey(), JSON.stringify(mangaHistory))

@@ -230,10 +230,9 @@ export async function getServerSideProps(context) {
     if (response.status == 200) {
       return {props:{manga:body.data}}
     }
-    console.log(body)
 
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 
   return {

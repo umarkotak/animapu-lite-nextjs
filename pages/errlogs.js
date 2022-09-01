@@ -16,13 +16,12 @@ export default function Errlogs() {
     try {
       const response = await animapuApi.GetLogs({})
       const body = await response.json()
-      console.log(body)
       if (response.status == 200) {
         setLogs(body.data)
       }
 
     } catch (e) {
-      console.log(e)
+      console.error(e)
     }
 
     onApiCall = false
