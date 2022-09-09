@@ -25,7 +25,9 @@ export default function Popular() {
       const body = await response.json()
 
       if (response.status == 200) {
-        setMangas(body.data)
+        var tempMangas = body.data
+        tempMangas.sort((a,b) => b.weight - a.weight)
+        setMangas(tempMangas)
       } else {
         alert.error(body.error.message)
       }

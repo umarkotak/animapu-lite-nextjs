@@ -6,6 +6,9 @@ import animapuApi from "../apis/AnimapuApi"
 import { useAlert } from 'react-alert'
 import Manga from "../models/Manga"
 
+var tempAllMangas = []
+var limit = 16
+
 export default function Home() {
   const alert = useAlert()
 
@@ -50,7 +53,9 @@ export default function Home() {
         return
       }
 
-      setOnlineMangas(body.data.manga_histories)
+      tempAllMangas = body.data.manga_histories
+      const tempSelectedMangas = tempAllMangas.slice(0, limit)
+      setOnlineMangas(tempSelectedMangas)
 
     } catch (e) {
       alert.error(e.message)
@@ -87,6 +92,28 @@ export default function Home() {
       localStorage.setItem(mangaObj.GetOnlineHistoryKey(), JSON.stringify(mangaHistory))
     })
   }
+
+  const [triggerNextPage, setTriggerNextPage] = useState(0)
+  const handleScroll = () => {
+    var position = window.pageYOffset
+    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
+
+    if (maxPosition-position <= 1200) {
+      setTriggerNextPage(position)
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+  useEffect(() => {
+    limit += limit
+    const tempSelectedMangas = tempAllMangas.slice(0, limit)
+    setOnlineMangas(tempSelectedMangas)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerNextPage])
 
   return (
     <div className="min-h-screen pb-60 bg-[#d6e0ef]">
