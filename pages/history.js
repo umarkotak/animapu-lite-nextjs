@@ -14,16 +14,14 @@ export default function Home() {
 
   const [activeTab, setActiveTab] = useState("local")
 
-  const [mangas, setMangas] = useState([
+  var dummyMangas = [
     {id: "dummy-1", shimmer: true},
     {id: "dummy-2", shimmer: true},
     {id: "dummy-3", shimmer: true}
-  ])
-  const [onlineMangas, setOnlineMangas] = useState([
-    {id: "dummy-1", shimmer: true},
-    {id: "dummy-2", shimmer: true},
-    {id: "dummy-3", shimmer: true}
-  ])
+  ]
+
+  const [mangas, setMangas] = useState(dummyMangas)
+  const [onlineMangas, setOnlineMangas] = useState(dummyMangas)
 
   async function GetLocalReadHistories() {
     var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
@@ -49,7 +47,6 @@ export default function Home() {
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
         setOnlineMangas([])
-        setIsLoadMoreLoading(false)
         return
       }
 
@@ -140,6 +137,7 @@ export default function Home() {
                   <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} card_type="history" />
                 ))
               }
+              {(activeTab === "online") && onlineMangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} />}
               {(activeTab === "online") &&
                 onlineMangas.map((manga, idx) => (
                   <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
