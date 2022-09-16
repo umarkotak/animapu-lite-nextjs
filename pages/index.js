@@ -40,7 +40,6 @@ export default function Home() {
       const body = await response.json()
       if (response.status !== 200) {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
-        setMangas([])
         setIsLoadMoreLoading(false)
         onApiCall = false
         return
@@ -60,7 +59,6 @@ export default function Home() {
 
     } catch (e) {
       alert.error(e.message)
-      setMangas([])
     }
 
     onApiCall = false
