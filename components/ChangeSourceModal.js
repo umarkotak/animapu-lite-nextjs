@@ -46,12 +46,12 @@ export default function ChangeSourceModal(props) {
             disabled: !source.active,
             language: source.language,
             title: source.title,
-            label: <div><div className="flex flex-row justify-between">
+            label: <div><div className="flex flex-row justify-between text-left">
               <div className="flex flex-row">
                 <img className="mr-2 mt-1 h-[25px] w-[25px]" src={`/images/flags/${source.language}.png`} alt=""/>
                 <div>
                   <span>{source.title}</span>
-                  <div className='text-left font-light mt-[-7px] mb-[-5px]'><small>{source.status}</small></div>
+                  <div className='font-light mt-[-7px] mb-[-5px]'><small>{source.status}</small></div>
                 </div>
               </div>
               <Link href={source.web_link || "#"} target="_blank">
