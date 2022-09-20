@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useAlert } from 'react-alert'
 
 import animapuApi from "../apis/AnimapuApi"
+import Manga from "../models/Manga"
 
 export default function QuickMangaModal(props) {
   const alert = useAlert()
@@ -51,9 +52,19 @@ export default function QuickMangaModal(props) {
 
   function isContinuePossible() {
     try {
+      var mangaObj = new Manga(props.manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+
+      if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+        if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
+          var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
+          setContinueManga(onlineManga)
+        }
+      }
+
       if (typeof window !== "undefined") {
-        if (localStorage.getItem(historyDetailKey)) {
-          setContinueManga(JSON.parse(localStorage.getItem(historyDetailKey)))
+        if (localStorage.getItem(mangaObj.GetLocalHistoryKey())) {
+          var localManga = JSON.parse(mangaObj.GetLocalHistoryKey())
+          setContinueManga(localManga)
         }
       }
     } catch (e) {

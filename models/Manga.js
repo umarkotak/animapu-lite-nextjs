@@ -24,6 +24,10 @@ class Manga {
   GetOnlineHistoryKey() {
     return `ANIMAPU_LITE:HISTORY:ONLINE:DETAIL:${this.userId}:${this.manga.source}:${this.manga.source_id}:${this.manga.secondary_source_id}`
   }
+
+  GetLocalHistoryKey() {
+    return `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${this.manga.source}:${this.manga.source_id}:${this.manga.secondary_source_id}`
+  }
 }
 
 export default Manga

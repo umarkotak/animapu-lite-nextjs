@@ -323,6 +323,7 @@ export default function Setting() {
               <a className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Logs</a>
             </Link>
             <a href="https://console.firebase.google.com/u/1/project/animapu-api-firebase/database/animapu-api-firebase-default-rtdb/data" className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Fire Base</a>
+            <a href="https://vercel.com/umarkotak/animapu-lite-nextjs/deployments" className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Vercel Deployment</a>
             <div>
               <span className="block mt-2 mb-2">
                 PanelBear ({panelbearDisable === 'true' ? 'Off' : 'On'})
