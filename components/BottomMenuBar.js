@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import Select from 'react-select'
 import Link from 'next/link'
+import useEventListener from "@use-it/event-listener";
 
 var currentIdx = 0
 export default function BottomMenuBar(props) {
@@ -77,6 +78,28 @@ export default function BottomMenuBar(props) {
     if (!props.manga) { return "/#" }
     return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
   }
+
+  const LEFT_KEYS = ["37", "ArrowLeft"]
+  const RIGHT_KEYS = ["39", "ArrowRight"]
+
+  var elem = ""
+  if (typeof window !== "undefined") {
+    elem = document
+  }
+
+  useEventListener(
+    "keydown",
+    ({ key }) => {
+      console.log(String(key))
+      if (LEFT_KEYS.includes(String(key))) {
+        router.push(prevChapter())
+      } else if (RIGHT_KEYS.includes(String(key))) {
+        router.push(nextChapter())
+      }
+    },
+    elem,
+    { passive: true }
+  )
 
   return(
     <>
