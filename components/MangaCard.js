@@ -100,6 +100,16 @@ export default function MangaCard(props) {
     return null
   }
 
+  function midExtraSubTextDecider(manga) {
+    if (props.card_type === "popular") {
+      return(
+        <span className="text-[#F0E68C]"><i className="fa fa-user"></i> {manga.follow_count || 0}</span>
+      )
+    }
+
+    return null
+  }
+
   function smallTextDecider(manga) {
     try {
       var mangaObj = new Manga(manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
@@ -210,6 +220,7 @@ export default function MangaCard(props) {
                 <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#75b5f0]" : "text-[#75b5f0]"}`}>
                   <div className="flex justify-between">
                     <b>{subTextDecider(props.manga)}</b>
+                    <b>{midExtraSubTextDecider(props.manga)}</b>
                     <b>{extraSubTextDecider(props.manga)}</b>
                   </div>
                   <small className="mt-[-3px]">{smallTextDecider(props.manga)}</small>

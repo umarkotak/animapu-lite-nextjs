@@ -19,6 +19,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -30,6 +31,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -41,6 +43,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -52,6 +55,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -63,6 +67,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -74,6 +79,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -85,6 +91,7 @@ class AnimapuApi {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
@@ -96,6 +103,21 @@ class AnimapuApi {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
+      },
+      body: JSON.stringify(params)
+    })
+    return response
+  }
+
+  async PostFollowManga(user, params) {
+    var uri = `${this.AnimapuApiHost}/mangas/follow`
+    const response = await fetch(uri, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Animapu-User-Uid': user.uid,
+        'X-Visitor-Id': this.GetVisitorID(),
       },
       body: JSON.stringify(params)
     })
@@ -119,6 +141,7 @@ class AnimapuApi {
         headers: {
           'Content-Type': 'application/json',
           'Animapu-User-Uid': user.uid,
+          'X-Visitor-Id': this.GetVisitorID(),
         },
         body: JSON.stringify(params)
       })
@@ -136,9 +159,17 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'Animapu-User-Uid': user.uid,
+        'X-Visitor-Id': this.GetVisitorID(),
       }
     })
     return response
+  }
+
+  GetVisitorID() {
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
+      return localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")
+    }
+    return ""
   }
 }
 

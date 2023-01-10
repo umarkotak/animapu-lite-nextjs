@@ -24,6 +24,7 @@ export default function ReadManga(props) {
     if (typeof window === "undefined") { return }
     if (!query.chapter_id) { return }
     getChapter()
+    handleUpvote(false)
 
   }, [query])
 
@@ -33,7 +34,6 @@ export default function ReadManga(props) {
 
     recordLocalHistory()
     recordOnlineHistory()
-    handleUpvote(false)
   }, [chapter])
 
   async function getChapter() {
@@ -119,7 +119,7 @@ export default function ReadManga(props) {
   }
 
   async function handleUpvote(star) {
-    if (!manga.source_id) { return }
+    if (!manga.source_id && !(typeof window !== "undefined")) { return }
 
     try {
       manga.star = star

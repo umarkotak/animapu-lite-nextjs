@@ -8,6 +8,7 @@ import MangaCard from "../components/MangaCard"
 import ChangeSourceModal from "../components/ChangeSourceModal"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
+import uuid from 'react-uuid'
 
 var onApiCall = false
 var page = 1
@@ -116,6 +117,10 @@ export default function Home() {
     GetLatestMangaNextPage()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerNextPage])
+
+  if (typeof window !== "undefined" && !localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
+    localStorage.setItem("ANIMAPU_LITE:VISITOR_ID", `VISITOR_ID:${uuid()}`)
+  }
 
   return (
     <Fragment>

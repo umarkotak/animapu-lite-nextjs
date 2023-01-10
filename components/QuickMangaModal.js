@@ -84,7 +84,7 @@ export default function QuickMangaModal(props) {
     isContinuePossible()
   }, [manga])
 
-  function handleFollow() {
+  async function handleFollow() {
     if (!manga.source_id) { return }
 
     var libraryArrayString = localStorage.getItem(listKey)
@@ -112,6 +112,18 @@ export default function QuickMangaModal(props) {
     localStorage.setItem(detailKey, JSON.stringify(tempManga))
     setFollowed(isInLibrary())
 
+    // API CALL
+    try {
+      const response = await animapuApi.PostFollowManga({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, manga)
+      const body = await response.json()
+      if (response.status !== 200) {
+        console.log(`${body.error.error_code} || ${body.error.message}`)
+        return
+      }
+    } catch (e) {
+      console.log(e.message)
+    }
+
     alert.info("Info || Manga ini udah masuk library kamu!")
   }
 
@@ -119,6 +131,7 @@ export default function QuickMangaModal(props) {
     if (!manga.source_id) { return }
 
     try {
+      manga.star = true
       const response = await animapuApi.PostUpvoteManga(manga)
       const body = await response.json()
       if (response.status !== 200) {

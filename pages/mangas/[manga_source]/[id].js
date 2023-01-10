@@ -95,6 +95,7 @@ export default function MangaDetail(props) {
     if (!manga.source_id) { return }
 
     try {
+      manga.star = true
       const response = await animapuApi.PostUpvoteManga(manga)
       const body = await response.json()
       if (response.status !== 200) {
