@@ -17,7 +17,7 @@ export default function WatchFromSource() {
     if (!query) { return }
 
     if (query.anime_source === "animepahe") {
-      setAnimeSource("https://animepahe.com/")
+      setAnimeSource("https://animepahe.ru/")
 
     } else if (query.anime_source === "animeindo") {
       setAnimeSource("https://185.224.82.193/")
@@ -27,7 +27,7 @@ export default function WatchFromSource() {
       setAnimeSource("https://animension.to/")
 
     } else {
-      setAnimeSource("https://animepahe.com/")
+      setAnimeSource("https://animepahe.ru/")
     }
   // eslint-disable-next-line
   }, [query])
