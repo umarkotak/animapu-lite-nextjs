@@ -7,7 +7,7 @@ class AnimapuApi {
     //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // }
 
-    this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
+    // this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     this.AnimapuApiHost = "https://animapu.site"
     // this.AnimapuApiHost = "http://localhost:6001"
   }
@@ -20,6 +20,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -32,6 +33,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -44,6 +46,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -56,6 +59,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -68,6 +72,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -80,6 +85,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -92,6 +98,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -104,6 +111,7 @@ class AnimapuApi {
       headers: {
         'Content-Type': 'application/json',
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       },
       body: JSON.stringify(params)
     })
@@ -118,6 +126,7 @@ class AnimapuApi {
         'Content-Type': 'application/json',
         'Animapu-User-Uid': user.uid,
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       },
       body: JSON.stringify(params)
     })
@@ -142,6 +151,7 @@ class AnimapuApi {
           'Content-Type': 'application/json',
           'Animapu-User-Uid': user.uid,
           'X-Visitor-Id': this.GetVisitorID(),
+          'X-From-Path': this.GetFromPath(),
         },
         body: JSON.stringify(params)
       })
@@ -160,6 +170,7 @@ class AnimapuApi {
         'Content-Type': 'application/json',
         'Animapu-User-Uid': user.uid,
         'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
       }
     })
     return response
@@ -168,6 +179,13 @@ class AnimapuApi {
   GetVisitorID() {
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
       return localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")
+    }
+    return ""
+  }
+
+  GetFromPath() {
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
+      return window.location.href
     }
     return ""
   }
