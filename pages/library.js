@@ -6,6 +6,8 @@ import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 
 var mangaSynced = false
+var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
+
 export default function Library() {
   const [mangas, setMangas] = useState([])
   const [onlineMangas, setOnlineMangas] = useState([])
@@ -19,7 +21,6 @@ export default function Library() {
   })
 
   function GetLibraryMangas() {
-    var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
     var libraryArrayString = localStorage.getItem(listKey)
     mangaSynced = false
 
@@ -61,11 +62,10 @@ export default function Library() {
     var idx = 1
     var anyUpdate = false
     var libraryArray
-    var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
     var tempMangas = libraryMangas
     tempMangas = libraryMangas.filter((v) => {
-      return (!v.local_updated_at || (v.local_updated_at && Math.floor(Date.now() / 1000) > (v.local_updated_at+3600)))
+      return ((!v.local_updated_at || (v.local_updated_at && Math.floor(Date.now() / 1000) > (v.local_updated_at+3600))))
     })
 
     for (const manga of tempMangas) {
@@ -111,7 +111,7 @@ export default function Library() {
       // Update library
       if (showLatestChapter(tempManga) > showLatestChapter(manga)) {
         libraryArray = libraryArray.filter((arrManga) => {
-          !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) && !`${arrManga.source_id}`.includes("/")
+          return !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) && !`${arrManga.source_id}`.includes("/")
         })
         libraryArray.unshift(tempManga)
         anyUpdate = true
