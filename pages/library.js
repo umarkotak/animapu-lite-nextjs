@@ -72,17 +72,21 @@ export default function Library() {
       var thisUpdated = false
       var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
-      // if (manga.local_updated_at && (manga.local_updated_at+3600) > Math.floor(Date.now() / 1000)) { continue }
+      if (manga.local_updated_at && (manga.local_updated_at+3600) > Math.floor(Date.now() / 1000)) { continue }
 
-      const response = await animapuApi.GetMangaDetail({
-        manga_source: manga.source,
-        manga_id: manga.source_id,
-        secondary_source_id: manga.secondary_source_id
-      })
-      const body = await response.json()
       var mangaDetail
-      if (response.status == 200) {
-        mangaDetail = body.data
+      try {
+        const response = await animapuApi.GetMangaDetail({
+          manga_source: manga.source,
+          manga_id: manga.source_id,
+          secondary_source_id: manga.secondary_source_id
+        })
+        const body = await response.json()
+        if (response.status == 200) {
+          mangaDetail = body.data
+        }
+      } catch {
+        mangaDetail = manga
       }
 
       var tempManga = mangaDetail
@@ -106,13 +110,15 @@ export default function Library() {
 
       // Update library
       if (showLatestChapter(tempManga) > showLatestChapter(manga)) {
-        libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+        libraryArray = libraryArray.filter((arrManga) => {
+          !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) && !`${arrManga.source_id}`.includes("/")
+        })
         libraryArray.unshift(tempManga)
         anyUpdate = true
         thisUpdated = true
 
       } else {
-        libraryArray = libraryArray.filter((v) => (v.title !== "")).map(arrManga => {
+        libraryArray = libraryArray.filter((v) => (v.title !== "" && !`${v.source_id}`.includes("/"))).map(arrManga => {
           if (`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`) {
             arrManga = tempManga
           }
@@ -121,7 +127,6 @@ export default function Library() {
           }
           return arrManga
         })
-
       }
 
       localStorage.setItem(listKey, JSON.stringify(libraryArray))
@@ -171,41 +176,44 @@ export default function Library() {
 
   const [activeFilter, setActiveFilter] = useState("all")
 
-  function filterMangas(mangas, filterMode) {
+  function filterMangas(mangas, selectedTab, filterMode) {
     var filteredMangas = mangas
 
     if (filterMode !== "all") {
       filteredMangas = filteredMangas.filter((filteredManga) => {
-        var mangaObj = new Manga(filteredManga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
-
-        if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
-          if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
-            var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
-
-            if (filterMode === "ongoing" && (onlineManga && onlineManga.last_chapter_read >= 0)) {
-              return true
-            } else if (filterMode === "unread" && !(onlineManga && onlineManga.last_chapter_read >= 0)) {
-              return true
-            }
-          } else if (filterMode === "unread") {
-            return true
-          }
-        }
-
         if (typeof window !== "undefined") {
-          var localHistoryDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${filteredManga.source}:${filteredManga.source_id}:${filteredManga.secondary_source_id}`
-          if (localStorage.getItem(localHistoryDetailKey)) {
-            var localManga = JSON.parse(localStorage.getItem(localHistoryDetailKey))
+          var mangaObj = new Manga(filteredManga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
 
-            if (filterMode === "ongoing" && (localManga && localManga.last_chapter_read)) {
+          if (localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true" && localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
+            var historyMangaDetail = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
+
+            if (filterMode === "ongoing" && (historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
               return true
-            } else if (filterMode === "unread" && !(localManga && localManga.last_chapter_read)) {
+            } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
               return true
+            } else if (filterMode === "unread") {
+              return false
             }
-          } else if (filterMode === "unread") {
+          }
+
+          if (localStorage.getItem(mangaObj.GetLocalHistoryKey())) {
+            var historyMangaDetail = JSON.parse(localStorage.getItem(mangaObj.GetLocalHistoryKey()))
+
+            if (filterMode === "ongoing" && (historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
+              return true
+            } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
+              return true
+            } else if (filterMode === "unread") {
+              return false
+            }
+          }
+
+          if (filterMode === "unread") {
             return true
           }
         }
+
+        return false
       })
     }
 
@@ -236,18 +244,18 @@ export default function Library() {
         </div>
       </div>
 
-      <div className='pt-4'>
+      <div className='pt-0'>
         <div className="container mx-auto max-w-[1040px]">
           <div className='px-6'>
             <div className="flex justify-end text-white">
-              <span className='mx-4'><b>Filters: </b></span>
-              <button className={`mx-4 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
+              <span className='mx-2'><b>Filters: </b></span>
+              <button className={`mx-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
                 All
               </button>
-              <button className={`mx-4 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
+              <button className={`mx-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
                 Ongoing
               </button>
-              <button className={`ml-4 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
+              <button className={`ml-2 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
                 Unread
               </button>
             </div>
@@ -275,14 +283,14 @@ export default function Library() {
           <div className="grid grid-rows-1 grid-flow-col">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
               {(activeTab === "local") &&
-                filterMangas(mangas, activeFilter).map((manga, idx) => (
+                filterMangas(mangas, activeTab, activeFilter).map((manga, idx) => (
                   <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
                 ))
               }
               {/* TODO: Change mangas to onlineMangas */}
               {(activeTab === "online") && mangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} />}
               {(activeTab === "online") &&
-                filterMangas(mangas, activeFilter).map((manga, idx) => (
+                filterMangas(mangas, activeTab, activeFilter).map((manga, idx) => (
                   <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
                 ))
               }

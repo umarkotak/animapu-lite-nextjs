@@ -1,13 +1,11 @@
 class AnimapuApi {
   constructor() {
     // if (window.location.protocol === "https:") {
-    //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
+    //   this.AnimapuApiHost = "https://animapu.site"
     // } else {
     //   this.AnimapuApiHost = "http://localhost:6001"
-    //   this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     // }
 
-    // this.AnimapuApiHost = "https://animapu-api.herokuapp.com"
     this.AnimapuApiHost = "https://animapu.site"
     // this.AnimapuApiHost = "http://localhost:6001"
   }
