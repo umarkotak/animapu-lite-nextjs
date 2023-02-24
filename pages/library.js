@@ -187,9 +187,9 @@ export default function Library() {
           if (localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true" && localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
             var historyMangaDetail = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
 
-            if (filterMode === "ongoing" && (historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
+            if (filterMode === "ongoing" && (historyMangaDetail && historyMangaDetail.last_chapter_read > 1)) {
               return true
-            } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
+            } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read > 1)) {
               return true
             } else if (filterMode === "unread") {
               return false
@@ -199,9 +199,9 @@ export default function Library() {
           if (localStorage.getItem(mangaObj.GetLocalHistoryKey())) {
             var historyMangaDetail = JSON.parse(localStorage.getItem(mangaObj.GetLocalHistoryKey()))
 
-            if (filterMode === "ongoing" && (historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
+            if (filterMode === "ongoing" && (historyMangaDetail && historyMangaDetail.last_chapter_read > 1)) {
               return true
-            } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read >= 1)) {
+            } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read > 1)) {
               return true
             } else if (filterMode === "unread") {
               return false
