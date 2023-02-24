@@ -3,10 +3,12 @@ import { useState, useEffect } from 'react'
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
+import Manga from "../models/Manga"
 
 var mangaSynced = false
 export default function Library() {
   const [mangas, setMangas] = useState([])
+  const [onlineMangas, setOnlineMangas] = useState([])
 
   const [updateStatus, setUpdateStatus] = useState({
     current: 0,
@@ -148,6 +150,9 @@ export default function Library() {
     var libraryMangas = GetLibraryMangas()
     setMangas(libraryMangas)
     CheckForUpdates(libraryMangas)
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+      setActiveTab("online")
+    }
     // eslint-disable-next-line
   }, [])
 
@@ -155,11 +160,98 @@ export default function Library() {
   // eslint-disable-next-line
   }, [mangas])
 
+  const [activeTab, setActiveTab] = useState("local")
+
+  function getTabColor(tabString) {
+    if (activeTab === tabString) {
+      return "text-[#3db3f2]"
+    }
+    return "hover:text-[#3db3f2]"
+  }
+
+  const [activeFilter, setActiveFilter] = useState("all")
+
+  function filterMangas(mangas, filterMode) {
+    var filteredMangas = mangas
+
+    if (filterMode !== "all") {
+      filteredMangas = filteredMangas.filter((filteredManga) => {
+        var mangaObj = new Manga(filteredManga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+
+        if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+          if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
+            var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
+
+            if (filterMode === "ongoing" && (onlineManga && onlineManga.last_chapter_read >= 0)) {
+              return true
+            } else if (filterMode === "unread" && !(onlineManga && onlineManga.last_chapter_read >= 0)) {
+              return true
+            }
+          } else if (filterMode === "unread") {
+            return true
+          }
+        }
+
+        if (typeof window !== "undefined") {
+          var localHistoryDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${filteredManga.source}:${filteredManga.source_id}:${filteredManga.secondary_source_id}`
+          if (localStorage.getItem(localHistoryDetailKey)) {
+            var localManga = JSON.parse(localStorage.getItem(localHistoryDetailKey))
+
+            if (filterMode === "ongoing" && (localManga && localManga.last_chapter_read)) {
+              return true
+            } else if (filterMode === "unread" && !(localManga && localManga.last_chapter_read)) {
+              return true
+            }
+          } else if (filterMode === "unread") {
+            return true
+          }
+        }
+      })
+    }
+
+    return filteredMangas
+  }
+
+  function getFilterColor(filterString) {
+    if (activeFilter === filterString) {
+      return "text-[#3db3f2]"
+    }
+    return "hover:text-[#3db3f2]"
+  }
+
   return (
     <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
-          <span className="px-4 mb-4 text-white text-xl">Library</span>
+          <div className="flex justify-between">
+            <span className="px-4 mb-4 text-white">
+              Library
+            </span>
+            <span className="px-4 mb-4 text-white">
+              <button className={`mx-2 ${getTabColor("local")}`} onClick={()=>{setActiveTab("local")}}><i className="fa-solid fa-file"></i> Local</button>
+              <button className={`mx-2 ${getTabColor("online")}`} onClick={()=>{setActiveTab("online")}}><i className="fa-solid fa-cloud"></i> Online</button>
+              <button className={`mx-2 hover:text-[#3db3f2]`} onClick={()=>{}}><i className="fa-solid fa-wifi"></i> Sync</button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className='pt-4'>
+        <div className="container mx-auto max-w-[1040px]">
+          <div className='px-6'>
+            <div className="flex justify-end text-white">
+              <span className='mx-4'><b>Filters: </b></span>
+              <button className={`mx-4 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
+                All
+              </button>
+              <button className={`mx-4 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
+                Ongoing
+              </button>
+              <button className={`ml-4 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
+                Unread
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -179,11 +271,21 @@ export default function Library() {
               </div>
             </div>
           </div>
+
           <div className="grid grid-rows-1 grid-flow-col">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-              {mangas.map((manga, idx) => (
-                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
-              ))}
+              {(activeTab === "local") &&
+                filterMangas(mangas, activeFilter).map((manga, idx) => (
+                  <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
+                ))
+              }
+              {/* TODO: Change mangas to onlineMangas */}
+              {(activeTab === "online") && mangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} />}
+              {(activeTab === "online") &&
+                filterMangas(mangas, activeFilter).map((manga, idx) => (
+                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
+                ))
+              }
             </div>
           </div>
         </div>

@@ -1,0 +1,255 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 3.81
+# Copyright (C) 2006  Free Software Foundation, Inc.
+# This is free software; see the source for copying conditions.
+# There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# This program built for i386-apple-darwin11.3.0
+ 
+make: *** No rule to make target `all'.  Stop.
+
+
+# Make data base, printed on Fri Feb 24 18:13:23 2023
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+ELECTRON_NO_ATTACH_CONSOLE = 1
+# environment
+LC_CTYPE = UTF-8
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /Users/umar.ramadhana/umar/personal_projects/nextjs/animapu-lite
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/bin/make
+# makefile (from `Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# environment
+__CFBundleIdentifier = com.microsoft.VSCode
+# environment
+VSCODE_CWD = /Users/umar.ramadhana/umar/personal_projects/nextjs/animapu-lite
+# environment
+PATH = /Users/umar.ramadhana/Downloads/google-cloud-sdk/bin:/Users/umar.ramadhana/.pyenv/shims:/Users/umar.ramadhana/.rbenv/shims:/Users/umar.ramadhana/.pyenv/bin:/Users/umar.ramadhana/go/bin:/Users/umar.ramadhana/Library/Python/3.8/bin:/Users/umar.ramadhana/usr/local/go/bin/go:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin
+# environment
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+GOPATH = /Users/umar.ramadhana/go
+# environment
+LaunchInstanceID = 6A40E83D-643A-4888-AF9D-F94A2BFEF60A
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# environment
+PYENV_ROOT = /Users/umar.ramadhana/.pyenv
+# default
+.FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
+# environment
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.nlxj3FgJeL/Listeners
+# automatic
+%F = $(notdir $%)
+# environment
+PWD = /Users/umar.ramadhana/umar/personal_projects/nextjs/animapu-lite
+# environment
+JAVA_OPTS = --add-opens java.xml/com.sun.xml.internal.stream.writers=org.jruby.dist
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+PYENV_SHELL = zsh
+# environment
+HOME = /Users/umar.ramadhana
+# default
+MAKEFILEPATH = $(shell /usr/bin/xcode-select -print-path 2>/dev/null || echo /Developer)/Makefiles
+# environment
+VSCODE_CLI = 1
+# environment
+VSCODE_CODE_CACHE_PATH = /Users/umar.ramadhana/Library/Application Support/Code/CachedData/441438abd1ac652551dbe4d408dfcec8a499b8bf
+# environment
+LOGNAME = umar.ramadhana
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+ZSH = /Users/umar.ramadhana/.oh-my-zsh
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+XPC_FLAGS = 0x0
+# environment
+COLORTERM = truecolor
+# default
+MAKE = $(MAKE_COMMAND)
+# environment
+LC_TERMINAL = iTerm2
+# environment
+SHLVL = 3
+# default
+MAKE_VERSION := 3.81
+# environment
+USER = umar.ramadhana
+# makefile
+.DEFAULT_GOAL := run
+# default
+MAKECMDGOALS := all
+# environment
+TERM_SESSION_ID = w0t3p1:652734E9-8AEA-433D-AADE-52E0B8C28622
+# environment
+LESS = -R
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# default
+MAKE_COMMAND := /Library/Developer/CommandLineTools/usr/bin/make
+# environment
+TERM_PROGRAM = iTerm.app
+# default
+.VARIABLES := 
+# environment
+TMPDIR = /var/folders/ks/wb5pp8w95rz99jc1g1m6g1_80000gn/T/
+# automatic
+*F = $(notdir $*)
+# environment
+VSCODE_IPC_HOOK = /Users/umar.ramadhana/Library/Application Support/Code/1.75.1-main.sock
+# environment
+MallocNanoZone = 0
+# makefile
+MAKEFLAGS = Rrqp
+# environment
+MFLAGS = -Rrqp
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+TERM_PROGRAM_VERSION = 3.4.19
+# environment
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.42964600.42964606.3FB55542-ED14-4F1C-BEB7-A0CFE6B245FD
+# environment
+LC_TERMINAL_VERSION = 3.4.19
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# environment
+ITERM_SESSION_ID = w0t3p1:652734E9-8AEA-433D-AADE-52E0B8C28622
+# environment
+COLORFGBG = 7;0
+# environment
+__CF_USER_TEXT_ENCODING = 0x1F5:0x0:0x0
+# environment
+COMMAND_MODE = unix2003
+# default
+MAKEFILES := 
+# environment
+RBENV_SHELL = zsh
+# automatic
+<F = $(notdir $<)
+# environment
+ITERM_PROFILE = Default
+# environment
+GOPRIVATE = source.golabs.io
+# environment
+PAGER = less
+# environment
+LC_ALL = C
+# environment
+SECURITYSESSIONID = 186a5
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# default
+.INCLUDE_DIRS = /usr/local/include
+# environment
+MAKELEVEL := 0
+# environment
+LANG = C
+# environment
+TERM = xterm-256color
+# environment
+VSCODE_PID = 2841
+# variable set hash-table stats:
+# Load=83/1024=8%, Rehash=0, Collisions=5/107=5%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 16777220, inode 1789605): 21 files, no impossibilities.
+
+# 21 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+all:
+#  Command-line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-06-20 04:57:38
+#  File has been updated.
+#  Successfully updated.
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/0=0%
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+run:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (from `Makefile', line 2):
+	npm run dev
+	
+
+# files hash-table stats:
+# Load=5/1024=0%, Rehash=0, Collisions=0/17=0%
+# VPATH Search Paths
+
+# No `vpath' search paths.
+
+# No general (`VPATH' variable) search path.
+
+# # of strings in strcache: 1
+# # of strcache buffers: 1
+# strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
+# strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
+
+# Finished Make data base on Fri Feb 24 18:13:23 2023
+
+ 

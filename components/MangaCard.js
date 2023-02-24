@@ -37,16 +37,6 @@ export default function MangaCard(props) {
     }
   }
 
-  function showMark(manga) {
-    var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    if (typeof window !== "undefined" && localStorage.getItem(historyDetailKey)) { return true }
-
-    var libraryDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-    if (typeof window !== "undefined" && localStorage.getItem(libraryDetailKey)) { return true }
-
-    return false
-  }
-
   function followed(manga) {
     var libraryDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
     if (typeof window !== "undefined" && localStorage.getItem(libraryDetailKey)) { return true }
@@ -217,7 +207,7 @@ export default function MangaCard(props) {
                   {followed(props.manga) && <span className="rounded-full leading-none mr-1"><i className="text-[16px] text-[#ec294b] text-sm fa-solid fa-heart"></i></span>}
                   {formatTitle(props.manga)}
                 </p>
-                <div className={`flex flex-col text-sm ${showMark(props.manga) ? "text-[#75b5f0]" : "text-[#75b5f0]"}`}>
+                <div className={`flex flex-col text-sm text-[#75b5f0]`}>
                   <div className="flex justify-between">
                     <b>{subTextDecider(props.manga)}</b>
                     <b>{midExtraSubTextDecider(props.manga)}</b>

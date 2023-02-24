@@ -13,3 +13,6 @@ sudo apt install npm
 npm install
 make run
 ```
+
+## Notes
+Fa icon ref: https://fontawesome.com/v6/search?o=r&m=free
