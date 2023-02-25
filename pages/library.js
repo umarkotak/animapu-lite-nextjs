@@ -191,7 +191,11 @@ export default function Library() {
               return true
             } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read > 1)) {
               return true
+            } else if (filterMode === "finished" && (historyMangaDetail && historyMangaDetail.last_chapter_read >= filteredManga.latest_chapter_number)) {
+              return true
             } else if (filterMode === "unread") {
+              return false
+            } else if (filterMode === "finished") {
               return false
             }
           }
@@ -203,7 +207,11 @@ export default function Library() {
               return true
             } else if (filterMode === "unread" && !(historyMangaDetail && historyMangaDetail.last_chapter_read > 1)) {
               return true
+            } else if (filterMode === "finished" && (historyMangaDetail && historyMangaDetail.last_chapter_read >= filteredManga.latest_chapter_number)) {
+              return true
             } else if (filterMode === "unread") {
+              return false
+            } else if (filterMode === "finished") {
               return false
             }
           }
@@ -248,15 +256,18 @@ export default function Library() {
         <div className="container mx-auto max-w-[1040px]">
           <div className='px-6'>
             <div className="flex justify-end text-white">
-              <span className='mx-2'><b>Filters: </b></span>
-              <button className={`mx-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
+              <span className='ml-2'><b>Filters: </b></span>
+              <button className={`ml-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
                 All
               </button>
-              <button className={`mx-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
+              <button className={`ml-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
                 Ongoing
               </button>
               <button className={`ml-2 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
                 Unread
+              </button>
+              <button className={`ml-2 ${getFilterColor("finished")}`} onClick={()=>{setActiveFilter("finished")}}>
+                Finished
               </button>
             </div>
           </div>
