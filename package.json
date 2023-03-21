@@ -12,6 +12,7 @@
     "@formkit/auto-animate": "^1.0.0-beta.1",
     "@panelbear/panelbear-nextjs": "^1.0.3",
     "@use-it/event-listener": "^0.1.7",
+    "firebase": "^9.17.1",
     "js-sha512": "^0.8.0",
     "next": "12.1.4",
     "next-pwa": "^5.5.2",

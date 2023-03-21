@@ -90,7 +90,6 @@ export default function BottomMenuBar(props) {
   useEventListener(
     "keydown",
     ({ key }) => {
-      console.log(String(key))
       if (LEFT_KEYS.includes(String(key))) {
         router.push(prevChapter())
       } else if (RIGHT_KEYS.includes(String(key))) {
