@@ -80,6 +80,7 @@ export default function MangaCard(props) {
     return "Read"
   }
 
+  // This will add text on the most right after chapter number
   function extraSubTextDecider(manga) {
     if (props.card_type === "popular") {
       return(
@@ -87,6 +88,7 @@ export default function MangaCard(props) {
       )
     }
 
+    // return `face count: ${manga.face_count}`
     return null
   }
 
