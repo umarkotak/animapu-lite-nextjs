@@ -1,13 +1,13 @@
 class AnimapuApi {
   constructor() {
-    if (window.location.protocol === "https:") {
-      this.AnimapuApiHost = "https://animapu.site"
-    } else {
-      this.AnimapuApiHost = "https://animapu.site"
-      // this.AnimapuApiHost = "http://localhost:6001"
-    }
+    // if (window.location.protocol === "https:") {
+    //   this.AnimapuApiHost = "https://animapu.site"
+    // } else {
+    //   this.AnimapuApiHost = "https://animapu.site"
+    //   this.AnimapuApiHost = "http://localhost:6001"
+    // }
 
-    // this.AnimapuApiHost = "https://animapu.site"
+    this.AnimapuApiHost = "https://animapu.site"
     // this.AnimapuApiHost = "http://localhost:6001"
   }
 
