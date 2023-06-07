@@ -257,7 +257,7 @@ export default function ReadManga(props) {
             <div className="flex justify-between">
               <div>
                 <Link href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
-                  <i className="fa fa-globe"></i> Orinal Source
+                  <i className="fa fa-globe"></i> Source
                 </a></Link>
                 <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
                 <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote(true)}><i className="fa-solid fa-star"></i> Upvote</button>
