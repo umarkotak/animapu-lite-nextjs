@@ -9,6 +9,11 @@ import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
 import Manga from "../../../../../models/Manga"
 
+var baseChapters = []
+var varTargetBottom = "none"
+var quickLock = false
+var baseOnePageMode = false
+
 export default function ReadManga(props) {
   const alert = useAlert()
   let router = useRouter()
@@ -16,9 +21,11 @@ export default function ReadManga(props) {
 
   var manga = props.manga
   const [chapter, setChapter] = useState({id: "", chapter_images: []})
+  const [chapters, setChapters] = useState(baseChapters)
 
-  const [successRender, setSuccessRender] = useState(false)
+  const [successRender, setSuccessRender] = useState(0)
   const [historySaved, setHistorySaved] = useState(false)
+  const [onePageMode, setOnePageMode] = useState(baseOnePageMode)
 
   useEffect(() => {
     if (typeof window === "undefined") { return }
@@ -46,7 +53,12 @@ export default function ReadManga(props) {
       })
       const body = await response.json()
       if (response.status == 200) {
+        baseChapters = []
         setChapter(body.data)
+        baseChapters.push(body.data)
+        var lastImageToLoad = 2
+        varTargetBottom = `${body.data.id}-${body.data.chapter_images.length-lastImageToLoad}`
+        setChapters(baseChapters)
       }
     } catch (e) {
       console.error(e)
@@ -54,6 +66,8 @@ export default function ReadManga(props) {
   }
 
   function recordLocalHistory() {
+    var historyMaxSize = 150
+
     try {
       var historyListKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
       var historyArrayString = localStorage.getItem(historyListKey)
@@ -72,7 +86,7 @@ export default function ReadManga(props) {
       tempManga.last_chapter_read = chapter.number
       historyArray.unshift(tempManga)
 
-      historyArray = historyArray.slice(0,80)
+      historyArray = historyArray.slice(0,historyMaxSize)
 
       historyArray = historyArray.map((val, idx) => {
         val.chapters = []
@@ -164,6 +178,87 @@ export default function ReadManga(props) {
     alert.info("Info || Manga ini udah masuk library kamu!")
   }
 
+  function isBottom(el) {
+    if (!el) { return false }
+    return el.getBoundingClientRect().top <= window.innerHeight
+  }
+
+  async function getNextChapter(chapter_id) {
+    try {
+      const response = await animapuApi.GetReadManga({
+        manga_source: query.manga_source,
+        manga_id: query.id,
+        chapter_id: chapter_id,
+        secondary_source_id: query.secondary_source_id
+      })
+      const body = await response.json()
+      if (response.status == 200) {
+        if (baseChapters[baseChapters.length-1].id === body.data.id) {
+          return
+        }
+        baseChapters = [...baseChapters, body.data]
+        var lastImageToLoad = 1
+        varTargetBottom = `${body.data.id}-${body.data.chapter_images.length-lastImageToLoad}`
+        setChapters(baseChapters)
+
+        // TODO: save history on previous chapter
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+
+  const handleScroll = () => {
+    if (!baseOnePageMode) { return }
+    // var position = window.pageYOffset
+    // var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    var wrappedElement = document.getElementById(varTargetBottom)
+
+    if (isBottom(wrappedElement)) {
+      varTargetBottom = "none"
+
+      if (!quickLock) {
+        quickLock = true
+
+        var targetIdx = 0
+        manga.chapters.map((tmpChapter, idx) => {
+          if (tmpChapter.id === baseChapters[baseChapters.length-1].id) {
+            targetIdx = idx - 1
+          }
+        })
+
+        if (manga.chapters[targetIdx]) {
+          getNextChapter(manga.chapters[targetIdx].id)
+        }
+
+        quickLock = false
+      }
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  function shareUrlText() {
+    var secondary_source = ""
+    if (manga.secondary_source_id) {
+      secondary_source = `secondary_source_id=${manga.secondary_source_id}`
+    }
+    return `
+      Read *${manga.title}* Chapter *${chapter.number}* for free at
+      https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${query.chapter_id}?${secondary_source}
+    `
+  }
+
+  function toggleOnePageMode() {
+    baseOnePageMode = !baseOnePageMode
+  }
+
   return (
     <div className="min-h-screen pb-60 bg-[#d6e0ef]">
       <Head>
@@ -171,57 +266,79 @@ export default function ReadManga(props) {
         <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
 
         <meta name="og:title" content={`${props.manga.title}`} />
-        <meta name="og:description" content={`Read chapter ${props.chapter.number}`} />
+        <meta name="og:description" content={`Read manga with the best experience at animapu`} />
         <meta name="og:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
 
         <meta name="twitter:title" content={`${props.manga.title}`} />
-        <meta name="twitter:description" content={`Read chapter ${props.chapter.number}`} />
+        <meta name="twitter:description" content={`Read manga with the best experience at animapu`} />
         <meta name="twitter:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
       </Head>
 
       <div>
         <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
           <div className="mt-1 mb-2">
-            <div className="flex justify-between">
-              <div>
-                <Link href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
-                  <i className="fa fa-globe"></i> Chapter {chapter.number}
-                </a></Link>
-                <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
-                <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleUpvote(true)}><i className="fa-solid fa-star"></i> Upvote</button>
-                <button
-                  className="bg-white rounded-lg ml-2 p-1 height-[27px]"
-                  onClick={(e)=>{
-                    navigator.clipboard.writeText(`Read *${manga.title}* Chapter *${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${props.chapter.id}?secondary_source_id=${manga.secondary_source_id}`)
-                    alert.info("Info || Link berhasil dicopy!")
-                  }}
-                ><i className="fa-solid fa-share-nodes"></i> Share</button>
-              </div>
-              <div>
-                {historySaved && <i className="fa-solid fa-circle-check"></i>}
-              </div>
+            <div className="flex justify-start text-center text-xs">
+              <Link href={chapter.source_link || "#"}><a target="_blank"
+                className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
+              ><i className="fa fa-globe"></i> source</a></Link>
+              <button
+                className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleFollow()}
+              ><i className="fa-solid fa-heart"></i> Follow</button>
+              <button
+                className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleUpvote(true)}
+              ><i className="fa-solid fa-star"></i> upvote</button>
+              <button
+                className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
+                onClick={()=>{
+                  navigator.clipboard.writeText(shareUrlText())
+                  alert.info("Info || Link berhasil dicopy!")
+                }}
+              ><i className="fa-solid fa-share-nodes"></i> share</button>
+              {historySaved && <button
+                className="bg-green-200 rounded-lg p-1 height-[27px]" disabled
+              ><i className="fa-solid fa-clock-rotate-left"></i> saved: {`ch ${chapter.number}`}</button>}
+            </div>
+            <div className="flex justify-start text-center text-xs mt-2">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" value="" className="sr-only peer" onClick={()=>toggleOnePageMode()}/>
+                <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                <span className="ml-1 text-sm font-medium text-gray-900 dark:text-gray-300">one page mode</span>
+              </label>
             </div>
           </div>
-          <div>
 
-            {chapter.chapter_images.map((imageObj, idx) => (
-              <div key={`${chapter.id}-${idx}`}>
-                <Img
-                  className="w-full mb-1 bg-gray-600"
-                  src={imageObj.image_urls}
-                  onLoad={()=>{setSuccessRender(true)}}
-                  loader={
-                    <div className="my-1">
-                      <svg role="status" className="mx-auto w-8 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-red-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                      </svg>
-                    </div>
-                  }
-                />
+          <div id="chapter_manga_image">
+            {chapters.map((oneChapter, oneChIdx) => (
+              <div key={`multi-ch-${oneChapter.id}-${oneChIdx}`}>
+                <hr className='border-black border-2 rounded'/>
+                <p className='text-center font-semibold text-xl'>~ Chapter: {oneChapter.number} ~</p>
+                <hr className='border-black border-2 rounded mb-1'/>
+                {oneChapter.chapter_images.map((imageObj, idx) => (
+                  <div
+                    id={`${oneChapter.id}-${idx}`}
+                    // id={`${oneChapter.id}-${idx} ${oneChapter.chapter_images.length-1===idx ? `${oneChapter.id}-final` : ""}`}
+                    key={`${oneChapter.id}-${idx}`}
+                  >
+                    <Img
+                      className="w-full mb-1 bg-gray-600"
+                      src={imageObj.image_urls}
+                      onLoad={()=>{setSuccessRender(1)}}
+                      onError={()=>{}}
+                      loader={
+                        <div className="my-1">
+                          <svg role="status" className="mx-auto w-8 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-red-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                          </svg>
+                        </div>
+                      }
+                    />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
+
           <p className="text-center"><Link href={chapter.source_link || "#"}>
             <a target="_blank" className="hover:text-[#3db3f2]"><b><i className="fa fa-globe"></i> Read from original source</b></a>
           </Link></p>
@@ -230,10 +347,6 @@ export default function ReadManga(props) {
           </div>}
         </div>
       </div>
-
-      <p className="text-center"><Link href={`${typeof(window) !== "undefined" ? window.location.href : ""}`.replace("/read/", "/read_beta/")}>
-        <a target="" className="hover:text-[#3db3f2]"><b>One page mode (beta)</b></a>
-      </Link></p>
 
       <BottomMenuBar isPaginateNavOn={true} isRead={true} manga={manga} chapter_id={chapter.id} />
     </div>
