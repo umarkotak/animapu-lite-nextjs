@@ -201,7 +201,8 @@ export default function ReadManga(props) {
         varTargetBottom = `${body.data.id}-${body.data.chapter_images.length-lastImageToLoad}`
         setChapters(baseChapters)
 
-        // TODO: save history on previous chapter
+        // TODO: save history on one page mode
+        // TODO: sync selected chapter on one page mode
       }
     } catch (e) {
       console.error(e)
@@ -298,8 +299,8 @@ export default function ReadManga(props) {
             <div className="flex justify-start text-center text-xs mt-2">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" value="" className="sr-only peer" onClick={()=>toggleOnePageMode()}/>
-                <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                <span className="ml-1 text-sm font-medium text-gray-900 dark:text-gray-300">one page mode</span>
+                <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all  peer-checked:bg-blue-600"></div>
+                <span className="ml-1 text-sm font-medium text-gray-900">one page mode</span>
               </label>
             </div>
           </div>
@@ -307,9 +308,15 @@ export default function ReadManga(props) {
           <div id="chapter_manga_image">
             {chapters.map((oneChapter, oneChIdx) => (
               <div key={`multi-ch-${oneChapter.id}-${oneChIdx}`}>
-                <hr className='border-black border-2 rounded'/>
-                <p className='text-center font-semibold text-xl'>~ Chapter: {oneChapter.number} ~</p>
                 <hr className='border-black border-2 rounded mb-1'/>
+                <div className='flex justify-between items-center'>
+                  <p className='text-center font-semibold text-3xl'>~ Chapter: {oneChapter.number} ~</p>
+                  <button
+                    className='text-sm bg-white hover:bg-sky-300 rounded-lg mr-1 p-1 my-1'
+                    onClick={()=>alert.info("Info || Feature on progress")}
+                  >save to history</button>
+                </div>
+                <hr className='border-black border-2 rounded mb-2 mt-1'/>
                 {oneChapter.chapter_images.map((imageObj, idx) => (
                   <div
                     id={`${oneChapter.id}-${idx}`}
