@@ -326,8 +326,8 @@ export default function Setting() {
             <a href="https://vercel.com/umarkotak/animapu-lite-nextjs/deployments" className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Vercel Deployment</a>
             <div>
               <span className="block mt-2 mb-2">
-                PanelBear ({panelbearDisable === 'true' ? 'Off' : 'On'})
-                <Link href={"https://app.panelbear.com/sites/1ldX7qgR0Bq/traffic/?period=7d&timeseriesCompareDimension=event_count"} target="_blank">
+                Cronitor ({panelbearDisable === 'true' ? 'Off' : 'On'})
+                <Link href={"https://cronitor.io/app/sites/5a31ef56f45643c0?env=production&time=7d&dimensionGroup=Pageviews"} target="_blank">
                   <a target="_blank"> <i className="fa-solid fa-up-right-from-square"></i></a>
                 </Link>
               </span>

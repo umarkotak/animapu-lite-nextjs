@@ -3,8 +3,8 @@ import Head from 'next/head'
 import NProgress from 'nprogress'
 import "nprogress/nprogress.css"
 import Router from 'next/router'
-import { usePanelbear } from '@panelbear/panelbear-nextjs'
 import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import Script from 'next/script'
 
 NProgress.configure({
   minimum: 0.3,
@@ -18,10 +18,6 @@ Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
 function MyApp({ Component, pageProps }) {
-  usePanelbear('1ldX7qgR0Bq', {
-    // debug: true,
-  })
-
   const AlertTemplate = ({ style, options, message, close }) => {
     var title = "Error"
     var description = message
@@ -84,6 +80,9 @@ function MyApp({ Component, pageProps }) {
       <AlertProvider template={AlertTemplate} {...options}>
         <Component {...pageProps} />
       </AlertProvider>
+
+      <Script src="https://rum.cronitor.io/script.js" />
+      <Script src="/cronitor_impl.js" />
     </>
   )
 }
