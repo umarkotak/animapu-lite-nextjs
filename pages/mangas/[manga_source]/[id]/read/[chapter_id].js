@@ -249,10 +249,7 @@ export default function ReadManga(props) {
     if (manga.secondary_source_id) {
       secondary_source = `secondary_source_id=${manga.secondary_source_id}`
     }
-    return `
-      Read *${manga.title}* Chapter *${chapter.number}* for free at
-      https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${query.chapter_id}?${secondary_source}
-    `
+    return `Read *${manga.title}* - *Chapter ${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${query.chapter_id}?${secondary_source}`
   }
 
   function toggleOnePageMode() {
