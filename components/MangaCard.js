@@ -185,7 +185,7 @@ export default function MangaCard(props) {
           } */}
 
           <div onClick={()=>changeUrl(props.manga)}>
-            <Link href={goToManga(props.manga)}>
+            <Link legacyBehavior href={goToManga(props.manga)}>
               <a className="bg-gray-600 rounded-lg">
                 <img
                   className={`w-full h-[265px] rounded-lg`}
@@ -197,7 +197,7 @@ export default function MangaCard(props) {
           </div>
 
           <div onClick={()=>changeUrl(props.manga)}>
-            <Link href={goToManga(props.manga)}>
+            <Link legacyBehavior href={goToManga(props.manga)}>
               <a className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
                 {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
                   <small>{props.manga.source}</small>

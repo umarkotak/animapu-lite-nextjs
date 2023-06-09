@@ -132,8 +132,8 @@ export default function Home() {
                 <ChangeSourceModal text={activeSource} />
               </span>
               <span className="px-4 mb-4 text-white">
-                <Link href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
-                <Link href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link>
+                <Link legacyBehavior href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
+                <Link legacyBehavior href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link>
               </span>
             </div>
           </div>

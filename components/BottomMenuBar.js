@@ -104,12 +104,12 @@ export default function BottomMenuBar(props) {
     <>
       <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[1040px]`}>
         <div className="flex justify-between">
-          <Link href={prevChapter()}>
+          <Link legacyBehavior href={prevChapter()}>
             <a className="focus:text-teal-500 hover:text-teal-500 ml-1 mr-2 w-full bg-[#2b2d42] hover:bg-[#3db3f2] py-1 pr-1 rounded text-center">
               <i className="fa-solid fa-angle-left text-white"></i>
             </a>
           </Link>
-          <Link href={nextChapter()}>
+          <Link legacyBehavior href={nextChapter()}>
             <a className="focus:text-teal-500 hover:text-teal-500 mr-1 ml-2  w-full bg-[#2b2d42] hover:bg-[#3db3f2] py-1 pl-1 rounded text-center">
               <i className="fa-solid fa-angle-right text-white"></i>
             </a>
@@ -137,12 +137,12 @@ export default function BottomMenuBar(props) {
           <div>
             <div className={`${(isOpen && props.isPaginateNavOn) ? "block" : "hidden"} bg-[#2b2d42] bg-opacity-50 py-1 px-1 rounded mr-1`}>
               <div className={`flex justify-between`}>
-                <Link href={prevChapter()}>
+                <Link legacyBehavior href={prevChapter()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-2">
                     <i className="fa-solid fa-angle-left text-white align-middle"></i>
                   </a>
                 </Link>
-                <Link href={toManga()}>
+                <Link legacyBehavior href={toManga()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-2">
                     <i className="fa-solid fa-book text-white align-middle"></i>
                   </a>
@@ -158,7 +158,7 @@ export default function BottomMenuBar(props) {
                   value={chapters[currentIdx]}
                   styles={customStyles}
                 />
-                <Link href={nextChapter()}>
+                <Link legacyBehavior href={nextChapter()}>
                   <a className="focus:text-teal-500 hover:text-teal-500 mx-1">
                     <i className="fa-solid fa-angle-right text-white align-middle"></i>
                   </a>
@@ -169,7 +169,7 @@ export default function BottomMenuBar(props) {
           <div className="flex">
             <div className={`bg-[#2b2d42] bg-opacity-50 rounded-lg mr-1 ${isOpen ? "block" : "hidden"}`}>
               <div className="py-1 px-2">
-                <Link href="/anime">
+                <Link legacyBehavior href="/anime">
                   <a className="text-white hover:text-[#3db3f2]">
                     Manga
                   </a>
@@ -186,37 +186,37 @@ export default function BottomMenuBar(props) {
 
         <div className={`${isOpen ? "block" : "hidden"} bg-[#2b2d42] pb-2`}>
           <div className="flex justify-between container mx-auto max-w-[1040px]">
-            <Link href="/">
+            <Link legacyBehavior href="/">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-house"></i>
                 <span className="tab tab-home block text-xs">Home</span>
               </a>
             </Link>
-            <Link href="/search">
+            <Link legacyBehavior href="/search">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-magnifying-glass"></i>
                 <span className="tab tab-home block text-xs">Search</span>
               </a>
             </Link>
-            <Link href="/library">
+            <Link legacyBehavior href="/library">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-book-bookmark"></i>
                 <span className="tab tab-home block text-xs">Library</span>
               </a>
             </Link>
-            <Link href="/history">
+            <Link legacyBehavior href="/history">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-clock-rotate-left"></i>
                 <span className="tab tab-home block text-xs">History</span>
               </a>
             </Link>
-            <Link href="/setting">
+            <Link legacyBehavior href="/setting">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-gear"></i>
                 <span className="tab tab-home block text-xs">Setting</span>
               </a>
             </Link>
-            {/* <Link href="/account">
+            {/* <Link legacyBehavior href="/account">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-user"></i>
                 <span className="tab tab-home block text-xs">Account</span>
@@ -245,7 +245,7 @@ export default function BottomMenuBar(props) {
           <div className="flex">
             <div className={`bg-[#2b2d42] bg-opacity-50 rounded-lg mr-1 ${isOpen ? "block" : "hidden"}`}>
               <div className="py-1 px-2">
-                <Link href="/">
+                <Link legacyBehavior href="/">
                   <a className="text-white hover:text-[#3db3f2]">
                     Anime
                   </a>
@@ -262,31 +262,31 @@ export default function BottomMenuBar(props) {
 
         <div className={`${isOpen ? "block" : "hidden"} bg-[#2b2d42] pb-2`}>
           <div className="flex justify-between container mx-auto max-w-[1040px]">
-            <Link href="/anime">
+            <Link legacyBehavior href="/anime">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-brands fa-edge"></i>
                 <span className="tab tab-home block text-xs">Browse</span>
               </a>
             </Link>
-            <Link href="/anime/watch/animepahe">
+            <Link legacyBehavior href="/anime/watch/animepahe">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-p"></i>
                 <span className="tab tab-home block text-xs">AnimePahe</span>
               </a>
             </Link>
-            <Link href="/anime/watch/animeindo">
+            <Link legacyBehavior href="/anime/watch/animeindo">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-i"></i>
                 <span className="tab tab-home block text-xs">AnimeIndo</span>
               </a>
             </Link>
-            <Link href="/anime/watch/animension">
+            <Link legacyBehavior href="/anime/watch/animension">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-m"></i>
                 <span className="tab tab-home block text-xs">Animension</span>
               </a>
             </Link>
-            <Link href="/setting">
+            <Link legacyBehavior href="/setting">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
                 <i className="fa-solid fa-gear"></i>
                 <span className="tab tab-home block text-xs">Setting</span>

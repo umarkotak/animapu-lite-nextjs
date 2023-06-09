@@ -1,10 +1,12 @@
 import '../styles/globals.css'
+// import { usePathname } from 'next/navigation'
 import Head from 'next/head'
 import NProgress from 'nprogress'
 import "nprogress/nprogress.css"
 import Router from 'next/router'
-import { usePanelbear } from '@panelbear/panelbear-nextjs'
+// import { usePanelbear } from '@panelbear/panelbear-nextjs'
 import { transitions, positions, Provider as AlertProvider } from 'react-alert'
+import { useCronitor } from '@cronitorio/cronitor-rum-nextjs'
 
 NProgress.configure({
   minimum: 0.3,
@@ -18,9 +20,14 @@ Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
 function MyApp({ Component, pageProps }) {
-  usePanelbear('1ldX7qgR0Bq', {
-    // debug: true,
-  })
+  // usePanelbear('1ldX7qgR0Bq', {
+  //   // debug: true,
+  // })
+
+  // useCronitor('7aedc8d5a68c296cfc670b4719b4f4c6', {
+  //   debug: false,  // <-- You can enable this to see logs in the console
+  //   trackMode: 'history', // <-- You can change this to 'off' to track events manually
+  // });
 
   const AlertTemplate = ({ style, options, message, close }) => {
     var title = "Error"

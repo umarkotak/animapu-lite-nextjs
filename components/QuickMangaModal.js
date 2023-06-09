@@ -204,7 +204,7 @@ export default function QuickMangaModal(props) {
                   <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
                     <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
                       <div className="grid justify-items-center">
-                        {/* <Link href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}> */}
+                        {/* <Link legacyBehavior href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}> */}
                           <a>
                             <img
                               className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
@@ -231,7 +231,7 @@ export default function QuickMangaModal(props) {
                         </small>
                         <div onClick={()=>changeUrl(props.manga)}>
                           <small>
-                            <Link href={continueManga.last_link || "#"}>
+                            <Link legacyBehavior href={continueManga.last_link || "#"}>
                               <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
                                 <i className="fa-solid fa-play"></i> {
                                   continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
@@ -261,7 +261,7 @@ export default function QuickMangaModal(props) {
                     <div className="p-2 max-h-60 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
                         <div className="" key={chapter.title} onClick={()=>changeUrl(props.manga)}>
-                          <Link href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`}>
+                          <Link legacyBehavior href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`}>
                             <a className="bg-white hover:bg-[#eeeeee] rounded mb-2 p-2 text-[#5c728a] text-center block w-full">
                               {chapter.title}
                             </a>

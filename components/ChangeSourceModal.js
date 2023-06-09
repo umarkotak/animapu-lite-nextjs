@@ -54,7 +54,7 @@ export default function ChangeSourceModal(props) {
                   <div className='font-light mt-[-7px] mb-[-5px]'><small>{source.status}</small></div>
                 </div>
               </div>
-              <Link href={source.web_link || "#"} target="_blank">
+              <Link legacyBehavior href={source.web_link || "#"} target="_blank">
                 <a target="_blank"><i className="fa-solid fa-up-right-from-square"></i></a>
               </Link>
             </div></div>

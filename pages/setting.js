@@ -51,7 +51,7 @@ export default function Setting() {
                 <div className="flex flex-row">
                   <img className="mr-2" src={`/images/flags/${source.language}.png`} alt="" height="15px" width="23px"/> {source.title}
                 </div>
-                <Link href={source.web_link || "#"} target="_blank">
+                <Link legacyBehavior href={source.web_link || "#"} target="_blank">
                   <a target="_blank"><i className="fa-solid fa-up-right-from-square"></i></a>
                 </Link>
               </div>
@@ -319,7 +319,7 @@ export default function Setting() {
 
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">Developer</h2>
-            <Link href="/errlogs">
+            <Link legacyBehavior href="/errlogs">
               <a className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Logs</a>
             </Link>
             <a href="https://console.firebase.google.com/u/1/project/animapu-api-firebase/database/animapu-api-firebase-default-rtdb/data" className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Fire Base</a>
@@ -327,7 +327,7 @@ export default function Setting() {
             <div>
               <span className="block mt-2 mb-2">
                 PanelBear ({panelbearDisable === 'true' ? 'Off' : 'On'})
-                <Link href={"https://app.panelbear.com/sites/1ldX7qgR0Bq/traffic/?period=7d&timeseriesCompareDimension=event_count"} target="_blank">
+                <Link legacyBehavior href={"https://app.panelbear.com/sites/1ldX7qgR0Bq/traffic/?period=7d&timeseriesCompareDimension=event_count"} target="_blank">
                   <a target="_blank"> <i className="fa-solid fa-up-right-from-square"></i></a>
                 </Link>
               </span>

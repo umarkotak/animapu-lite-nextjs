@@ -166,7 +166,7 @@ export default function MangaDetail(props) {
                   <i className="fa-solid fa-book"></i> Start Read
                 </a>
               </Link>
-              <Link href={continueManga.last_link || "#"}>
+              <Link legacyBehavior href={continueManga.last_link || "#"}>
                 <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
                   <i className="fa-solid fa-play"></i> {
                     continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
@@ -212,7 +212,7 @@ export default function MangaDetail(props) {
             <div className="col-span-2 p-2">
               {manga.chapters.map((chapter, idx) => (
                 <div className="" key={chapter.title}>
-                  <Link href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`}>
+                  <Link legacyBehavior href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`}>
                     <a className="bg-white hover:bg-[#eeeeee] rounded mb-2 p-2 text-[#5c728a] text-center block w-full">
                       {chapter.title}
                     </a>

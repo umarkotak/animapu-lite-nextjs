@@ -184,7 +184,7 @@ export default function ReadManga(props) {
           <div className="mt-1 mb-2">
             <div className="flex justify-between">
               <div>
-                <Link href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
+                <Link legacyBehavior href={chapter.source_link || "#"}><a target="_blank" className="bg-white rounded-lg p-1">
                   <i className="fa fa-globe"></i> Chapter {chapter.number}
                 </a></Link>
                 <button className="bg-[#ebb62d] rounded-lg ml-2 p-1" onClick={() => handleFollow()}><i className="fa-solid fa-heart"></i> Follow</button>
@@ -222,7 +222,7 @@ export default function ReadManga(props) {
               </div>
             ))}
           </div>
-          <p className="text-center"><Link href={chapter.source_link || "#"}>
+          <p className="text-center"><Link legacyBehavior href={chapter.source_link || "#"}>
             <a target="_blank" className="hover:text-[#3db3f2]"><b><i className="fa fa-globe"></i> Read from original source</b></a>
           </Link></p>
           {successRender ? null : <div>
