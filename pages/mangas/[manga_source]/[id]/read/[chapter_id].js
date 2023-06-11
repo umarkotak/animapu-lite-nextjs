@@ -13,6 +13,8 @@ var baseChapters = []
 var varTargetBottom = "none"
 var quickLock = false
 var baseOnePageMode = false
+var currentSectionChapter = ""
+var chapterSectionBoundary = []
 
 export default function ReadManga(props) {
   const alert = useAlert()
@@ -54,6 +56,7 @@ export default function ReadManga(props) {
       const body = await response.json()
       if (response.status == 200) {
         baseChapters = []
+        chapterSectionBoundary = []
         setChapter(body.data)
         baseChapters.push(body.data)
         var lastImageToLoad = 2
@@ -100,7 +103,6 @@ export default function ReadManga(props) {
       localStorage.setItem(historyDetailKey, JSON.stringify(tempManga))
 
       setHistorySaved(true)
-      console.warn("HISTORY SAVED", tempManga)
     } catch(e) {
       alert(e)
     }
@@ -200,9 +202,6 @@ export default function ReadManga(props) {
         var lastImageToLoad = 1
         varTargetBottom = `${body.data.id}-${body.data.chapter_images.length-lastImageToLoad}`
         setChapters(baseChapters)
-
-        // TODO: save history on one page mode
-        // TODO: sync selected chapter on one page mode
       }
     } catch (e) {
       console.error(e)
@@ -220,20 +219,42 @@ export default function ReadManga(props) {
       varTargetBottom = "none"
 
       if (!quickLock) {
-        quickLock = true
+        try {
+          quickLock = true
 
-        var targetIdx = 0
-        manga.chapters.map((tmpChapter, idx) => {
-          if (tmpChapter.id === baseChapters[baseChapters.length-1].id) {
-            targetIdx = idx - 1
+          var targetIdx = 0
+          manga.chapters.map((tmpChapter, idx) => {
+            if (tmpChapter.id === baseChapters[baseChapters.length-1].id) {
+              targetIdx = idx - 1
+            }
+          })
+
+          if (manga.chapters[targetIdx]) {
+            getNextChapter(manga.chapters[targetIdx].id)
           }
-        })
-
-        if (manga.chapters[targetIdx]) {
-          getNextChapter(manga.chapters[targetIdx].id)
+        } finally {
+          quickLock = false
         }
+      }
+    }
 
-        quickLock = false
+    if (chapterSectionBoundary.length > 1) {
+      var currentPosBoundary = ""
+      var tmpOneChapter
+
+      chapterSectionBoundary.forEach((boundaryObj, idx) => {
+        var tmpBoundary = document.getElementById(boundaryObj.elem_id)
+        if (tmpBoundary && tmpBoundary.getBoundingClientRect().bottom > 0 && currentPosBoundary === "") {
+          currentPosBoundary = boundaryObj.elem_id
+          tmpOneChapter = boundaryObj.one_chapter
+        }
+      })
+
+      if (currentPosBoundary !== "" && currentPosBoundary !== currentSectionChapter) {
+        console.log(`CHANGING SECTION FROM ${currentSectionChapter} TO ${currentPosBoundary}`)
+
+        currentSectionChapter = currentPosBoundary
+        setChapter(tmpOneChapter)
       }
     }
   }
@@ -255,6 +276,22 @@ export default function ReadManga(props) {
 
   function toggleOnePageMode() {
     baseOnePageMode = !baseOnePageMode
+  }
+
+  function registerChapterBoundary(oneChapter, idx, elemID) {
+    if (oneChapter.chapter_images && oneChapter.chapter_images.length-1 !== idx) { return }
+
+    var wrappedElement = document.getElementById(elemID)
+    if (!wrappedElement) { return }
+
+    chapterSectionBoundary.push({
+      "one_chapter": oneChapter,
+      "elem_id": elemID,
+    })
+
+    if (currentSectionChapter === "") {
+      currentSectionChapter = elemID
+    }
   }
 
   return (
@@ -322,6 +359,7 @@ export default function ReadManga(props) {
                     id={`${oneChapter.id}-${idx}`}
                     // id={`${oneChapter.id}-${idx} ${oneChapter.chapter_images.length-1===idx ? `${oneChapter.id}-final` : ""}`}
                     key={`${oneChapter.id}-${idx}`}
+                    onLoad={()=>registerChapterBoundary(oneChapter, idx, `${oneChapter.id}-${idx}`)}
                   >
                     <Img
                       className="w-full mb-1 bg-gray-600"
