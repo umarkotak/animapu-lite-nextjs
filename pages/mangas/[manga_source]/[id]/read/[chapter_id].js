@@ -14,7 +14,7 @@ var varTargetBottom = "none"
 var quickLock = false
 var baseOnePageMode = false
 var currentSectionChapter = ""
-var chapterSectionBoundary = []
+var lastChapterLoadedMap = {}
 
 export default function ReadManga(props) {
   const alert = useAlert()
@@ -56,11 +56,9 @@ export default function ReadManga(props) {
       const body = await response.json()
       if (response.status == 200) {
         baseChapters = []
-        chapterSectionBoundary = []
         setChapter(body.data)
         baseChapters.push(body.data)
-        var lastImageToLoad = 2
-        varTargetBottom = `${body.data.id}-${body.data.chapter_images.length-lastImageToLoad}`
+        varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
       }
     } catch (e) {
@@ -182,7 +180,7 @@ export default function ReadManga(props) {
 
   function isBottom(el) {
     if (!el) { return false }
-    return el.getBoundingClientRect().top <= window.innerHeight
+    return el.getBoundingClientRect().top <= 2500
   }
 
   async function getNextChapter(chapter_id) {
@@ -199,8 +197,7 @@ export default function ReadManga(props) {
           return
         }
         baseChapters = [...baseChapters, body.data]
-        var lastImageToLoad = 1
-        varTargetBottom = `${body.data.id}-${body.data.chapter_images.length-lastImageToLoad}`
+        varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
       }
     } catch (e) {
@@ -215,7 +212,8 @@ export default function ReadManga(props) {
     // var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
     var wrappedElement = document.getElementById(varTargetBottom)
 
-    if (isBottom(wrappedElement)) {
+    var chID = varTargetBottom.replace('-bottom', '')
+    if (isBottom(wrappedElement) && lastChapterLoadedMap[`${chID}`]) {
       varTargetBottom = "none"
 
       if (!quickLock) {
@@ -238,15 +236,17 @@ export default function ReadManga(props) {
       }
     }
 
-    if (chapterSectionBoundary.length > 1) {
+    // document.getElementById(`chap-70-bottom`).getBoundingClientRect().top
+
+    if (baseChapters.length > 1) {
       var currentPosBoundary = ""
       var tmpOneChapter
 
-      chapterSectionBoundary.forEach((boundaryObj, idx) => {
-        var tmpBoundary = document.getElementById(boundaryObj.elem_id)
+      baseChapters.forEach((tmpBaseChapter, idx) => {
+        var tmpBoundary = document.getElementById(`${tmpBaseChapter.id}-bottom`)
         if (tmpBoundary && tmpBoundary.getBoundingClientRect().bottom > 0 && currentPosBoundary === "") {
-          currentPosBoundary = boundaryObj.elem_id
-          tmpOneChapter = boundaryObj.one_chapter
+          currentPosBoundary = tmpBoundary
+          tmpOneChapter = tmpBaseChapter
         }
       })
 
@@ -278,20 +278,11 @@ export default function ReadManga(props) {
     baseOnePageMode = !baseOnePageMode
   }
 
-  function registerChapterBoundary(oneChapter, idx, elemID) {
-    if (oneChapter.chapter_images && oneChapter.chapter_images.length-1 !== idx) { return }
-
+  function anyChapterImageLoaded(oneChapter, idx, elemID) {
     var wrappedElement = document.getElementById(elemID)
     if (!wrappedElement) { return }
 
-    chapterSectionBoundary.push({
-      "one_chapter": oneChapter,
-      "elem_id": elemID,
-    })
-
-    if (currentSectionChapter === "") {
-      currentSectionChapter = elemID
-    }
+    lastChapterLoadedMap[oneChapter.id] = true
   }
 
   return (
@@ -345,21 +336,24 @@ export default function ReadManga(props) {
           <div id="chapter_manga_image">
             {chapters.map((oneChapter, oneChIdx) => (
               <div key={`multi-ch-${oneChapter.id}-${oneChIdx}`}>
+                <div
+                  id={`${oneChapter.id}-top`}
+                ></div>
                 <hr className='border-black border-2 rounded mb-1'/>
-                <div className='flex justify-between items-center'>
+                <div className='flex justify-between items-center bg-white rounded-full p-4'>
                   <p className='text-center font-semibold text-3xl'>~ Chapter: {oneChapter.number} ~</p>
                   <button
-                    className='text-sm bg-white hover:bg-sky-300 rounded-lg mr-1 p-1 my-1'
+                    className='text-sm bg-gray-200 hover:bg-sky-300 rounded-full mr-1 p-2 my-1'
                     onClick={()=>alert.info("Info || Feature on progress")}
                   >save to history</button>
                 </div>
                 <hr className='border-black border-2 rounded mb-2 mt-1'/>
                 {oneChapter.chapter_images.map((imageObj, idx) => (
                   <div
-                    id={`${oneChapter.id}-${idx}`}
+                    id={`${oneChapter.id}---${idx}`}
                     // id={`${oneChapter.id}-${idx} ${oneChapter.chapter_images.length-1===idx ? `${oneChapter.id}-final` : ""}`}
                     key={`${oneChapter.id}-${idx}`}
-                    onLoad={()=>registerChapterBoundary(oneChapter, idx, `${oneChapter.id}-${idx}`)}
+                    onLoad={()=>anyChapterImageLoaded(oneChapter, idx, `${oneChapter.id}---${idx}`)}
                   >
                     <Img
                       className="w-full mb-1 bg-gray-600"
@@ -377,6 +371,12 @@ export default function ReadManga(props) {
                     />
                   </div>
                 ))}
+                <div
+                  id={`${oneChapter.id}-bottom`}
+                ><hr/></div>
+                <div
+                  className='h-[150px] bg-gradient-to-b from-blue-400 to-transparent'
+                ></div>
               </div>
             ))}
           </div>
