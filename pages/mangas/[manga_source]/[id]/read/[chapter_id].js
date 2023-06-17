@@ -340,12 +340,8 @@ export default function ReadManga(props) {
                   id={`${oneChapter.id}-top`}
                 ></div>
                 <hr className='border-black border-2 rounded mb-1'/>
-                <div className='flex justify-between items-center bg-white rounded-full p-4'>
+                <div className='flex justify-start items-center bg-white rounded-full p-4'>
                   <p className='text-center font-semibold text-3xl'>~ Chapter: {oneChapter.number} ~</p>
-                  <button
-                    className='text-sm bg-gray-200 hover:bg-sky-300 rounded-full mr-1 p-2 my-1'
-                    onClick={()=>alert.info("Info || Feature on progress")}
-                  >save to history</button>
                 </div>
                 <hr className='border-black border-2 rounded mb-2 mt-1'/>
                 {oneChapter.chapter_images.map((imageObj, idx) => (

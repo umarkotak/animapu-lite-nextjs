@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sun Jun 11 14:42:36 2023
+# Make data base, printed on Sat Jun 17 19:14:16 2023
 
 # Variables
 
@@ -18,7 +18,7 @@ LC_ALL = C
 PULSE_SERVER = unix:/mnt/wslg/PulseServer
 # environment
 define WSLENV
-ELECTRON_RUN_AS_NODE/w:WT_SESSION::WT_PROFILE_ID
+ELECTRON_RUN_AS_NODE/w:
 
 endef
 # environment
@@ -77,8 +77,6 @@ MAKEFILE_LIST := Makefile
 ZSH = /home/umarkotak/.oh-my-zsh
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
-# environment
-WT_PROFILE_ID = {2c4de342-38b7-51cf-b940-2309a097f518}
 # automatic
 *F = $(notdir $*)
 # automatic
@@ -98,13 +96,11 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/umarkotak/.vscode-server/bin/b3e4e68a0bc097f0ae7907b217c1119af9e03435/bin/remote-cli:/home/umarkotak/.rbenv/shims:/home/umarkotak/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/VMware/VMware Player/bin/:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/ProgramData/Oracle/Java/javapath:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/Go/bin:/mnt/c/mingw64/bin:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Python/Python311:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Python/Python311/Scripts:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Cloudflare/Cloudflare WARP/:/mnt/c/Users/umar ramadhana/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Program Files/Java/jdk-19/bin:/mnt/c/Users/umar ramadhana/AppData/Local/Android/Sdk/platform-tools:/mnt/c/Users/umar ramadhana/AppData/Local/Android/Sdk/tools:/mnt/c/Users/umar ramadhana/go/bin:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Fiddler:/mnt/c/Users/umar ramadhana/AppData/Roaming/npm:/usr/local/go/bin:/home/umarkotak/.fzf/bin
+PATH = /home/umarkotak/.vscode-server/bin/b380da4ef1ee00e224a15c1d4d9793e27c2b6302/bin/remote-cli:/home/umarkotak/.rbenv/shims:/home/umarkotak/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/VMware/VMware Player/bin/:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/ProgramData/Oracle/Java/javapath:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/Go/bin:/mnt/c/mingw64/bin:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Python/Python311:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Python/Python311/Scripts:/mnt/c/Program Files/nodejs/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/Cloudflare/Cloudflare WARP/:/mnt/c/Users/umar ramadhana/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Program Files/Java/jdk-19/bin:/mnt/c/Users/umar ramadhana/AppData/Local/Android/Sdk/platform-tools:/mnt/c/Users/umar ramadhana/AppData/Local/Android/Sdk/tools:/mnt/c/Users/umar ramadhana/go/bin:/mnt/c/Users/umar ramadhana/AppData/Local/Programs/Fiddler:/mnt/c/Users/umar ramadhana/AppData/Roaming/npm:/usr/local/go/bin:/home/umarkotak/.fzf/bin
 # default
 MAKEFILES := 
 # automatic
 ^F = $(notdir $^)
-# environment
-WT_SESSION = 03f1d8f4-6c65-4b2c-a3b2-e3dd655e86d5
 # automatic
 ?F = $(notdir $?)
 # environment
@@ -118,13 +114,13 @@ LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:
 # environment
 LESS = -R
 # environment
-WSL_INTEROP = /run/WSL/122_interop
+WSL_INTEROP = /run/WSL/206_interop
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
 LOGNAME = umarkotak
 # environment
-VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/umar ramadhana/.vscode/extensions/ms-vscode-remote.remote-wsl-0.78.8
+VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/umar ramadhana/.vscode/extensions/ms-vscode-remote.remote-wsl-0.79.5
 # makefile
 .DEFAULT_GOAL := run
 # environment
@@ -140,7 +136,7 @@ _ = /mnt/c/Users/umar ramadhana/AppData/Local/Programs/Microsoft VS Code/bin/cod
 # environment
 XDG_RUNTIME_DIR = /mnt/wslg/runtime-dir
 # environment
-VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-6a395d26-9743-4d72-bc35-5992ebf27064.sock
+VSCODE_IPC_HOOK_CLI = /mnt/wslg/runtime-dir/vscode-ipc-198d6602-a278-4fba-b544-789ffd4b626e.sock
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
@@ -162,7 +158,7 @@ WSL_DISTRO_NAME = Ubuntu
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # variable set hash-table stats:
-# Load=73/1024=7%, Rehash=0, Collisions=1/103=1%
+# Load=71/1024=7%, Rehash=0, Collisions=1/101=1%
 
 # Pattern-specific Variable Values
 
@@ -170,9 +166,9 @@ WSL_DISTRO_NAME = Ubuntu
 
 # Directories
 
-# . (device 2080, inode 75935): 22 files, no impossibilities.
+# . (device 2080, inode 75935): 23 files, no impossibilities.
 
-# 22 files, no impossibilities in 1 directories.
+# 23 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -215,12 +211,12 @@ run:
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 28 / storage = 276 B / avg = 9 B
-# current buf: size = 8162 B / used = 276 B / count = 28 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 29 / storage = 283 B / avg = 9 B
+# current buf: size = 8162 B / used = 283 B / count = 29 / avg = 9 B
 
-# strcache performance: lookups = 33 / hit rate = 15%
+# strcache performance: lookups = 34 / hit rate = 14%
 # hash-table stats:
-# Load=28/8192=0%, Rehash=0, Collisions=0/33=0%
-# Finished Make data base on Sun Jun 11 14:42:36 2023
+# Load=29/8192=0%, Rehash=0, Collisions=0/34=0%
+# Finished Make data base on Sat Jun 17 19:14:16 2023
 
  
