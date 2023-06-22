@@ -16,11 +16,11 @@ class ClientCredentials {
   }
 
   GetApp() {
-    return initializeApp(this.GetCredentials())
+    // return initializeApp(this.GetCredentials())
   }
 
   GetDB() {
-    return getDatabase(this.GetApp())
+    // return getDatabase(this.GetApp())
   }
 }
 

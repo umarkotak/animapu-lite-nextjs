@@ -11,21 +11,21 @@ var mangaSynced = false
 var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
 export default function Library() {
-  function TestFireBase() {
-    const rtDb = clientCredentials.GetDB()
+  // function TestFireBase() {
+  //   const rtDb = clientCredentials.GetDB()
 
-    console.log("clicked")
-    const rootRef = ref(rtDb, 'animapu-lite-api')
-    get(child(rootRef, `users`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val())
-      } else {
-        console.log("No data available")
-      }
-    }).catch((error) => {
-      console.error(error)
-    })
-  }
+  //   console.log("clicked")
+  //   const rootRef = ref(rtDb, 'animapu-lite-api')
+  //   get(child(rootRef, `users`)).then((snapshot) => {
+  //     if (snapshot.exists()) {
+  //       console.log(snapshot.val())
+  //     } else {
+  //       console.log("No data available")
+  //     }
+  //   }).catch((error) => {
+  //     console.error(error)
+  //   })
+  // }
 
   const [mangas, setMangas] = useState([])
   const [onlineMangas, setOnlineMangas] = useState([])
