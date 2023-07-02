@@ -168,7 +168,7 @@ export default function BottomMenuBar(props) {
           </div>
           <div className="flex items-center">
             <div className={`mr-2 ${isOpen ? "block" : "hidden"}`}>
-              <a className='' href="https://trakteer.id/marumaru" target="_blank">
+              <a className='' href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer">
                 <img
                   id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png"
                   style={{border:"0px", height:"30px"}} alt="Trakteer Saya"
