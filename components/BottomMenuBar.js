@@ -126,7 +126,7 @@ export default function BottomMenuBar(props) {
 
   function barManga() {
     return(
-      <div className="block fixed inset-x-0 bottom-0 z-10">
+      <div className="block fixed inset-x-0 bottom-0 z-3">
         <div className={`fixed ${isOpen ? "bottom-[110px]" : "bottom-[45px]"} right-4`}>
           <button className="bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
             <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
@@ -166,7 +166,15 @@ export default function BottomMenuBar(props) {
               </div>
             </div>
           </div>
-          <div className="flex">
+          <div className="flex items-center">
+            <div className={`mr-2 ${isOpen ? "block" : "hidden"}`}>
+              <a className='' href="https://trakteer.id/marumaru" target="_blank">
+                <img
+                  id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png"
+                  style={{border:"0px", height:"30px"}} alt="Trakteer Saya"
+                />
+              </a>
+            </div>
             <div className={`bg-[#2b2d42] bg-opacity-50 rounded-lg mr-1 ${isOpen ? "block" : "hidden"}`}>
               <div className="py-1 px-2">
                 <Link href="/anime">
