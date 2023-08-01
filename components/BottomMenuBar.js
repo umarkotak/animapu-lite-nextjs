@@ -128,7 +128,10 @@ export default function BottomMenuBar(props) {
     return(
       <div className="block fixed inset-x-0 bottom-0 z-3">
         <div className={`fixed ${isOpen ? "bottom-[110px]" : "bottom-[45px]"} right-4`}>
-          <button className="bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => window.scrollTo(0, 0)}>
+          <button
+            className={`bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:text-teal-500 py-1 px-2 ${isOpen ? "" : "hidden"}`}
+            onClick={() => window.scrollTo(0, 0)}
+          >
             <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
           </button>
         </div>
