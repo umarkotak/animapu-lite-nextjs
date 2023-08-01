@@ -205,7 +205,7 @@ export default function QuickMangaModal(props) {
                 }}
               ><i className="fa-solid fa-share-nodes"></i> Share</button>
               <button
-                className="absolute z-10 top-3 right-[100px] text-xs text-white float-right bg-[#ebb62d] hover:bg-[#318FC2] p-1 rounded-full"
+                className="absolute z-10 top-3 right-[100px] text-xs text-white float-right bg-[#ebb62d] hover:bg-[#A57F1F] p-1 rounded-full"
                 onClick={() => handleUpvote()}
               ><i className="fa-solid fa-star"></i> Upvote</button>
 
@@ -262,15 +262,17 @@ export default function QuickMangaModal(props) {
                       </div>
                     </div>
                     <div className="col-span-3 p-2">
-                      <div className='max-h-[100px] overflow-auto mb-2 mt-[-10px]'>
-                        <span className='px-2 text-xs bg-gray-500 mb-1     text-white rounded-full'>{manga.source}</span>
-                        <h1 className="text-[#5c728a] text-md mb-1">
-                          { manga.title ? manga.title : <div className="h-3 bg-gray-600 rounded mb-4 animate-pulse w-1/2"></div> }
+                      <div className='max-h-[100px] overflow-autos mt-[-10px] mb-6'>
+                        <span className='px-2 text-xs bg-gray-500 mb-1 text-white rounded-full'>{manga.source}</span>
+                        <h1 className="text-[#5c728a] text-md">
+                          { manga.title ? manga.title : <div className="h-3 bg-gray-600 rounded animate-pulse w-1/2"></div> }
                         </h1>
                       </div>
                       {
                         manga.description ?
-                        <p className="text-xs text-[#7a858f] text-justify max-h-32 overflow-hidden overflow-y-scroll text-gray-500 rounded">{manga.description}</p>
+                        <p className="text-xs text-[#7a858f] text-justify max-h-32 overflow-hidden overflow-y-scroll text-gray-500 rounded">
+                          {manga.description}
+                        </p>
                         :
                         <div></div>
                       }
@@ -279,7 +281,7 @@ export default function QuickMangaModal(props) {
                 </div>
               </div>
               <div>
-                <div className="container mx-auto py-4 px-[20px] max-w-[1040px]">
+                <div className="container mx-auto py-4 px-[20px] max-w-[1040px] bg-gray-700 rounded-xl">
                   <div className="grid grid-cols-1">
                     <div className="p-2 max-h-36 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
