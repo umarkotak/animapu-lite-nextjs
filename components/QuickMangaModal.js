@@ -225,26 +225,28 @@ export default function QuickMangaModal(props) {
                       </div>
                       <div className=''>
                         <small>
-                          <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}
-                          >
-                            <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full">
-                              <i className="fa-solid fa-eye"></i> Detail
-                            </a>
-                          </Link>
+                          <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-1 text-center rounded-full" onClick={() => handleFollow()}>
+                            <span className='text-xs'><i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}</span>
+                          </button>
                         </small>
                         {/* <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-0  text-center rounded-full" onClick={() => handleUpvote()}>
                           <small><i className="fa-solid fa-star"></i> Upvote</small>
                         </button> */}
-                        <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-0 text-center rounded-full" onClick={() => handleFollow()}>
-                          <small><i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}</small>
-                        </button>
+                        <small>
+                          <Link
+                            href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}
+                          >
+                            <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full">
+                              <span className='text-xs'><i className="fa-solid fa-eye"></i> Detail</span>
+                            </a>
+                          </Link>
+                        </small>
                         <small>
                           <Link
                             href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
                           >
                             <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full">
-                              <i className="fa-solid fa-book"></i> Start Read
+                              <span><i className="fa-solid fa-book"></i> Start Read</span>
                             </a>
                           </Link>
                         </small>
@@ -262,15 +264,16 @@ export default function QuickMangaModal(props) {
                       </div>
                     </div>
                     <div className="col-span-3 p-2">
-                      <div className='max-h-[100px] overflow-autos mt-[-10px] mb-6'>
+                      <div className='max-h-[100px] overflow-auto mt-[-10px]'>
                         <span className='px-2 text-xs bg-gray-500 mb-1 text-white rounded-full'>{manga.source}</span>
                         <h1 className="text-[#5c728a] text-md">
                           { manga.title ? manga.title : <div className="h-3 bg-gray-600 rounded animate-pulse w-1/2"></div> }
                         </h1>
                       </div>
+                      <hr/>
                       {
                         manga.description ?
-                        <p className="text-xs text-[#7a858f] text-justify max-h-32 overflow-hidden overflow-y-scroll text-gray-500 rounded">
+                        <p className="text-xs text-[#7a858f] text-justify max-h-32 overflow-hidden overflow-y-scroll text-gray-500 mt-1">
                           {manga.description}
                         </p>
                         :
@@ -281,7 +284,7 @@ export default function QuickMangaModal(props) {
                 </div>
               </div>
               <div>
-                <div className="container mx-auto py-4 px-[20px] max-w-[1040px] bg-gray-700 rounded-xl">
+                <div className="container mx-auto py-4 px-[20px] max-w-[1040px] bg-gray-700 rounded-b-xl">
                   <div className="grid grid-cols-1">
                     <div className="p-2 max-h-36 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
