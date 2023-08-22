@@ -286,7 +286,7 @@ export default function QuickMangaModal(props) {
               <div>
                 <div className="container mx-auto py-4 px-[20px] max-w-[1040px] bg-gray-700 rounded-b-xl">
                   <div className="grid grid-cols-1">
-                    <div className="p-2 max-h-36 overflow-hidden overflow-y-scroll">
+                    <div className="p-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
                         <div className="" key={chapter.title} onClick={()=>changeUrl(props.manga)}>
                           <Link href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`}>

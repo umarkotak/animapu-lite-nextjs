@@ -11,6 +11,15 @@ var mangaSynced = false
 var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
 export default function Library() {
+  const [darkMode, setDarkMode] = useState(false)
+  useEffect(() => {
+    if (!localStorage) {return}
+    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
+      setDarkMode(true)
+    }
+  // eslint-disable-next-line
+  }, [])
+
   // function TestFireBase() {
   //   const rtDb = clientCredentials.GetDB()
 
@@ -254,7 +263,7 @@ export default function Library() {
   }
 
   return (
-    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
+    <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
           <div className="flex justify-between">

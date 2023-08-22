@@ -18,6 +18,16 @@ var activeSourceIdxDirect = 0
 var G_CLIENT_ID = "334886517586-djci4jil803sqjk042f6nne3016bngni.apps.googleusercontent.com"
 
 export default function Setting() {
+  const [darkMode, setDarkMode] = useState(false)
+  useEffect(() => {
+    if (!localStorage) { return }
+    console.log("DARK", localStorage.getItem("ANIMAPU_LITE:DARK_MODE"), typeof(localStorage.getItem("ANIMAPU_LITE:DARK_MODE")))
+    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
+      setDarkMode(true)
+    }
+  // eslint-disable-next-line
+  }, [])
+
   const alert = useAlert()
   let router = useRouter()
 
@@ -194,7 +204,7 @@ export default function Setting() {
   }
 
   return (
-    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
+    <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
           <span className="px-4 mb-4 text-white text-xl">Setting</span>
@@ -203,6 +213,30 @@ export default function Setting() {
 
       <div className="pt-4 mx-2">
         <div className="container mx-auto max-w-[1040px]">
+          <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
+            <h2 className="text-xl mb-2"><i className="fa fa-palette"></i> Theme</h2>
+            <div className='flex'>
+              <button
+                className='block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mr-1 mt-2 p-2 text-center'
+                onClick={()=>{
+                  localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "false")
+                  setDarkMode(false)
+                }}
+              >
+                <i className='fa fa-sun'></i> Light
+              </button>
+              <button
+                className='block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded ml-1 mt-2 p-2 text-center'
+                onClick={()=>{
+                  localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "true")
+                  setDarkMode(true)
+                }}
+              >
+                <i className='fa fa-moon'></i> Dark
+              </button>
+            </div>
+          </div>
+
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2"><i className="fa fa-globe"></i> Select Manga Source</h2>
             <span className="mb-2">Current Source: <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
@@ -339,7 +373,7 @@ export default function Setting() {
           </div>
         </div>
 
-        <p className="text-center">Animapu Lite {version} | 2020 - 2022</p>
+        <p className={`${darkMode ? "text-white" : "text-black"} text-center`}>Animapu Lite {version} | 2020 - 2022</p>
       </div>
 
       <a className="invisible" href="#" ref={downloadFileRef} target="_blank">_</a>

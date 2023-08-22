@@ -10,6 +10,15 @@ var tempAllMangas = []
 var limit = 16
 
 export default function Home() {
+  const [darkMode, setDarkMode] = useState(false)
+  useEffect(() => {
+    if (!localStorage) {return}
+    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
+      setDarkMode(true)
+    }
+  // eslint-disable-next-line
+  }, [])
+
   const alert = useAlert()
 
   const [activeTab, setActiveTab] = useState("local")
@@ -113,7 +122,7 @@ export default function Home() {
   }, [triggerNextPage])
 
   return (
-    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
+    <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[1040px] pt-2">
           <div className="flex justify-between">

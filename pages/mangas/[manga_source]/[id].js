@@ -9,6 +9,15 @@ import animapuApi from "../../../apis/AnimapuApi"
 import Manga from "../../../models/Manga"
 
 export default function MangaDetail(props) {
+  const [darkMode, setDarkMode] = useState(false)
+  useEffect(() => {
+    if (!localStorage) {return}
+    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
+      setDarkMode(true)
+    }
+  // eslint-disable-next-line
+  }, [])
+
   const alert = useAlert()
   let router = useRouter()
   const query = router.query
@@ -121,7 +130,7 @@ export default function MangaDetail(props) {
   }
 
   return (
-    <div className="min-h-screen pb-60 bg-[#d6e0ef]">
+    <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <Head>
         <meta itemProp="description" content={`${manga.title}`} />
         <meta itemProp="image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
