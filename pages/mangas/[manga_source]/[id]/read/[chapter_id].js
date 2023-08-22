@@ -371,6 +371,7 @@ export default function ReadManga(props) {
                         <>
                           <img
                             className="w-full mb-1 bg-gray-600"
+                            loading="lazy"
                             src={imageObj.image_urls[0]}
                           />
                         </>
