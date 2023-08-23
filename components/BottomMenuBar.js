@@ -6,6 +6,15 @@ import useEventListener from "@use-it/event-listener";
 
 var currentIdx = 0
 export default function BottomMenuBar(props) {
+  const [darkMode, setDarkMode] = useState(false)
+  useEffect(() => {
+    if (!localStorage) {return}
+    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
+      setDarkMode(true)
+    }
+  // eslint-disable-next-line
+  }, [])
+
   let router = useRouter()
 
   const [barMode, setBarMode] = useState("manga")
@@ -195,7 +204,7 @@ export default function BottomMenuBar(props) {
           </div>
         </div>
 
-        <div className={`${isOpen ? "block" : "hidden"} bg-[#2b2d42] pb-2`}>
+        <div className={`${isOpen ? "block" : "hidden"} ${darkMode ? "dark bg-stone-950" : "bg-[#2b2d42]"} pb-2`}>
           <div className="flex justify-between container mx-auto max-w-[1040px]">
             <Link href="/">
               <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">

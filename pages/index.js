@@ -133,7 +133,7 @@ export default function Home() {
 
   return (
     <Fragment>
-      <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
+      <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[1040px] pt-2">
             <div className="flex justify-between">

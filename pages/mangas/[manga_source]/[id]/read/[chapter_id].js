@@ -318,7 +318,7 @@ export default function ReadManga(props) {
   }, [chapter])
 
   return (
-    <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
+    <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <Head>
         <meta itemProp="description" content={`${props.manga.title}`} />
         <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
