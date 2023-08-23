@@ -431,7 +431,7 @@ export default function ReadManga(props) {
                       <div className='mb-4'>
                         <span className={`text-xl font-bold ${ darkMode ? "text-white" : "text-black"}`}>Discussion</span>
                       </div>
-                      {disqusData.response.posts.map((onePost) => (
+                      {disqusData.response.posts && disqusData.response.posts.map((onePost) => (
                         <div className='border bg-white p-2 mb-4 rounded-xl flex' style={{marginLeft: `${onePost.depth * 0}px`}} key={onePost.id}>
                           <img src={onePost.author.avatar.cache} className='flex-none w-12 h-12 rounded-xl mr-2' alt="avatar" />
                           <div>
