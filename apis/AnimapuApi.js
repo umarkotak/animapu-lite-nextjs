@@ -179,6 +179,19 @@ class AnimapuApi {
     return response
   }
 
+  async GetDisqusDiscussion(params) {
+    var uri = `${this.AnimapuApiHost}/mangas/comments/disqus?` + new URLSearchParams(params)
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Visitor-Id': this.GetVisitorID(),
+        'X-From-Path': this.GetFromPath(),
+      }
+    })
+    return response
+  }
+
   GetVisitorID() {
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
       return localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")

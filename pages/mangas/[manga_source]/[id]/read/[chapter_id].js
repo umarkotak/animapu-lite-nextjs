@@ -294,6 +294,29 @@ export default function ReadManga(props) {
     lastChapterLoadedMap[oneChapter.id] = true
   }
 
+  const [disqusData, setDisqusData] = useState({})
+
+  async function GetDisqusDiscussion(disqusID) {
+    try {
+      const response = await animapuApi.GetDisqusDiscussion({
+        disqus_id: disqusID,
+      })
+      const body = await response.json()
+      if (response.status == 200) {
+        console.log(body.data)
+        setDisqusData(body.data)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  useEffect(() => {
+    if (chapter?.generic_discussion?.disqus_id) {
+      GetDisqusDiscussion(chapter?.generic_discussion?.disqus_id)
+    }
+  }, [chapter])
+
   return (
     <div className={`${darkMode ? "dark bg-gray-700" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <Head>
@@ -373,11 +396,12 @@ export default function ReadManga(props) {
                     // id={`${oneChapter.id}-${idx} ${oneChapter.chapter_images.length-1===idx ? `${oneChapter.id}-final` : ""}`}
                     key={`${oneChapter.id}-${idx}`}
                     onLoad={()=>anyChapterImageLoaded(oneChapter, idx, `${oneChapter.id}---${idx}`)}
+                    className='flex w-full justify-center'
                   >
                     {
                       !imageObj.simple_render ?
                         <Img
-                          className="w-full mb-1 bg-gray-600"
+                          className="w-full max-w-[800px] mb-1 bg-gray-600"
                           src={imageObj.image_urls}
                           onLoad={()=>{setSuccessRender(1)}}
                           onError={()=>{}}
@@ -393,7 +417,7 @@ export default function ReadManga(props) {
                       :
                         <>
                           <img
-                            className="w-full mb-1 bg-gray-600"
+                            className="w-full max-w-[800px] mb-1 bg-gray-600"
                             loading="lazy"
                             src={imageObj.image_urls[0]}
                           />
@@ -401,6 +425,31 @@ export default function ReadManga(props) {
                     }
                   </div>
                 ))}
+                <div className="mt-1 mb-2 p-2 rounded-lg text-black overflow-auto max-h-96">
+                  {
+                    disqusData.code >= 0 ? <>
+                      <div className='mb-4'>
+                        <span className={`text-xl font-bold ${ darkMode ? "text-white" : "text-black"}`}>Discussion</span>
+                      </div>
+                      {disqusData.response.posts.map((onePost) => (
+                        <div className='border bg-white p-2 mb-4 rounded-xl flex' style={{marginLeft: `${onePost.depth * 0}px`}} key={onePost.id}>
+                          <img src={onePost.author.avatar.cache} className='flex-none w-12 h-12 rounded-xl mr-2' alt="avatar" />
+                          <div>
+                            <b>{onePost.author.name}</b>
+                            <p dangerouslySetInnerHTML={{ __html: onePost.message }}></p>
+                            {onePost.media.map((oneMedia) => (
+                              <>
+                                <img src={oneMedia.location} className='rounded-xl w-1/2' />
+                              </>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </> : <>
+
+                    </>
+                  }
+                </div>
                 <div
                   id={`${oneChapter.id}-bottom`}
                 ><hr/></div>
