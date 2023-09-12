@@ -10,12 +10,12 @@ import ChangeSourceModal from "../components/ChangeSourceModal"
 
 var onApiCall = false
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) {return}
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
-    }
+    } else { setDarkMode(false) }
   // eslint-disable-next-line
   }, [])
 

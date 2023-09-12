@@ -11,12 +11,12 @@ var mangaSynced = false
 var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
 export default function Library() {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) {return}
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
-    }
+    } else { setDarkMode(false) }
   // eslint-disable-next-line
   }, [])
 

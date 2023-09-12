@@ -18,13 +18,13 @@ var activeSourceIdxDirect = 0
 var G_CLIENT_ID = "334886517586-djci4jil803sqjk042f6nne3016bngni.apps.googleusercontent.com"
 
 export default function Setting() {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) { return }
     console.log("DARK", localStorage.getItem("ANIMAPU_LITE:DARK_MODE"), typeof(localStorage.getItem("ANIMAPU_LITE:DARK_MODE")))
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
-    }
+    } else { setDarkMode(false) }
   // eslint-disable-next-line
   }, [])
 

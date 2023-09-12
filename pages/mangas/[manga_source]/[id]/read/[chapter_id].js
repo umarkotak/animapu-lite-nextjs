@@ -17,12 +17,12 @@ var currentSectionChapter = ""
 var lastChapterLoadedMap = {}
 
 export default function ReadManga(props) {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) {return}
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
-    }
+    } else { setDarkMode(false) }
   // eslint-disable-next-line
   }, [])
 
