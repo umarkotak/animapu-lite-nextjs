@@ -320,16 +320,18 @@ export default function ReadManga(props) {
   return (
     <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <Head>
-        <meta itemProp="description" content={`${props.manga.title}`} />
-        <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+        {manga.title && <>
+          <meta itemProp="description" content={`${props.manga.title}`} />
+          <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
 
-        <meta name="og:title" content={`${props.manga.title}`} />
-        <meta name="og:description" content={`Read manga with the best experience at animapu`} />
-        <meta name="og:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+          <meta name="og:title" content={`${props.manga.title}`} />
+          <meta name="og:description" content={`Read manga with the best experience at animapu`} />
+          <meta name="og:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
 
-        <meta name="twitter:title" content={`${props.manga.title}`} />
-        <meta name="twitter:description" content={`Read manga with the best experience at animapu`} />
-        <meta name="twitter:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+          <meta name="twitter:title" content={`${props.manga.title}`} />
+          <meta name="twitter:description" content={`Read manga with the best experience at animapu`} />
+          <meta name="twitter:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+        </>}
       </Head>
 
       <div>

@@ -32,6 +32,7 @@ export default function BottomMenuBar(props) {
 
   useEffect(() => {
     if (!props.manga || !props.chapter_id) {return}
+    if (!props.manga.chapters) {return}
     if (props.manga.chapters.length === 0) {return}
     var chapterOpts = props.manga.chapters.map((chapter, idx) => {
       if (props.chapter_id === chapter.id) {
