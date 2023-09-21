@@ -44,7 +44,36 @@ export default function TestScrap() {
                           <a className="bg-gray-600 rounded-lg">
                             <img
                               className={`w-full h-[265px] rounded-lg`}
-                              src={"http://localhost:6001/mangas/komikindo/image_proxy/https://5ln1h5525y2q.kentut.xyz/data/95954682/76/3d9483735364c353b013f42899db89bf/BxLfQ7a0WHOjSlaSRIgp7fpCKr8bTielScdsbJgP.jpg"}
+                              src={"https://temp.compsci88.com/cover/Kingdom.jpg"}
+                              alt="thumb"
+                            />
+                          </a>
+                        </Link>
+                      </div>
+
+                      <div onClick={()=>{}}>
+                        <Link href={"#"}>
+                          <a className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
+                            <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
+                              test
+                            </p>
+                            <div className={`flex flex-col text-sm text-[#75b5f0]`}>
+                              sub test
+                            </div>
+                          </a>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-[175px] h-[265px]">
+                    <div className="flex flex-col relative shadow-xl rounded-lg">
+                      <div onClick={()=>{}}>
+                        <Link href={"#"}>
+                          <a className="bg-gray-600 rounded-lg">
+                            <img
+                              className={`w-full h-[265px] rounded-lg`}
+                              src={"https://scans-hot.leanbox.us/manga/Kingdom/0769-001.png"}
                               alt="thumb"
                             />
                           </a>

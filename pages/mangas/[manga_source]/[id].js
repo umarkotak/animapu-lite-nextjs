@@ -221,7 +221,7 @@ export default function MangaDetail(props) {
             <div className="col-span-2 p-2">
               {manga.chapters.map((chapter, idx) => (
                 <div className="" key={chapter.title}>
-                  <Link href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${secondary_source_id}`}>
+                  <Link href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}>
                     <a className="bg-white hover:bg-[#eeeeee] rounded mb-2 p-2 text-[#5c728a] text-center block w-full">
                       {chapter.title}
                     </a>

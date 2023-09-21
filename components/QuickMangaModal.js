@@ -289,7 +289,7 @@ export default function QuickMangaModal(props) {
                     <div className="p-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
                         <div className="" key={chapter.title} onClick={()=>changeUrl(props.manga)}>
-                          <Link href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${manga.secondary_source_id}`}>
+                          <Link href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}>
                             <a
                               className="bg-white hover:bg-gray-300 rounded-full mb-2 py-1 px-2 text-[#5c728a] text-center block w-full"
                             >
