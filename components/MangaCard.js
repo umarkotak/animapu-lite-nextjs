@@ -4,6 +4,7 @@ import Link from 'next/link'
 import animapuApi from "../apis/AnimapuApi"
 import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
+import {Img} from 'react-image'
 
 export default function MangaCard(props) {
   let router = useRouter()
@@ -149,7 +150,7 @@ export default function MangaCard(props) {
             <div className="w-full h-[265px] rounded bg-slate-500">
             </div>
 
-            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-3 rounded w-full">
+            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded w-full">
               <div className="h-2 bg-slate-500 rounded mb-2"></div>
               <div className="h-2 bg-slate-500 rounded mb-2"></div>
               <div className="h-3 w-12 bg-blue-500 rounded"></div>
@@ -161,10 +162,14 @@ export default function MangaCard(props) {
   }
   return(
     <div
-      className={`flex justify-center px-1 mb-4 ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}`}
+      className={`
+        flex justify-center z-10
+        ${props.remove_margination ? "" : "px-1 mb-4"}
+        ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}
+      `}
       key={`${props.idx}-${props.manga.id}`}
     >
-      <div className="w-[175px] h-[265px]" id={props.manga.source_id}>
+      <div className={`${props.remove_margination ? "w-full" : ""} max-w-[175px] h-[265px]`} id={props.manga.source_id}>
         <div className="flex flex-col relative shadow-xl rounded-lg">
           {/* Kiri atas */}
           {/* <div className="absolute top-0 left-0 text-black hover:text-[#ec294b] leading-0 m-1" onClick={()=>{}}>
@@ -186,21 +191,26 @@ export default function MangaCard(props) {
             </div>
           } */}
 
-          <div onClick={()=>changeUrl(props.manga)}>
+          <div onClick={()=>changeUrl(props.manga)} className="overflow-hidden rounded-lg">
             <Link href={goToManga(props.manga)}>
               <a className="bg-gray-600 rounded-lg">
                 <img
-                  className={`w-full h-[265px] rounded-lg`}
+                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition`}
                   src={(props.manga.cover_image && props.manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
                   alt="thumb"
                 />
+                {/* <Img
+                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition`}
+                  src={[props.manga.cover_image, props.manga.cover_image[0].image_urls[0], "/images/default-book.png"]}
+                  alt="thumb"
+                /> */}
               </a>
             </Link>
           </div>
 
           <div onClick={()=>changeUrl(props.manga)}>
             <Link href={goToManga(props.manga)}>
-              <a className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
+              <a className="absolute bottom-0 p-2 text-white z-10 rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90">
                 {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
                   <small>{props.manga.source}</small>
                 </div> */}

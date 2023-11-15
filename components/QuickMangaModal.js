@@ -170,7 +170,7 @@ export default function QuickMangaModal(props) {
 
   return(
     <div>
-      <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b]" onClick={()=>setShow(!show)}>
+      <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={()=>setShow(!show)}>
         <button className="drop-shadow-sm bg-white bg-opacity-70 rounded-full w-[24px] h-[24px] leading-none">
           <i className="text-sm fa-solid fa-ellipsis"></i>
         </button>

@@ -136,13 +136,13 @@ export default function BottomMenuBar(props) {
 
   function barManga() {
     return(
-      <div className="block fixed inset-x-0 bottom-0 z-3">
+      <div className="block fixed inset-x-0 bottom-0 z-50">
         <div className={`fixed ${isOpen ? "bottom-[110px]" : "bottom-[45px]"} right-4`}>
           <button
-            className={`bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:text-teal-500 py-1 px-2 ${isOpen ? "" : "hidden"}`}
+            className={`bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:bg-gray-900 py-1 px-2 ${isOpen ? "" : "hidden"}`}
             onClick={() => window.scrollTo(0, 0)}
           >
-            <i className="fa-solid fa-angles-up text-white min-w-[15px]"></i>
+            <i className="fa-solid fa-angles-up text-white hover:text-teal-500 min-w-[15px]"></i>
           </button>
         </div>
 
@@ -180,7 +180,7 @@ export default function BottomMenuBar(props) {
             </div>
           </div>
           <div className="flex items-center">
-            <div className={`mr-2 ${isOpen ? "block" : "hidden"}`}>
+            {/* <div className={`mr-2 ${isOpen ? "block" : "hidden"}`}>
               <a className='' href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer">
                 <img
                   id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png"
@@ -196,10 +196,10 @@ export default function BottomMenuBar(props) {
                   </a>
                 </Link>
               </div>
-            </div>
+            </div> */}
             <div className="bg-[#2b2d42] bg-opacity-50 rounded-lg ml-1">
-              <button className="focus:text-teal-500 hover:text-teal-500 py-1 px-2" onClick={() => {setIsOpen(!isOpen)}}>
-                <i className="fa-solid fa-bars text-white min-w-[15px]"></i>
+              <button className="focus:text-teal-500 rounded-lg hover:bg-gray-900 py-1 px-2" onClick={() => {setIsOpen(!isOpen)}}>
+                <i className="fa-solid fa-bars text-white hover:text-teal-500 min-w-[15px]"></i>
               </button>
             </div>
           </div>

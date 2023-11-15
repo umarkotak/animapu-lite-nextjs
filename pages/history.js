@@ -139,17 +139,17 @@ export default function Home() {
 
       <div className="pt-4">
         <div className="container mx-auto max-w-[1040px]">
-          <div className="grid grid-rows-1 grid-flow-col">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+          <div className="grid grid-rows-1 grid-flow-col mx-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
               {(activeTab === "local") &&
                 mangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} card_type="history" />
+                  <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} card_type="history" remove_margination={true} />
                 ))
               }
-              {(activeTab === "online") && onlineMangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} />}
+              {(activeTab === "online") && onlineMangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} remove_margination={true} />}
               {(activeTab === "online") &&
                 onlineMangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
+                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" remove_margination={true} />
                 ))
               }
             </div>

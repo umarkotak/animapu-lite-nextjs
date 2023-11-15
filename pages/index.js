@@ -7,7 +7,6 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import ChangeSourceModal from "../components/ChangeSourceModal"
 import animapuApi from "../apis/AnimapuApi"
-import Manga from "../models/Manga"
 import uuid from 'react-uuid'
 
 var onApiCall = false
@@ -141,8 +140,8 @@ export default function Home() {
                 <ChangeSourceModal text={activeSource} />
               </span>
               <span className="px-4 mb-4 text-white">
-                <Link href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
-                <Link href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link>
+                {/* <Link href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
+                <Link href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link> */}
               </span>
             </div>
           </div>
@@ -150,10 +149,43 @@ export default function Home() {
 
         <div className="pt-4">
           <div className="container mx-auto max-w-[1040px]">
-            <div className="grid grid-rows-1 grid-flow-col">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+            <div className='p-2 bg-white bg-opacity-10 backdrop-blur-lg mb-4 mx-4 rounded-lg grid grid-cols-2 gap-2'>
+              <div className='relative overflow-hidden rounded-lg'>
+                <Link href="https://animehub-lite.vercel.app/">
+                  <a><img src="/images/animehub_cover.jpeg" className='w-full object-cover rounded-lg hover:scale-105 transition' /></a>
+                </Link>
+                <div className='bottom-2 right-2 absolute z-10'>
+                  <Link href="https://animehub-lite.vercel.app/">
+                    <a className='py-1 px-2 rounded-full bg-white hover:bg-gray-300 hover:text-blue-600 bg-opacity-70'>
+                      Watch Anime
+                    </a>
+                  </Link>
+                </div>
+              </div>
+              <div className='relative'>
+                {/* <ChangeSourceModal text={activeSource} custom_elem={<>
+                  <button className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center z-50'>
+                    <div><i className="fa fa-globe mr-1"></i>Change Source</div>
+                  </button>
+                </>} /> */}
+                <div className='grid grid-cols-2 gap-1'>
+                  <a
+                    href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer"
+                    className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center'
+                  >
+                    <i className="fa fa-coffee"></i><br/>Traktir
+                  </a>
+                  <Link href="/popular"><a className="w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center">
+                    <i className="fa fa-star"></i><br/>Popular
+                  </a></Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative grid grid-rows-1 grid-flow-col mx-4 z-0">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
                 {mangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
+                  <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} remove_margination={true} />
                 ))}
               </div>
             </div>
