@@ -6,6 +6,7 @@ import Link from 'next/link'
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import ChangeSourceModal from "../components/ChangeSourceModal"
+import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
 import animapuApi from "../apis/AnimapuApi"
 import uuid from 'react-uuid'
 
@@ -29,6 +30,22 @@ export default function Home() {
   const [activeSource, setActiveSource] = useState("")
   const [mangas, setMangas] = useState([{id: "dummy-1", shimmer: true}, {id: "dummy-2", shimmer: true}])
   const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [loggedInUser, setLoggedInUser] = useState({})
+
+  function LoginCheck() {
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+        setLoggedInUser({
+          email: localStorage.getItem("ANIMAPU_LITE:USER:EMAIL"),
+        })
+      }
+    }
+  }
+  useEffect(() => {
+    LoginCheck()
+  // eslint-disable-next-line
+  }, [])
 
   async function GetLatestManga(append) {
     if (onApiCall) {return}
@@ -130,6 +147,10 @@ export default function Home() {
     localStorage.setItem("ANIMAPU_LITE:VISITOR_ID", `VISITOR_ID:${uuid()}`)
   }
 
+  const closeModal = () => {
+    setShowModal(false)
+  }
+
   return (
     <Fragment>
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
@@ -137,9 +158,16 @@ export default function Home() {
           <div className="container mx-auto max-w-[1040px] pt-2">
             <div className="flex justify-between">
               <span className="px-4 mb-4 text-white">
-                <ChangeSourceModal text={activeSource} />
+                {/* <ChangeSourceModal text={activeSource} /> */}
               </span>
               <span className="px-4 mb-4 text-white">
+                {
+                  loggedInUser.email ? <>
+                    <Link href="/setting"><a className="text-[#3db3f2]">Hello, {loggedInUser.email}</a></Link>
+                  </> : <>
+                    <Link href="/setting"><a className="text-[#3db3f2]"><i className="fa fa-right-to-bracket"></i> Login</a></Link>
+                  </>
+                }
                 {/* <Link href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
                 <Link href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link> */}
               </span>
@@ -152,7 +180,7 @@ export default function Home() {
             <div className='p-2 bg-white bg-opacity-10 backdrop-blur-lg mb-4 mx-4 rounded-lg grid grid-cols-2 gap-2'>
               <div className='relative overflow-hidden rounded-lg'>
                 <Link href="https://animehub-lite.vercel.app/">
-                  <a><img src="/images/animehub_cover.jpeg" className='w-full object-cover rounded-lg hover:scale-105 transition' /></a>
+                  <a><img src="/images/animehub_cover.jpeg" className='h-full w-full object-cover rounded-lg hover:scale-105 transition' /></a>
                 </Link>
                 <div className='bottom-2 right-2 absolute z-10'>
                   <Link href="https://animehub-lite.vercel.app/">
@@ -163,15 +191,16 @@ export default function Home() {
                 </div>
               </div>
               <div className='relative'>
-                {/* <ChangeSourceModal text={activeSource} custom_elem={<>
-                  <button className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center z-50'>
-                    <div><i className="fa fa-globe mr-1"></i>Change Source</div>
-                  </button>
-                </>} /> */}
-                <div className='grid grid-cols-2 gap-1'>
+                <button
+                  className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center z-50 mb-2'
+                  onClick={()=>{setShowModal(true); console.log(showModal)}}
+                >
+                  <div><i className="fa fa-globe mr-1"></i><br/>Change Source</div>
+                </button>
+                <div className='grid grid-cols-2 gap-2'>
                   <a
                     href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer"
-                    className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center'
+                    className='w-full text-sm p-1 rounded-lg text-center bg-red-300 hover:bg-red-400'
                   >
                     <i className="fa fa-coffee"></i><br/>Traktir
                   </a>
@@ -180,6 +209,10 @@ export default function Home() {
                   </a></Link>
                 </div>
               </div>
+            </div>
+
+            <div className='p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white text-xl'>
+              {activeSource}
             </div>
 
             <div className="relative grid grid-rows-1 grid-flow-col mx-4 z-0">
@@ -211,6 +244,8 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <ChangeSourceModalOnly show={showModal} onClose={closeModal} />
 
         <BottomMenuBar />
       </div>
