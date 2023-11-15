@@ -204,7 +204,7 @@ export default function Home() {
                   >
                     <i className="fa fa-coffee"></i><br/>Traktir
                   </a>
-                  <Link href="/popular"><a className="w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center">
+                  <Link href="/popular"><a className="w-full  text-sm p-1 rounded-lg bg-yellow-200 hover:bg-yellow-300 text-center">
                     <i className="fa fa-star"></i><br/>Popular
                   </a></Link>
                 </div>
