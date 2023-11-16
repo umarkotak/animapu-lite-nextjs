@@ -191,12 +191,12 @@ export default function Home() {
                 </div>
               </div>
               <div className='relative'>
-                <button
+                {/* <button
                   className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center z-50 mb-2'
-                  onClick={()=>{setShowModal(true); console.log(showModal)}}
+                  onClick={()=>{setShowModal(true)}}
                 >
                   <div><i className="fa fa-globe mr-1"></i><br/>Change Source</div>
-                </button>
+                </button> */}
                 <div className='grid grid-cols-2 gap-2'>
                   <a
                     href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer"
@@ -207,12 +207,34 @@ export default function Home() {
                   <Link href="/popular"><a className="w-full  text-sm p-1 rounded-lg bg-yellow-200 hover:bg-yellow-300 text-center">
                     <i className="fa fa-star"></i><br/>Popular
                   </a></Link>
+                  <button
+                    className="w-full text-sm p-1 rounded-lg bg-gray-100 hover:bg-gray-300 text-center text-gray-900"
+                    onClick={()=>{
+                      localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "false")
+                      setDarkMode(false)
+                    }}
+                  >
+                    <i className="fa fa-sun"></i><br/>Light
+                  </button>
+                  <button
+                    className="w-full text-sm p-1 rounded-lg bg-gray-950 hover:bg-gray-800 text-center text-gray-100"
+                    onClick={()=>{
+                      localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "true")
+                      setDarkMode(true)
+                    }}
+                  >
+                    <i className="fa fa-moon"></i><br/>Dark
+                  </button>
                 </div>
               </div>
             </div>
 
-            <div className='p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white text-xl'>
-              {activeSource}
+            <div className='flex p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white items-center justify-between'>
+              <h1 className='text-2xl'>{activeSource}</h1>
+              <button
+                className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm'
+                onClick={()=>{setShowModal(true)}}
+              ><i className='fa fa-repeat'></i> Change</button>
             </div>
 
             <div className="relative grid grid-rows-1 grid-flow-col mx-4 z-0">
