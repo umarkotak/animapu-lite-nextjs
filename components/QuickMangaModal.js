@@ -177,10 +177,10 @@ export default function QuickMangaModal(props) {
       </div>
       {
         show &&
-        <div>
-          <div className="fixed top-0 right-0 left-0 z-10 bg-black bg-opacity-70 h-screen w-full" onClick={()=>setShow(!show)}></div>
-          <div className="fixed mx-auto inset-x-0 top-[40px] p-4 w-full max-w-md z-10">
-            <div className="relative bg-white rounded-xl shadow dark:bg-gray-700 z-10">
+        <div className='z-10'>
+          <div className="fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm" onClick={()=>setShow(!show)}></div>
+          <div className="fixed mx-auto inset-x-0 top-[40px] p-4 w-full max-w-md z-20">
+            <div className="relative bg-white rounded-xl shadow dark:bg-gray-700 z-10 overflow-hidden">
               <div className={`h-[100px] z-0 ${manga.title ? "" : "animate-pulse"} rounded-xl`} style={{
                 backgroundImage: `url(${(manga?.cover_image && manga?.cover_image[0]?.image_urls[0]) || "/images/default-book.png"})`,
                 backgroundColor: "#d6e0ef",

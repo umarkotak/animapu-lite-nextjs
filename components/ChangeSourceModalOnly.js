@@ -85,50 +85,51 @@ export default function ChangeSourceModalOnly(props) {
 
   return(
     <div ref={parent}>
-      {
+      <div
+        tabIndex="-1"
+        className={`fixed top-0 mt-[90px] inset-x-0 mx-auto z-20 justify-center items-center flex ${show ? "block" : "hidden"}`}
+      >
         <div
-          tabIndex="-1"
-          className={`bg-black bg-opacity-70 backdrop-blur-sm pt-[90px] overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full h-screen justify-center items-center flex ${show ? "block" : "hidden"}`}
-          aria-modal="true" role="dialog"
-        >
-          <div className="relative p-4 w-full max-w-md h-full">
-            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                <button
-                  className="absolute z-10 top-3 right-2.5 bg-[#ec294b] text-white rounded-full text-sm py-1.5 px-2 inline-flex"
-                  onClick={()=>{closeModal()}}
-                >
-                  <i className="fa fa-xmark"></i>
-                </button>
-                <div className="py-4 px-6 rounded-t border-b dark:border-gray-600">
-                  <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
-                    Select Manga Source
-                  </h3>
+          className={`fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm`}
+          onClick={()=>{closeModal()}}>
+        </div>
+        <div className="relative p-4 w-full max-w-md h-full z-20">
+          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+              <button
+                className="absolute z-10 top-3 right-2.5 bg-[#ec294b] text-white rounded-full text-sm py-1.5 px-2 inline-flex"
+                onClick={()=>{closeModal()}}
+              >
+                <i className="fa fa-xmark"></i>
+              </button>
+              <div className="py-4 px-6 rounded-t border-b dark:border-gray-600">
+                <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">
+                  Select Manga Source
+                </h3>
+              </div>
+              <div className="p-6">
+                <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Select your favorite source.</p>
+                <div className="overflow-auto max-h-[450px]">
+                  <ul className="my-4 space-y-3">
+                    {formattedSources.map((oneSource) => (
+                      <li key={oneSource.value}>
+                        <button className="w-full items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
+                          <div className="flex">
+                            <span className="flex-1 ml-3 whitespace-nowrap" onClick={()=>handleSelectSource(oneSource.value)}>{oneSource.label}</span>
+                          </div>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <div className="p-6">
-                  <p className="text-sm font-normal text-gray-500 dark:text-gray-400">Select your favorite source.</p>
-                  <div className="overflow-auto max-h-[450px]">
-                    <ul className="my-4 space-y-3">
-                      {formattedSources.map((oneSource) => (
-                        <li key={oneSource.value}>
-                          <button className="w-full items-center p-3 text-base font-bold text-gray-900 bg-gray-50 rounded-lg hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                            <div className="flex">
-                              <span className="flex-1 ml-3 whitespace-nowrap" onClick={()=>handleSelectSource(oneSource.value)}>{oneSource.label}</span>
-                            </div>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div>
-                    <a href="#" className="inline-flex items-center text-xs font-normal text-gray-500 hover:underline dark:text-gray-400">
-                      Scrapped by animapu
-                    </a>
-                  </div>
+                <div>
+                  <a href="#" className="inline-flex items-center text-xs font-normal text-gray-500 hover:underline dark:text-gray-400">
+                    Scrapped by animapu
+                  </a>
                 </div>
-            </div>
+              </div>
           </div>
         </div>
-      }
+      </div>
     </div>
   )
 }

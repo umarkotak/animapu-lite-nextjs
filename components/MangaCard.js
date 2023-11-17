@@ -163,7 +163,7 @@ export default function MangaCard(props) {
   return(
     <div
       className={`
-        flex justify-center z-10
+        flex justify-center
         ${props.remove_margination ? "" : "px-1 mb-4"}
         ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}
       `}
@@ -195,7 +195,7 @@ export default function MangaCard(props) {
             <Link href={goToManga(props.manga)}>
               <a className="bg-gray-600 rounded-lg">
                 <img
-                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition`}
+                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition z-0`}
                   src={(props.manga.cover_image && props.manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
                   alt="thumb"
                 />
@@ -210,7 +210,7 @@ export default function MangaCard(props) {
 
           <div onClick={()=>changeUrl(props.manga)}>
             <Link href={goToManga(props.manga)}>
-              <a className="absolute bottom-0 p-2 text-white z-10 rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90">
+              <a className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90">
                 {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
                   <small>{props.manga.source}</small>
                 </div> */}
