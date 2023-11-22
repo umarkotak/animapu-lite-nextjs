@@ -9,9 +9,14 @@ export default function BottomMenuBar(props) {
   const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) {return}
+
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
+
+    if (window.location.hostname === "animapu-lite.vercel.app") {
+      window.location.replace("https://animapu.vercel.app")
+    }
   // eslint-disable-next-line
   }, [])
 

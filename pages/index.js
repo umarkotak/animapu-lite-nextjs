@@ -190,14 +190,8 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-              <div className='relative'>
-                {/* <button
-                  className='w-full bg-gray-200 text-sm p-1 rounded-lg hover:bg-gray-400 text-center z-50 mb-2'
-                  onClick={()=>{setShowModal(true)}}
-                >
-                  <div><i className="fa fa-globe mr-1"></i><br/>Change Source</div>
-                </button> */}
-                <div className='grid grid-cols-2 gap-2'>
+              <div className=''>
+                <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
                   <a
                     href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer"
                     className='w-full text-sm p-1 rounded-lg text-center bg-red-300 hover:bg-red-400'
@@ -226,6 +220,18 @@ export default function Home() {
                     <i className="fa fa-moon"></i><br/>Dark
                   </button>
                 </div>
+
+                {/* <div className='grid-cols-2 md:grid-cols-4 gap-2 mt-2 hidden md:grid'>
+                  <button
+                    className="w-full text-sm p-1 rounded-lg bg-gray-950 hover:bg-gray-800 text-center text-gray-100"
+                    onClick={()=>{
+                      localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "true")
+                      setDarkMode(true)
+                    }}
+                  >
+                    <i className="fa fa-moon"></i><br/>Dark
+                  </button>
+                </div> */}
               </div>
             </div>
 
