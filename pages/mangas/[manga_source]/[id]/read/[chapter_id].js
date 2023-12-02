@@ -187,7 +187,8 @@ export default function ReadManga(props) {
 
   function isBottom(el) {
     if (!el) { return false }
-    return el.getBoundingClientRect().top <= 2500
+    // Bigger mean more earlier to load
+    return el.getBoundingClientRect().top <= 3500
   }
 
   async function getNextChapter(chapter_id) {
