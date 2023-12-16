@@ -14,8 +14,8 @@ export default function BottomMenuBar(props) {
       setDarkMode(true)
     } else { setDarkMode(false) }
 
-    if (window.location.hostname === "animapu-lite.vercel.app") {
-      window.location.replace("https://animapu.vercel.app")
+    if (window && window.location.hostname === "animapu-lite.vercel.app") {
+      window.location.replace(`https://animapu.vercel.app${location.pathname}`)
     }
   // eslint-disable-next-line
   }, [])

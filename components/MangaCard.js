@@ -196,7 +196,10 @@ export default function MangaCard(props) {
               <a className="bg-gray-600 rounded-lg">
                 <img
                   className={`w-full h-[265px] rounded-lg hover:scale-105 transition z-0`}
-                  src={(props.manga.cover_image && props.manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
+                  src={
+                    (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                      || "/images/default-book.png"
+                  }
                   alt="thumb"
                 />
                 {/* <Img
