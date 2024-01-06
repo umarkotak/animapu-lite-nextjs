@@ -175,6 +175,11 @@ export default function QuickMangaModal(props) {
           <i className="text-sm fa-solid fa-ellipsis"></i>
         </button>
       </div>
+      <div className="absolute top-[30px] right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
+        <button className="drop-shadow-sm bg-white bg-opacity-70 rounded-full w-[24px] h-[24px] leading-none">
+          <i className={`text-sm fa-solid fa-bookmark ${followed ? "text-[#ec294b]": ""}`}></i>
+        </button>
+      </div>
       {
         show &&
         <div className='z-10'>

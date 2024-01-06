@@ -12,7 +12,6 @@ import Manga from "../../../../../models/Manga"
 var baseChapters = []
 var varTargetBottom = "none"
 var quickLock = false
-var baseOnePageMode = false
 var currentSectionChapter = ""
 var lastChapterLoadedMap = {}
 
@@ -36,7 +35,6 @@ export default function ReadManga(props) {
 
   const [successRender, setSuccessRender] = useState(0)
   const [historySaved, setHistorySaved] = useState(false)
-  const [onePageMode, setOnePageMode] = useState(baseOnePageMode)
 
   useEffect(() => {
     if (typeof window === "undefined") { return }
@@ -216,7 +214,17 @@ export default function ReadManga(props) {
 
 
   const handleScroll = () => {
-    if (!baseOnePageMode) { return }
+    if (!document) { return }
+
+    // $(".myCheckbox").prop('checked', true);
+    // $('.myCheckbox').is(':checked');
+
+    var elem = document.getElementById("one_page_toggle")
+
+    if (!elem) { return }
+
+    if (!elem.checked) { return }
+
     // var position = window.pageYOffset
     // var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
     var wrappedElement = document.getElementById(varTargetBottom)
@@ -283,10 +291,6 @@ export default function ReadManga(props) {
     return `Read *${manga.title}* - *Chapter ${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${query.chapter_id}?${secondary_source}`
   }
 
-  function toggleOnePageMode() {
-    baseOnePageMode = !baseOnePageMode
-  }
-
   function anyChapterImageLoaded(oneChapter, idx, elemID) {
     var wrappedElement = document.getElementById(elemID)
     if (!wrappedElement) { return }
@@ -340,29 +344,29 @@ export default function ReadManga(props) {
             <div className="flex justify-start text-center text-xs">
               <Link href={chapter.source_link || "#"}><a target="_blank"
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
-              ><i className="fa fa-globe"></i> source</a></Link>
+              ><i className="fa fa-globe"></i> Source</a></Link>
               <button
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleFollow()}
               ><i className="fa-solid fa-heart"></i> Follow</button>
               <button
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleUpvote(true)}
-              ><i className="fa-solid fa-star"></i> upvote</button>
+              ><i className="fa-solid fa-star"></i> Upvote</button>
               <button
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
                 onClick={()=>{
                   navigator.clipboard.writeText(shareUrlText())
                   alert.info("Info || Link berhasil dicopy!")
                 }}
-              ><i className="fa-solid fa-share-nodes"></i> share</button>
+              ><i className="fa-solid fa-share-nodes"></i> Share</button>
               {historySaved && <button
                 className="bg-green-200 rounded-lg p-1 height-[27px]" disabled
-              ><i className="fa-solid fa-clock-rotate-left"></i> saved: {`ch ${chapter.number}`}</button>}
+              ><i className="fa-solid fa-clock-rotate-left"></i> Saved: {`ch ${chapter.number}`}</button>}
             </div>
             <div className="flex justify-start text-center text-xs mt-2">
               <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" value="" className="sr-only peer" onClick={()=>toggleOnePageMode()}/>
+                <input type="checkbox" className="sr-only peer" id="one_page_toggle"/>
                 <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all  peer-checked:bg-blue-600"></div>
-                <span className={`ml-1 text-sm font-medium ${ darkMode ? "text-white" : "text-gray-900"}`}>one page mode</span>
+                <span className={`ml-1 text-sm font-medium ${ darkMode ? "text-white" : "text-gray-900"}`}> One page mode</span>
               </label>
             </div>
           </div>

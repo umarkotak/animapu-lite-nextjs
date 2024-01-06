@@ -219,7 +219,7 @@ export default function MangaCard(props) {
                 </div> */}
 
                 <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
-                  {followed(props.manga) && <span className="rounded-full leading-none mr-1"><i className="text-[16px] text-[#ec294b] text-sm fa-solid fa-heart"></i></span>}
+                  {followed(props.manga) && <span className="rounded-full leading-none mr-1"><i className="text-[16px] text-[#ec294b] text-sm fa-solid fa-bookmark"></i></span>}
                   {formatTitle(props.manga)}
                 </p>
                 <div className={`flex flex-col text-sm text-[#75b5f0]`}>

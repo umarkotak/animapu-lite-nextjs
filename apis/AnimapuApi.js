@@ -4,7 +4,7 @@ class AnimapuApi {
       this.AnimapuApiHost = "https://api.shadow-animapu-1.site"
     } else {
       this.AnimapuApiHost = "https://api.shadow-animapu-1.site"
-      // this.AnimapuApiHost = "http://localhost:6001"
+      this.AnimapuApiHost = "http://localhost:6001"
     }
 
     // this.AnimapuLambdaHost = "https://animapu-lite-lambda.vercel.app"
