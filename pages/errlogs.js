@@ -17,7 +17,7 @@ export default function Errlogs() {
       const response = await animapuApi.GetLogs({})
       const body = await response.json()
       if (response.status == 200) {
-        setLogs(body.data)
+        setLogs(body.data.reverse())
       }
 
     } catch (e) {

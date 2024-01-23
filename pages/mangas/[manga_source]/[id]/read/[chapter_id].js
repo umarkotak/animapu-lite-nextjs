@@ -68,12 +68,16 @@ export default function ReadManga(props) {
         varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
       } else {
-        alert(`${body.error.error_code} || ${body.error.message} - will automatically retry`)
+        alert(`${body.error.error_code} || ${body.error.message} - automatically retrying`)
 
         getChapter()
       }
     } catch (e) {
       console.error(e)
+
+      alert(`Unknown error ${e} - automatically retrying`)
+
+      getChapter()
     }
   }
 
@@ -212,12 +216,16 @@ export default function ReadManga(props) {
         varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
       } else {
-        alert(`${body.error.error_code} || ${body.error.message} - will automatically retry onepage`)
+        alert(`${body.error.error_code} || ${body.error.message} - automatically retrying onepage`)
 
         getNextChapter(chapter_id)
       }
     } catch (e) {
       console.error(e)
+
+      alert(`Unknown error ${e} - automatically retrying onepage`)
+
+      getNextChapter(chapter_id)
     }
   }
 
@@ -297,7 +305,7 @@ export default function ReadManga(props) {
     if (manga.secondary_source_id) {
       secondary_source = `secondary_source_id=${manga.secondary_source_id}`
     }
-    return `Read *${manga.title}* - *Chapter ${chapter.number}* for free at https://animapu-lite.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${query.chapter_id}?${secondary_source}`
+    return `Read *${manga.title}* - *Chapter ${chapter.number}* for free at https://animapu.vercel.app/mangas/${props.manga.source}/${props.manga.source_id}/read/${query.chapter_id}?${secondary_source}`
   }
 
   function anyChapterImageLoaded(oneChapter, idx, elemID) {
