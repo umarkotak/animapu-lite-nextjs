@@ -67,6 +67,10 @@ export default function ReadManga(props) {
         baseChapters.push(body.data)
         varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
+      } else {
+        alert(`${body.error.error_code} || ${body.error.message} - will automatically retry`)
+
+        getChapter()
       }
     } catch (e) {
       console.error(e)
@@ -207,6 +211,10 @@ export default function ReadManga(props) {
         baseChapters = [...baseChapters, body.data]
         varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
+      } else {
+        alert(`${body.error.error_code} || ${body.error.message} - will automatically retry onepage`)
+
+        getNextChapter(chapter_id)
       }
     } catch (e) {
       console.error(e)
