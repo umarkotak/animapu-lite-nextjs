@@ -68,6 +68,9 @@ export default function Home() {
         alert.error(`${body.error.error_code} || ${body.error.message}`)
         setIsLoadMoreLoading(false)
         onApiCall = false
+
+        GetLatestManga()
+
         return
       }
       if (append) {

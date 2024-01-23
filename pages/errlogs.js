@@ -49,14 +49,14 @@ export default function Errlogs() {
               <table className="table-auto w-full text-sm text-left">
                 <thead className="text-xs uppercase bg-[#3db3f2]">
                   <tr>
-                    <th className="py-3 px-2 w-[25%] border border-black">Req ID</th>
+                    <th className="py-3 px-2 w-[25%] border border-black">Layer</th>
                     <th className="py-3 px-2 w-[75%] border border-black">Error Msg</th>
                   </tr>
                 </thead>
                 <tbody>
                   {logs.map((log, idx) => (
                     <tr key={`${idx}-${log.request_id}`}>
-                      <td className="py-1 px-2 w-[20%] border border-black">{log.request_id}</td>
+                      <td className="py-1 px-2 w-[20%] border border-black">{log.layer}</td>
                       <td className="py-1 px-2 w-[80%] border border-black">{log.error_message}</td>
                     </tr>
                   ))}
