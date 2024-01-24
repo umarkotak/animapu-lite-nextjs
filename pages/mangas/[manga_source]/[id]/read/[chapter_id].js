@@ -68,14 +68,14 @@ export default function ReadManga(props) {
         varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
       } else {
-        alert(`${body.error.error_code} || ${body.error.message} - automatically retrying`)
+        alert.error(`${body.error.error_code} || ${body.error.message} - automatically retrying`)
 
         getChapter()
       }
     } catch (e) {
       console.error(e)
 
-      alert(`Unknown error ${e} - automatically retrying`)
+      alert.error(`Unknown error ${e} - automatically retrying`)
 
       getChapter()
     }
@@ -117,7 +117,7 @@ export default function ReadManga(props) {
 
       setHistorySaved(true)
     } catch(e) {
-      alert(e)
+      alert.error(e)
     }
   }
 
@@ -216,14 +216,14 @@ export default function ReadManga(props) {
         varTargetBottom = `${body.data.id}-bottom`
         setChapters(baseChapters)
       } else {
-        alert(`${body.error.error_code} || ${body.error.message} - automatically retrying onepage`)
+        alert.error(`${body.error.error_code} || ${body.error.message} - automatically retrying onepage`)
 
         getNextChapter(chapter_id)
       }
     } catch (e) {
       console.error(e)
 
-      alert(`Unknown error ${e} - automatically retrying onepage`)
+      alert.error(`Unknown error ${e} - automatically retrying onepage`)
 
       getNextChapter(chapter_id)
     }
