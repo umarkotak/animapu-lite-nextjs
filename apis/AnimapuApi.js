@@ -4,15 +4,18 @@ class AnimapuApi {
       this.AnimapuApiHost = "https://api.shadow-animapu-1.site"
     } else {
       this.AnimapuApiHost = "https://api.shadow-animapu-1.site"
-      // this.AnimapuApiHost = "http://localhost:6001"
+      this.AnimapuApiHost = "http://localhost:6001"
     }
 
-    // this.AnimapuLambdaHost = "https://animapu-lite-lambda.vercel.app"
+    this.AnimapuLambdaHost = "https://animapu-lite-lambda.vercel.app"
   }
 
   async GetLatestManga(params) {
-    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?page=${params.page}`
-    // var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/latest?page=${params.page}`
+    if (params.use_lambda) {
+      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/latest?page=${params.page}`
+    } else {
+      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?page=${params.page}`
+    }
     // var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?` + new URLSearchParams(params)
     const response = await fetch(uri, {
       method: 'GET',
@@ -26,8 +29,11 @@ class AnimapuApi {
   }
 
   async GetMangaDetail(params) {
-    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/detail/${params.manga_id}?secondary_source_id=${params.secondary_source_id}`
-    // var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/detail/${params.manga_id}?secondary_source_id=${params.secondary_source_id}`
+    if (params.use_lambda) {
+      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/detail/${params.manga_id}`
+    } else {
+      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/detail/${params.manga_id}`
+    }
     const response = await fetch(uri, {
       method: 'GET',
       headers: {
@@ -40,8 +46,11 @@ class AnimapuApi {
   }
 
   async GetReadManga(params) {
-    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}?secondary_source_id=${params.secondary_source_id}`
-    // var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}?secondary_source_id=${params.secondary_source_id}`
+    if (params.use_lambda) {
+      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}`
+    } else {
+      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}`
+    }
     const response = await fetch(uri, {
       method: 'GET',
       headers: {
@@ -54,7 +63,11 @@ class AnimapuApi {
   }
 
   async SearchManga(params) {
-    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/search?title=${params.title}`
+    if (params.use_lambda) {
+      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/search?title=${params.title}`
+    } else {
+      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/search?title=${params.title}`
+    }
     const response = await fetch(uri, {
       method: 'GET',
       headers: {
