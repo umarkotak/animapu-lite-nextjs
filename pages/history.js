@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
-        <div className="container mx-auto max-w-[1040px] pt-2">
+        <div className="container mx-auto max-w-[768px] pt-2">
           <div className="flex justify-between">
             <span className="px-4 mb-4 text-white">
               History
@@ -138,7 +138,7 @@ export default function Home() {
       </div>
 
       <div className="pt-4">
-        <div className="container mx-auto max-w-[1040px]">
+        <div className="container mx-auto max-w-[768px]">
           <div className="grid grid-rows-1 grid-flow-col mx-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
               {(activeTab === "local") &&

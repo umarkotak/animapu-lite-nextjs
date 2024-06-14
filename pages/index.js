@@ -155,10 +155,10 @@ export default function Home() {
   }
 
   return (
-    <Fragment>
+    <div>
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
-          <div className="container mx-auto max-w-[1040px] pt-2">
+          <div className="container mx-auto max-w-[768px] pt-2">
             <div className="flex justify-between">
               <span className="px-4 mb-4 text-white">
                 {/* <ChangeSourceModal text={activeSource} /> */}
@@ -179,7 +179,7 @@ export default function Home() {
         </div>
 
         <div className="pt-4">
-          <div className="container mx-auto max-w-[1040px]">
+          <div className="container mx-auto max-w-[768px]">
             <div className='p-2 bg-white bg-opacity-10 backdrop-blur-lg mb-4 mx-4 rounded-lg grid grid-cols-2 gap-2'>
               <div className='relative overflow-hidden rounded-lg'>
                 <Link href="https://animehub-lite.vercel.app/">
@@ -280,6 +280,6 @@ export default function Home() {
 
         <BottomMenuBar />
       </div>
-    </Fragment>
+    </div>
   )
 }

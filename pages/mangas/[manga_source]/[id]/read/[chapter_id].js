@@ -356,7 +356,7 @@ export default function ReadManga(props) {
       </Head>
 
       <div>
-        <div className="container mx-auto pt-1 px-1 max-w-[1040px]">
+        <div className="container mx-auto pt-1 px-1 max-w-[768px]">
           <div className="mt-1 mb-2">
             <div className="flex justify-start text-center text-xs">
               <Link href={chapter.source_link || "#"}><a target="_blank"

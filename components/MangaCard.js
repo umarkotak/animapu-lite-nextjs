@@ -5,10 +5,12 @@ import animapuApi from "../apis/AnimapuApi"
 import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
 import {Img} from 'react-image'
+import { useState } from "react"
 
 export default function MangaCard(props) {
   let router = useRouter()
   const query = router.query
+  const [showModal, setShowModal] = useState(false)
 
   function goToManga(manga) {
     if (!router) {return "#"}
@@ -183,7 +185,7 @@ export default function MangaCard(props) {
           } */}
 
           {/* Kanan atas */}
-          <QuickMangaModal manga={props.manga} />
+          <QuickMangaModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
           {/* {
             followed(props.manga) &&
             <div className="absolute top-6 right-0 p-1 rounded-lg text-[#ec294b]">
@@ -192,8 +194,8 @@ export default function MangaCard(props) {
           } */}
 
           <div onClick={()=>changeUrl(props.manga)} className="overflow-hidden rounded-lg">
-            <Link href={goToManga(props.manga)}>
-              <a className="bg-gray-600 rounded-lg">
+            {/* <Link href={goToManga(props.manga)}> */}
+              <div className="bg-gray-600 rounded-lg" onClick={()=>setShowModal(!showModal)}>
                 <img
                   className={`w-full h-[265px] rounded-lg hover:scale-105 transition z-0`}
                   src={
@@ -207,13 +209,16 @@ export default function MangaCard(props) {
                   src={[props.manga.cover_image, props.manga.cover_image[0].image_urls[0], "/images/default-book.png"]}
                   alt="thumb"
                 /> */}
-              </a>
-            </Link>
+              </div>
+            {/* </Link> */}
           </div>
 
           <div onClick={()=>changeUrl(props.manga)}>
-            <Link href={goToManga(props.manga)}>
-              <a className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90">
+            {/* <Link href={goToManga(props.manga)}> */}
+              <div
+                className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90"
+                onClick={()=>setShowModal(!showModal)}
+              >
                 {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
                   <small>{props.manga.source}</small>
                 </div> */}
@@ -230,8 +235,8 @@ export default function MangaCard(props) {
                   </div>
                   <small className="mt-[-3px]">{smallTextDecider(props.manga)}</small>
                 </div>
-              </a>
-            </Link>
+              </div>
+            {/* </Link> */}
           </div>
         </div>
       </div>

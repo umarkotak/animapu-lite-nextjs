@@ -12,6 +12,8 @@ var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
 
 export default function Library() {
   const [darkMode, setDarkMode] = useState(true)
+  const [mangaFilter, setMangaFilter] = useState("")
+
   useEffect(() => {
     if (!localStorage) {return}
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
@@ -179,14 +181,19 @@ export default function Library() {
   }
 
   useEffect(() => {
-    var libraryMangas = GetLibraryMangas()
-    setMangas(libraryMangas)
-    CheckForUpdates(libraryMangas)
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
       setActiveTab("online")
     }
+
+    var libraryMangas = GetLibraryMangas()
+    setMangas(libraryMangas)
     // eslint-disable-next-line
   }, [])
+
+  function ExecuteSync() {
+    var libraryMangas = GetLibraryMangas()
+    CheckForUpdates(libraryMangas)
+  }
 
   useEffect(() => {
   // eslint-disable-next-line
@@ -252,7 +259,7 @@ export default function Library() {
       })
     }
 
-    return filteredMangas
+    return filteredMangas.filter((oneManga) => (oneManga.title.toLowerCase().includes(mangaFilter.toLowerCase())))
   }
 
   function getFilterColor(filterString) {
@@ -265,7 +272,7 @@ export default function Library() {
   return (
     <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
-        <div className="container mx-auto max-w-[1040px] pt-2">
+        <div className="container mx-auto max-w-[768px] pt-2">
           <div className="flex justify-between">
             <span className="px-4 mb-4 text-white">
               Library
@@ -273,36 +280,47 @@ export default function Library() {
             <span className="px-4 mb-4 text-white">
               <button className={`mx-2 ${getTabColor("local")}`} onClick={()=>{setActiveTab("local")}}><i className="fa-solid fa-file"></i> Local</button>
               <button className={`mx-2 ${getTabColor("online")}`} onClick={()=>{setActiveTab("online")}}><i className="fa-solid fa-cloud"></i> Online</button>
-              <button className={`mx-2 hover:text-[#3db3f2]`} onClick={()=>{}}><i className="fa-solid fa-wifi"></i> Sync</button>
+              <button className={`mx-2 hover:text-[#3db3f2]`} onClick={()=>{ExecuteSync()}}><i className="fa-solid fa-wifi"></i> Sync</button>
             </span>
           </div>
         </div>
       </div>
 
       <div className='pt-0'>
-        <div className="container mx-auto max-w-[1040px]">
-          <div className='px-6'>
-            <div className="flex justify-end text-white">
-              <span className='ml-2'><b>Filters: </b></span>
-              <button className={`ml-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
+        <div className="container mx-auto max-w-[768px]">
+          <div className='px-2 flex flex-col gap-2 text-white'>
+            <span className='ml-2'><b><i className='fa fa-filter'></i> Filters: </b></span>
+
+            <div className="flex justify-start">
+              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
                 All
               </button>
-              <button className={`ml-2 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
+              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
                 Unread
               </button>
-              <button className={`ml-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
+              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
                 Ongoing
               </button>
-              <button className={`ml-2 ${getFilterColor("finished")}`} onClick={()=>{setActiveFilter("finished")}}>
+              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("finished")}`} onClick={()=>{setActiveFilter("finished")}}>
                 Finished
               </button>
+            </div>
+
+            <div className='px-2'>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                placeholder="Search"
+                onChange={(e) => setMangaFilter(e.target.value)}
+                value={mangaFilter}
+              />
             </div>
           </div>
         </div>
       </div>
 
       <div className="pt-4">
-        <div className="container mx-auto max-w-[1040px]">
+        <div className="container mx-auto max-w-[768px]">
           <div className={`px-4 ${updateStatus.finished || updateStatus.max <= 0 ? "hidden" : "block"}`}>
             <div className="mb-1 text-base font-medium text-white">
               <div className='flex justify-between'>

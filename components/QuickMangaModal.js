@@ -38,7 +38,14 @@ export default function QuickMangaModal(props) {
   }
 
   useEffect(() => {
+    setShow(props.showModal)
+  // eslint-disable-next-line
+  }, [props])
+
+  useEffect(() => {
     if (show) { GetMangaDetail() }
+
+    props.setShowModal(show)
   // eslint-disable-next-line
   }, [show])
 
@@ -170,12 +177,13 @@ export default function QuickMangaModal(props) {
 
   return(
     <div>
-      <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={()=>setShow(!show)}>
+      {/* <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={()=>setShow(!show)}>
         <button className="drop-shadow-sm bg-white bg-opacity-70 rounded-full w-[24px] h-[24px] leading-none">
           <i className="text-sm fa-solid fa-ellipsis"></i>
         </button>
-      </div>
-      <div className="absolute top-[30px] right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
+      </div> */}
+      {/* <div className="absolute top-[30px] right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}> */}
+      <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
         <button className="drop-shadow-sm bg-white bg-opacity-70 rounded-full w-[24px] h-[24px] leading-none">
           <i className={`text-sm fa-solid fa-bookmark ${followed ? "text-[#ec294b]": ""}`}></i>
         </button>
@@ -215,7 +223,7 @@ export default function QuickMangaModal(props) {
               ><i className="fa-solid fa-star"></i> Upvote</button>
 
               <div className="bg-[#fafafa]">
-                <div className="container mx-auto py-4 px-[20px] max-w-[1040px]">
+                <div className="container mx-auto py-4 px-[20px] max-w-[768px]">
                   <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
                     <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
                       <div className="grid justify-items-center">
@@ -289,7 +297,7 @@ export default function QuickMangaModal(props) {
                 </div>
               </div>
               <div>
-                <div className="container mx-auto py-4 px-[20px] max-w-[1040px] bg-gray-700 rounded-b-xl">
+                <div className="container mx-auto py-4 px-[20px] max-w-[768px] bg-gray-700 rounded-b-xl">
                   <div className="grid grid-cols-1">
                     <div className="p-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (

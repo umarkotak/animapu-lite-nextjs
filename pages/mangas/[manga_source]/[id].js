@@ -153,7 +153,7 @@ export default function MangaDetail(props) {
         <div className="backdrop-blur-md h-full"></div>
       </div>
       <div className="bg-[#fafafa]">
-        <div className="container mx-auto py-4 px-[50px] max-w-[1040px]">
+        <div className="container mx-auto py-4 px-[50px] max-w-[768px]">
           <div className="backdrop-blur-sm grid grid-cols-1 sm:grid-cols-3">
             <div className="h-full z-5 p-2 mt-[-125px]">
               <img
@@ -211,7 +211,7 @@ export default function MangaDetail(props) {
         </div>
       </div>
       <div>
-        <div className="container mx-auto py-4 px-[50px] max-w-[1040px]">
+        <div className="container mx-auto py-4 px-[50px] max-w-[768px]">
           <div className="grid grid-cols-1 sm:grid-cols-3">
             <div className="p-2 rounded">
               <div className="bg-white p-2 rounded">

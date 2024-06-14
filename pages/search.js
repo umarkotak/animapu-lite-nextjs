@@ -68,21 +68,30 @@ export default function Home() {
   return (
     <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
-        <div className="container mx-auto max-w-[1040px] pt-2">
-            <div className="flex justify-between">
-              <span className="px-4 mb-4 text-white">
-                <ChangeSourceModal text={activeSource} />
-              </span>
-              <span className="px-4 mb-4 text-white">
-              </span>
-            </div>
+        <div className="container mx-auto max-w-[768px] pt-2">
+          {/* <div className="flex justify-between">
+            <span className="px-4 mb-4 text-white">
+              <ChangeSourceModal text={activeSource} />
+            </span>
+            <span className="px-4 mb-4 text-white">
+            </span>
+          </div> */}
+
+          <h1 className='text-white text-xl mx-2 pt-2'><i className='fa fa-search'></i> Search</h1>
+
+          <div className='flex pt-2 mx-2 rounded-lg bg-[#2b2d42] text-white items-center justify-between'>
+            <h1 className='text-2xl'>{activeSource}</h1>
+            <button
+              className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm'
+              onClick={()=>{setShowModal(true)}}
+            ><i className='fa fa-repeat'></i> Change</button>
+          </div>
         </div>
       </div>
 
-      <div className="pt-4">
-        <div className="container mx-auto max-w-[1040px]">
-
-          <div className="bg-[#2b2d42] rounded p-2 m-2">
+      <div className="pt-10">
+        <div className="container mx-auto max-w-[768px]">
+          <div className="bg-[#2b2d42] rounded m-2">
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="text"
@@ -95,7 +104,7 @@ export default function Home() {
       </div>
 
       <div className="pt-4">
-        <div className="container mx-auto max-w-[1040px]">
+        <div className="container mx-auto max-w-[768px]">
           {
             isLoadMoreLoading ? <svg role="status" className="mx-auto w-8 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
