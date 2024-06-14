@@ -7,6 +7,7 @@ import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import { useAlert } from 'react-alert'
 import ChangeSourceModal from "../components/ChangeSourceModal"
+import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
 
 var onApiCall = false
 export default function Home() {
@@ -27,6 +28,10 @@ export default function Home() {
   const [title, setTitle] = useState("")
   const [activeSource, setActiveSource] = useState("")
   const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const closeModal = () => {
+    setShowModal(false)
+  }
 
   useEffect(() => {
     setActiveSource(animapuApi.GetActiveMangaSource())
@@ -120,6 +125,8 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <ChangeSourceModalOnly show={showModal} onClose={closeModal} />
 
       <BottomMenuBar />
     </div>
