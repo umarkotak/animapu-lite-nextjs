@@ -112,6 +112,14 @@ export default function BottomMenuBar(props) {
     { passive: true }
   )
 
+  function GoToTop() {
+    if (props.isRead) {
+      if (!confirm("sure to go up?")) { return }
+    }
+
+    window.scrollTo(0, 0)
+  }
+
   return(
     <>
       <div className={`${(props.isPaginateNavOn && props.isRead) ? "block" : "hidden"} container mx-auto pt-1 max-w-[768px]`}>
@@ -141,7 +149,7 @@ export default function BottomMenuBar(props) {
         <div className={`fixed ${isOpen ? "bottom-[110px]" : "bottom-[45px]"} right-4`}>
           <button
             className={`bg-[#2b2d42] bg-opacity-50 rounded-lg focus:text-teal-500 hover:bg-gray-900 py-1 px-2 ${isOpen ? "" : "hidden"}`}
-            onClick={() => {if (!confirm("sure to go up?")) { return }; window.scrollTo(0, 0)}}
+            onClick={() => GoToTop()}
           >
             <i className="fa-solid fa-angles-up text-white hover:text-teal-500 min-w-[15px]"></i>
           </button>
@@ -181,23 +189,6 @@ export default function BottomMenuBar(props) {
             </div>
           </div>
           <div className="flex items-center">
-            {/* <div className={`mr-2 ${isOpen ? "block" : "hidden"}`}>
-              <a className='' href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer">
-                <img
-                  id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png"
-                  style={{border:"0px", height:"30px"}} alt="Trakteer Saya"
-                />
-              </a>
-            </div>
-            <div className={`bg-[#2b2d42] bg-opacity-50 rounded-lg mr-1 ${isOpen ? "block" : "hidden"}`}>
-              <div className="py-1 px-2">
-                <Link href="/anime">
-                  <a className="text-white hover:text-[#3db3f2]">
-                    Manga
-                  </a>
-                </Link>
-              </div>
-            </div> */}
             <div className="bg-[#2b2d42] bg-opacity-50 rounded-lg ml-1">
               <button className="focus:text-teal-500 rounded-lg hover:bg-gray-900 py-1 px-2" onClick={() => {setIsOpen(!isOpen)}}>
                 <i className="fa-solid fa-bars text-white hover:text-teal-500 min-w-[15px]"></i>
@@ -238,12 +229,6 @@ export default function BottomMenuBar(props) {
                 <span className="tab tab-home block text-xs">Setting</span>
               </a>
             </Link>
-            {/* <Link href="/account">
-              <a className="w-full text-white focus:text-[#75b5f0] hover:text-[#75b5f0] text-center pt-2 pb-1">
-                <i className="fa-solid fa-user"></i>
-                <span className="tab tab-home block text-xs">Account</span>
-              </a>
-            </Link> */}
           </div>
         </div>
       </div>
