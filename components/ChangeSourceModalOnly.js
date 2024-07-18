@@ -50,6 +50,10 @@ export default function ChangeSourceModalOnly(props) {
           }
         })
         setFormattedSources(tempFormattedSources)
+
+        if (props.setMangaSourcesData) {
+          props.setMangaSourcesData(tempFormattedSources)
+        }
       } else {
         alert.error(body.error.message)
       }

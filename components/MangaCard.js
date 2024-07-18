@@ -219,9 +219,9 @@ export default function MangaCard(props) {
                 className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90"
                 onClick={()=>setShowModal(!showModal)}
               >
-                {/* <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
+                {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
                   <small>{props.manga.source}</small>
-                </div> */}
+                </div>}
 
                 <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
                   {followed(props.manga) && <span className="rounded-full leading-none mr-1"><i className="text-[16px] text-[#ec294b] text-sm fa-solid fa-bookmark"></i></span>}

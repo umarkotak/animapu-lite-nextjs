@@ -32,6 +32,8 @@ export default function Home() {
   const closeModal = () => {
     setShowModal(false)
   }
+  const [mangaSourcesData, setMangaSourcesData] = useState([])
+  const [searchMode, setSearchMode] = useState("global")
 
   useEffect(() => {
     setActiveSource(animapuApi.GetActiveMangaSource())
@@ -43,19 +45,40 @@ export default function Home() {
     onApiCall = true
     try {
       setIsLoadMoreLoading(true)
-      const response = await animapuApi.SearchManga({
-        manga_source: animapuApi.GetActiveMangaSource(),
-        title: title
-      })
-      const body = await response.json()
+      if (mangaSourcesData.length > 0 && searchMode === "global") {
+        // console.log(mangaSourcesData)
 
-      if (response.status == 200) {
-        setMangas(body.data)
+        var tmpSearchData = []
+
+        await Promise.all(mangaSourcesData.map(async (oneMangaSourceData) => {
+          const response = await animapuApi.SearchManga({
+            manga_source: oneMangaSourceData.value,
+            title: title
+          })
+          const body = await response.json()
+          if (response.status == 200) {
+            tmpSearchData = tmpSearchData.concat(body.data)
+          }
+        }))
+
+        setMangas(tmpSearchData)
+
       } else {
-        alert.error(body.error.message)
-        console.error("FAIL", body)
+        const response = await animapuApi.SearchManga({
+          manga_source: animapuApi.GetActiveMangaSource(),
+          title: title
+        })
+        const body = await response.json()
+
+        if (response.status == 200) {
+          setMangas(body.data)
+        } else {
+          alert.error(body.error.message)
+          console.error("FAIL", body)
+        }
       }
       onApiCall = false
+
       setIsLoadMoreLoading(false)
 
     } catch (e) {
@@ -105,6 +128,24 @@ export default function Home() {
               onKeyDown={(e) => handleKeyDown(e)}
             />
           </div>
+
+          <div className='m-2 flex gap-2'>
+            <button className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm'>
+              Search Mode:
+            </button>
+            <button
+              className={`${searchMode === "global" ? "bg-green-400" : "bg-blue-100" } bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm`}
+              onClick={()=>setSearchMode("global")}
+            >
+              global
+            </button>
+            <button
+              className={`${searchMode === "single" ? "bg-green-400" : "bg-blue-100" } p-1 text-black hover:bg-blue-300 rounded-lg text-sm`}
+              onClick={()=>setSearchMode("single")}
+            >
+              single
+            </button>
+          </div>
         </div>
       </div>
 
@@ -119,14 +160,14 @@ export default function Home() {
           <div className="grid grid-rows-1 grid-flow-col">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
               {mangas.map((manga, idx) => (
-                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
+                <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} show_hover_source={true} />
               ))}
             </div>
           </div>
         </div>
       </div>
 
-      <ChangeSourceModalOnly show={showModal} onClose={closeModal} />
+      <ChangeSourceModalOnly show={showModal} onClose={closeModal} setMangaSourcesData={setMangaSourcesData} />
 
       <BottomMenuBar />
     </div>
