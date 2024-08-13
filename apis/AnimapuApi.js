@@ -1,9 +1,9 @@
 class AnimapuApi {
   constructor() {
     if (typeof(window) !== "undefined" && window.location.protocol === "https:") {
-      this.AnimapuApiHost = "https://api.shadow-animapu-1.site"
+      this.AnimapuApiHost = "https://api.shadow-animapu-2.site"
     } else {
-      this.AnimapuApiHost = "https://api.shadow-animapu-1.site"
+      this.AnimapuApiHost = "https://api.shadow-animapu-2.site"
       // this.AnimapuApiHost = "http://localhost:6001"
     }
 
