@@ -13,19 +13,15 @@ export default function BottomMenuBar(props) {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-
-    if (window && window.location.hostname === "animapu-lite.vercel.app") {
-      window.location.replace(`https://animapu.vercel.app${location.pathname}`)
-    }
   // eslint-disable-next-line
   }, [])
 
   let router = useRouter()
 
-  const [barMode, setBarMode] = useState("manga")
   const [isOpen, setIsOpen] = useState(props.isOpen || true)
   const [currentChapterIDX, setCurrentChapterIDX] = useState(0)
   const [chapters, setChapters] = useState([{ value: 'N/A', label: 'Pick Chapter' }])
+  const [lastScrollTop, setLastScrollTop] = useState(0)
 
   const customStyles = {
     control: base => ({
@@ -119,6 +115,31 @@ export default function BottomMenuBar(props) {
 
     window.scrollTo(0, 0)
   }
+
+  useEffect(() => {
+    if (!props.isRead) { return }
+
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset;
+
+      console.log("CURRENT POS", scrollTop)
+
+      // Close state when scrolling down
+      if (scrollTop > lastScrollTop) {
+        setIsOpen(false);
+      }
+
+      // Open state when scrolling up
+      if (scrollTop < lastScrollTop && scrollTop > 0) {
+        setIsOpen(true);
+      }
+
+      setLastScrollTop(scrollTop);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollTop]);
 
   return(
     <>
