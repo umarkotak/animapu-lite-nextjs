@@ -33,6 +33,8 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState({})
 
+  const [prayerTimes, setPrayerTimes] = useState({})
+
   function LoginCheck() {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
@@ -154,6 +156,21 @@ export default function Home() {
     setShowModal(false)
   }
 
+  useEffect(() => {
+    const fetchPrayerTimes = async () => {
+      try {
+        // Replace with your actual API endpoint
+        const response = await fetch('https://api.aladhan.com/v1/calendarByCity?city=Jakarta&country=Indonesia&method=2&month=12&year=2024');
+        const data = await response.json(); // Parse the response as JSON
+        setPrayerTimes(data.data[0].timings);
+      } catch (err) {
+        console.error(err)
+      }
+    };
+
+    fetchPrayerTimes();
+  }, [])
+
   return (
     <div>
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
@@ -171,15 +188,60 @@ export default function Home() {
                     <Link href="/setting"><a className="text-[#3db3f2]"><i className="fa fa-right-to-bracket"></i> Login</a></Link>
                   </>
                 }
-                {/* <Link href="/home"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
-                <Link href="/popular"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link> */}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="pt-4">
+        <div className="pt-4 flex">
           <div className="container mx-auto max-w-[768px]">
+            <div className='fixed z-0 hidden 2xl:flex mt-[110px] text-white'>
+              <div className='ml-[-280px] w-[280px] flex flex-col gap-2'>
+                <div className='bg-[#2b2d42] p-2 rounded'>
+                  Your Ads Here
+                </div>
+                <Link href=".">
+                  <img className='cursor-pointer rounded' src="https://placehold.co/280" />
+                </Link>
+                <Link href=".">
+                  <img className='cursor-pointer rounded' src="https://placehold.co/280" />
+                </Link>
+              </div>
+              <div className='ml-[770px] w-[280px] flex flex-col gap-2'>
+                <div className='bg-[#2b2d42] p-2 rounded'>
+                  Jadwal Sholat
+                </div>
+                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
+                  <span>Subuh</span>
+                  <span>{prayerTimes.Fajr}</span>
+                </div>
+                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
+                  <span>Sunrise</span>
+                  <span>{prayerTimes.Sunrise}</span>
+                </div>
+                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
+                  <span>Dhuhr</span>
+                  <span>{prayerTimes.Dhuhr}</span>
+                </div>
+                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
+                  <span>Asr</span>
+                  <span>{prayerTimes.Asr}</span>
+                </div>
+                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
+                  <span>Maghrib</span>
+                  <span>{prayerTimes.Maghrib}</span>
+                </div>
+                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
+                  <span>Isha</span>
+                  <span>{prayerTimes.Isha}</span>
+                </div>
+
+                <Link href=".">
+                  <img className='cursor-pointer rounded' src="https://placehold.co/280" />
+                </Link>
+              </div>
+            </div>
+
             <div className='p-2 bg-white bg-opacity-10 backdrop-blur-lg mb-4 mx-4 rounded-lg grid grid-cols-2 gap-2'>
               <div className='relative overflow-hidden rounded-lg'>
                 <Link href="https://animehub-lite.vercel.app/">
@@ -223,25 +285,13 @@ export default function Home() {
                     <i className="fa fa-moon"></i><br/>Dark
                   </button>
                 </div>
-
-                {/* <div className='grid-cols-2 md:grid-cols-4 gap-2 mt-2 hidden md:grid'>
-                  <button
-                    className="w-full text-sm p-1 rounded-lg bg-gray-950 hover:bg-gray-800 text-center text-gray-100"
-                    onClick={()=>{
-                      localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "true")
-                      setDarkMode(true)
-                    }}
-                  >
-                    <i className="fa fa-moon"></i><br/>Dark
-                  </button>
-                </div> */}
               </div>
             </div>
 
-            <div className='flex p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white items-center justify-between'>
+            <div className='flex p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white items-center justify-between z-20'>
               <h1 className='text-2xl'>{activeSource}</h1>
               <button
-                className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm'
+                className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm z-20'
                 onClick={()=>{setShowModal(true)}}
               ><i className='fa fa-repeat'></i> Change</button>
             </div>

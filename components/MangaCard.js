@@ -197,7 +197,7 @@ export default function MangaCard(props) {
             {/* <Link href={goToManga(props.manga)}> */}
               <div className="bg-gray-600 rounded-lg" onClick={()=>setShowModal(!showModal)}>
                 <img
-                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition z-0`}
+                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition z-0 cursor-pointer`}
                   src={
                     (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
                       || "/images/default-book.png"
@@ -216,7 +216,7 @@ export default function MangaCard(props) {
           <div onClick={()=>changeUrl(props.manga)}>
             {/* <Link href={goToManga(props.manga)}> */}
               <div
-                className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90"
+                className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90 cursor-pointer"
                 onClick={()=>setShowModal(!showModal)}
               >
                 {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
