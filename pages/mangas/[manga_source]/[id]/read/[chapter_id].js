@@ -8,6 +8,7 @@ import Link from 'next/link'
 import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
 import Manga from "../../../../../models/Manga"
+import IndexedDBManager from "../../../../../models/IndexedDBManager"
 
 var baseChapters = []
 var varTargetBottom = "none"
@@ -35,6 +36,20 @@ export default function ReadManga(props) {
 
   const [successRender, setSuccessRender] = useState(0)
   const [historySaved, setHistorySaved] = useState(false)
+  const [dbManager, setDBManager] = useState(null)
+
+  useEffect(() => {
+    const initDB = async () => {
+      const manager = new IndexedDBManager();
+      await manager.init();
+      setDBManager(manager);
+      console.log("Init indexed db success")
+    };
+
+    initDB().catch(error => {
+      console.error(`Error initializing DB: ${error}`)
+    });
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") { return }
@@ -338,6 +353,44 @@ export default function ReadManga(props) {
     }
   }, [chapter])
 
+  async function OfflineMode() {
+    var tmpChapter = chapter
+    tmpChapter["base64_images"] = []
+
+    // console.log(tmpChapter)
+    console.log(tmpChapter.chapter_images)
+
+    tmpChapter.chapter_images.map((chapterImageObj) => {
+      var imageBase64 = ""
+      chapterImageObj.image_urls.map(async (image_url) => {
+        if (imageBase64 !== "") {
+          return
+        }
+
+        const base64String = await urlToBase64WithCrossOrigin(image_url);
+
+        if (base64String && base64String !== "") {
+          imageBase64 = base64String
+        }
+      })
+
+      if (imageBase64 !== "") {
+        tmpChapter["base64_images"].push(imageBase64)
+      }
+    })
+
+    try {
+      console.log(tmpChapter["base64_images"][0])
+    } catch(e) {
+      console.error(e)
+    }
+
+    // await dbManager.store('chapter_images', {
+    //   id: `${manga.source}-----${manga.source_id}-----${chapter.id}`,
+    //   image_urls: tmpChapter
+    // });
+  }
+
   return (
     <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <Head>
@@ -379,12 +432,17 @@ export default function ReadManga(props) {
                 className="bg-green-200 rounded-lg p-1 height-[27px]" disabled
               ><i className="fa-solid fa-clock-rotate-left"></i> Saved: {`ch ${chapter.number}`}</button>}
             </div>
-            <div className="flex justify-start text-center text-xs mt-2">
+            <div className="flex justify-between text-center text-xs mt-2">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" className="sr-only peer" id="one_page_toggle" defaultChecked={true} />
                 <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all  peer-checked:bg-blue-600"></div>
                 <span className={`ml-1 text-sm font-medium ${ darkMode ? "text-white" : "text-gray-900"}`}> One page mode</span>
               </label>
+              <div>
+                <button
+                  className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => OfflineMode()}
+                ><i className="fa-solid fa-star"></i> Offline Mode</button>
+              </div>
             </div>
           </div>
 
@@ -521,4 +579,53 @@ export async function getServerSideProps(context) {
   }
 
   return { props: { manga: manga, chapter: chapter } }
+}
+
+async function urlToBase64(url) {
+  try {
+    // Fetch the image
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
+    }
+
+    // Convert response to blob
+    const blob = await response.blob();
+
+    // Convert blob to base64 using FileReader
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error('Failed to convert image to base64'));
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    throw new Error(`Image conversion failed: ${error.message}`);
+  }
+}
+
+
+async function urlToBase64WithCrossOrigin(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'Anonymous'; // Try to request CORS access
+    
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        
+        const base64String = canvas.toDataURL('image/png');
+        resolve(base64String);
+      } catch (error) {
+        reject(new Error('Failed to convert image to base64'));
+      }
+    };
+
+    img.src = url;
+  });
 }

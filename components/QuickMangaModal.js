@@ -5,6 +5,7 @@ import { useAlert } from 'react-alert'
 
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
+import IndexedDBManager from "../models/IndexedDBManager"
 
 export default function QuickMangaModal(props) {
   const alert = useAlert()
@@ -13,6 +14,20 @@ export default function QuickMangaModal(props) {
 
   const [show, setShow] = useState(false)
   const [manga, setManga] = useState(initManga(props.manga))
+  const [dbManager, setDBManager] = useState(null)
+
+  useEffect(() => {
+    const initDB = async () => {
+      const manager = new IndexedDBManager();
+      await manager.init();
+      setDBManager(manager);
+      console.log("Init indexed db success")
+    };
+
+    initDB().catch(error => {
+      console.error(`Error initializing DB: ${error}`)
+    });
+  }, []);
 
   function initManga(initialManga) {
     initialManga.chapters = []
@@ -175,6 +190,13 @@ export default function QuickMangaModal(props) {
     }
   }
 
+  async function OfflineMode() {
+    await dbManager.store('manga_details', {
+      id: `${manga.source}-----${manga.source_id}`,
+      manga: manga
+    });
+  }
+
   return(
     <div>
       {/* <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={()=>setShow(!show)}>
@@ -274,6 +296,14 @@ export default function QuickMangaModal(props) {
                             </Link>
                           </small>
                         </div>
+                        <small>
+                          <button
+                            className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full"
+                            onClick={()=>OfflineMode()}
+                          >
+                            Offline Mode
+                          </button>
+                        </small>
                       </div>
                     </div>
                     <div className="col-span-3 p-2">
