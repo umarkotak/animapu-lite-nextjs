@@ -73,7 +73,7 @@ export default function TestScrap() {
                           <a className="bg-gray-600 rounded-lg">
                             <img
                               className={`w-full h-[265px] rounded-lg`}
-                              src={"https://scans-hot.leanbox.us/manga/Kingdom/0769-001.png"}
+                              src={"https://k7rzspb5flu6zayatfe4mh.my/data/741239/60/ce486faf73752072820ed71de9c3f1c1/PyU1K0Bg5huKBnklaemr9BL6upKMckM3wYXM7Ykw.jpg"}
                               alt="thumb"
                             />
                           </a>
