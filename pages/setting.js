@@ -149,6 +149,7 @@ export default function Setting() {
 
   function GoogleLoginCallback(response) {
     var googleData = response
+    console.log("GOOGLE", googleData)
 
     if (googleData.googleId) {
       var initialString = `${googleData.googleId}-${googleData.profileObj.email}`
