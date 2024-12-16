@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cronitorio/cronitor-rum-nextjs": "^0.4.0",
     "@formkit/auto-animate": "^0.8.2",
     "@react-oauth/google": "^0.12.1",
     "@use-it/event-listener": "^0.1.7",

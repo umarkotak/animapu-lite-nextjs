@@ -6,6 +6,7 @@ import Router from 'next/router'
 import Script from 'next/script'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';
 
 NProgress.configure({
   minimum: 0.3,
@@ -19,7 +20,8 @@ Router.events.on('routeChangeComplete', () => NProgress.done())
 Router.events.on('routeChangeError', () => NProgress.done())
 
 function MyApp({ Component, pageProps }) {
-  
+  useCronitor('7aedc8d5a68c296cfc670b4719b4f4c6');
+
   return (
     <>
       <Head>

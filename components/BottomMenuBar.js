@@ -121,7 +121,7 @@ export default function BottomMenuBar(props) {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset;
 
-      console.log("CURRENT POS", scrollTop)
+      // console.log("CURRENT POS", scrollTop)
 
       // Close state when scrolling down
       if (scrollTop > lastScrollTop) {

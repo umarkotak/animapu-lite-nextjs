@@ -5,6 +5,7 @@ import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 import { CloudIcon, FolderIcon } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 var tempAllMangas = []
 var limit = 16
@@ -51,7 +52,7 @@ export default function Home() {
       const body = await response.json()
 
       if (response.status !== 200) {
-        alert.error(`${body.error.error_code} || ${body.error.message}`)
+        toast.error(`${body.error.error_code} || ${body.error.message}`)
         setOnlineMangas([])
         return
       }
@@ -61,7 +62,7 @@ export default function Home() {
       setOnlineMangas(tempSelectedMangas)
 
     } catch (e) {
-      alert.error(e.message)
+      toast.error(e.message)
       setOnlineMangas([])
     }
   }

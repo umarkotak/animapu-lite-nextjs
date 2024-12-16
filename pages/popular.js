@@ -6,6 +6,7 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
+import { toast } from 'react-toastify'
 
 export default function Popular() {
   let router = useRouter()
@@ -27,11 +28,11 @@ export default function Popular() {
         tempMangas.sort((a,b) => b.weight - a.weight)
         setMangas(tempMangas)
       } else {
-        alert.error(body.error.message)
+        toast.error(body.error.message)
       }
 
     } catch (e) {
-      alert.error(e.message)
+      toast.error(e.message)
     }
     setActiveSource(animapuApi.GetActiveMangaSource())
   }
