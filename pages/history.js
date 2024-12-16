@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react'
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
-import { useAlert } from 'react-alert'
 import Manga from "../models/Manga"
+import { CloudIcon, FolderIcon } from 'lucide-react'
 
 var tempAllMangas = []
 var limit = 16
@@ -16,10 +16,7 @@ export default function Home() {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
-
-  const alert = useAlert()
 
   const [activeTab, setActiveTab] = useState("local")
 
@@ -76,13 +73,11 @@ export default function Home() {
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
       setActiveTab("online")
     }
-  // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     SyncOnlineHistoriesToLocalStorage(onlineMangas)
 
-  // eslint-disable-next-line
   }, [onlineMangas])
 
   function getTabColor(tabString) {
@@ -118,7 +113,6 @@ export default function Home() {
     limit += limit
     const tempSelectedMangas = tempAllMangas.slice(0, limit)
     setOnlineMangas(tempSelectedMangas)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerNextPage])
 
   return (
@@ -129,9 +123,9 @@ export default function Home() {
             <span className="px-4 mb-4 text-white">
               History
             </span>
-            <span className="px-4 mb-4 text-white">
-              <button className={`mx-2 ${getTabColor("local")}`} onClick={()=>{setActiveTab("local")}}><i className="fa-solid fa-file"></i> Local</button>
-              <button className={`mx-2 ${getTabColor("online")}`} onClick={()=>{setActiveTab("online")}}><i className="fa-solid fa-cloud"></i> Online</button>
+            <span className="px-4 mb-4 text-white flex gap-2">
+              <button className={`mx-2 ${getTabColor("local")} flex items-center gap-1`} onClick={()=>{setActiveTab("local")}}><FolderIcon size={18} /> Local</button>
+              <button className={`mx-2 ${getTabColor("online")} flex items-center gap-1`} onClick={()=>{setActiveTab("online")}}><CloudIcon size={18} /> Online</button>
             </span>
           </div>
         </div>

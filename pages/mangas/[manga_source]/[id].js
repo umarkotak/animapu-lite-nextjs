@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 import Link from 'next/link'
-import { useAlert } from 'react-alert'
 
 import BottomMenuBar from "../../../components/BottomMenuBar"
 import animapuApi from "../../../apis/AnimapuApi"
@@ -15,10 +14,8 @@ export default function MangaDetail(props) {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
 
-  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -170,17 +167,17 @@ export default function MangaDetail(props) {
               </div>
               <Link
                 href={`/mangas/${manga_source}/${manga_id}/read/${startReadDecider(chapters)}?secondary_source_id=${secondary_source_id}`}
+                className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full"
               >
-                <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full">
-                  <i className="fa-solid fa-book"></i> Start Read
-                </a>
+                <i className="fa-solid fa-book"></i> Start Read
               </Link>
-              <Link href={continueManga.last_link || "#"}>
-                <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}>
-                  <i className="fa-solid fa-play"></i> {
-                    continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
-                  }
-                </a>
+              <Link
+                href={continueManga.last_link || "#"}
+                className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}
+              >
+                <i className="fa-solid fa-play"></i> {
+                  continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
+                }
               </Link>
             </div>
             <div className="col-span-2 p-2">
@@ -221,10 +218,11 @@ export default function MangaDetail(props) {
             <div className="col-span-2 p-2">
               {manga.chapters.map((chapter, idx) => (
                 <div className="" key={chapter.title}>
-                  <Link href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}>
-                    <a className="bg-white hover:bg-[#eeeeee] rounded mb-2 p-2 text-[#5c728a] text-center block w-full">
-                      {chapter.title}
-                    </a>
+                  <Link
+                    href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}
+                    className="bg-white hover:bg-[#eeeeee] rounded mb-2 p-2 text-[#5c728a] text-center block w-full"
+                  >
+                    {chapter.title}
                   </Link>
                 </div>
               ))}

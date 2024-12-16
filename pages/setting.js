@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { useRouter } from "next/router"
 import Link from 'next/link'
-import { useAlert } from 'react-alert'
-import { GoogleLogin, GoogleLogout } from 'react-google-login'
+import { GoogleOAuthProvider, googleLogout, GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import animapuApi from "../apis/AnimapuApi"
+import { toast } from 'react-toastify';
+import { LogOutIcon } from 'lucide-react';
 
 var version = "v3.8.0"
 
@@ -25,10 +27,8 @@ export default function Setting() {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
 
-  const alert = useAlert()
   let router = useRouter()
 
   const [sources, setSources] = useState([])
@@ -62,19 +62,19 @@ export default function Setting() {
                   <img className="mr-2" src={`/images/flags/${source.language}.png`} alt="" height="15px" width="23px"/> {source.title}
                 </div>
                 <Link href={source.web_link || "#"} target="_blank">
-                  <a target="_blank"><i className="fa-solid fa-up-right-from-square"></i></a>
+                  <i className="fa-solid fa-up-right-from-square"></i>
                 </Link>
               </div>
             }
         })
         setFormattedSources(tempFormattedSources)
       } else {
-        alert.error(body.error.message)
+        toast.error(body.error.message)
       }
       onApiCall = false
 
     } catch (e) {
-      alert.error(e.message)
+      toast.error(e.message)
       onApiCall = false
     }
   }
@@ -85,12 +85,10 @@ export default function Setting() {
     }
     GetSourceList()
     LoginCheck()
-  // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     setActiveSourceIdx(activeSourceIdxDirect)
-  // eslint-disable-next-line
   }, [formattedSources])
 
   function handleSelectSource(e) {
@@ -144,25 +142,29 @@ export default function Setting() {
       localStorage.setItem(detailKey, JSON.stringify(manga))
     })
 
-    alert.info("Info || Load library success!")
+    toast.info("Info || Load library success!")
   }
 
   function GoogleLoginCallback(response) {
-    var googleData = response
-    console.log("GOOGLE", googleData)
+    try {
+      var googleData = response
+      console.log("GOOGLE", googleData)
+      const decoded = jwtDecode(googleData.credential)
+      console.log("GOOGLED", decoded)
 
-    if (googleData.googleId) {
-      var initialString = `${googleData.googleId}-${googleData.profileObj.email}`
+      var initialString = `${decoded.sub}-${decoded.email}`
       localStorage.setItem("ANIMAPU_LITE:USER:LOGGED_IN", "true")
       localStorage.setItem("ANIMAPU_LITE:USER:UNIQUE_SHA", sha512(initialString))
-      localStorage.setItem("ANIMAPU_LITE:USER:EMAIL", googleData.profileObj.email)
+      localStorage.setItem("ANIMAPU_LITE:USER:EMAIL", decoded.email)
       setLoggedInUser({
-        email: googleData.profileObj.email,
+        email: decoded.email,
       })
       setLoggedIn(true)
-    }
 
-    alert.info("Info || Login sukses!")
+      toast.info("Info || Login sukses!")
+    } catch(e) {
+      toast.error("Error", e)
+    }
   }
 
   function GoogleLogoutCallback(response) {
@@ -170,7 +172,7 @@ export default function Setting() {
     localStorage.removeItem("ANIMAPU_LITE:USER:UNIQUE_SHA")
     localStorage.removeItem("ANIMAPU_LITE:USER:EMAIL")
     setLoggedIn(false)
-    alert.info("Info || Logout sukses!")
+    toast.info("Info || Logout sukses!")
   }
 
   function LoginCheck() {
@@ -186,22 +188,22 @@ export default function Setting() {
 
   function HandleSyncHistoryFromCloudToLocal() {
     // TODO: Implement sync mechanism
-    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
   }
 
   function HandleSyncHistoryFromLocalToCloud() {
     // TODO: Implement sync mechanism
-    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
   }
 
   function HandleSyncLibraryFromCloudToLocal() {
     // TODO: Implement sync mechanism
-    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
   }
 
   function HandleSyncLibraryFromLocalToCloud() {
     // TODO: Implement sync mechanism
-    alert.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
   }
 
   return (
@@ -258,20 +260,21 @@ export default function Setting() {
             <div>
               {
                 !loggedIn ?
-                <GoogleLogin
-                  className="block w-full text-center"
-                  clientId={G_CLIENT_ID}
-                  buttonText="Continue With Google"
-                  onSuccess={GoogleLoginCallback}
-                  onFailure={GoogleLoginCallback}
-                  cookiePolicy={'single_host_origin'}
-                /> :
-                <GoogleLogout
-                  className="block w-full text-center"
-                  clientId={G_CLIENT_ID}
-                  buttonText="Logout"
-                  onLogoutSuccess={GoogleLogoutCallback}
-                />
+                <GoogleOAuthProvider clientId={G_CLIENT_ID}>
+                  <GoogleLogin
+                    className="block w-full text-center"
+                    clientId={G_CLIENT_ID}
+                    buttonText="Continue With Google"
+                    onSuccess={GoogleLoginCallback}
+                    onFailure={GoogleLoginCallback}
+                    cookiePolicy={'single_host_origin'}
+                  />
+                </GoogleOAuthProvider>
+                 :
+                <button
+                  className="bg-red-500 text-white flex items-center gap-2 w-full text-center p-2 rounded"
+                  onClick={()=>GoogleLogoutCallback()}
+                ><LogOutIcon size={20} /> Logout</button>
               }
               <small>
                 {
@@ -347,15 +350,15 @@ export default function Setting() {
                 if(confirm("Are you sure?")) {
                   localStorage.removeItem(`ANIMAPU_LITE:HISTORY:LOCAL:LIST`)
                 }
-                alert.info("Clear history success!")
+                toast.info("Clear history success!")
               }}
             >Clear</button>
           </div>
 
           <div className="bg-[#fafafa] rounded p-4 mb-3 shadow-md">
             <h2 className="text-xl mb-2">Developer</h2>
-            <Link href="/errlogs">
-              <a className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">Logs</a>
+            <Link href="/errlogs" className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">
+              Logs
             </Link>
             <a href="https://api.shadow-animapu-1.site/health" target="_blank" rel="noreferrer" className="block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mt-2 p-2 text-center">
               API Host
@@ -368,7 +371,7 @@ export default function Setting() {
               <span className="block mt-2 mb-2">
                 Cronitor ({panelbearDisable === 'true' ? 'Off' : 'On'})
                 <Link href={"https://cronitor.io/app/sites/5a31ef56f45643c0?env=production&time=7d&dimensionGroup=Pageviews"} target="_blank">
-                  <a target="_blank"> <i className="fa-solid fa-up-right-from-square"></i></a>
+                  <i className="fa-solid fa-up-right-from-square"></i>
                 </Link>
               </span>
               <div className="grid grid-cols-2">

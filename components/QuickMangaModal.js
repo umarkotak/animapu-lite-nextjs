@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from "next/router"
 import Link from 'next/link'
-import { useAlert } from 'react-alert'
 
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
+import { BookIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 export default function QuickMangaModal(props) {
-  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -39,14 +39,12 @@ export default function QuickMangaModal(props) {
 
   useEffect(() => {
     setShow(props.showModal)
-  // eslint-disable-next-line
   }, [props])
 
   useEffect(() => {
     if (show) { GetMangaDetail() }
 
     props.setShowModal(show)
-  // eslint-disable-next-line
   }, [show])
 
   var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
@@ -131,7 +129,7 @@ export default function QuickMangaModal(props) {
       console.log(e.message)
     }
 
-    alert.info("Info || Manga ini udah masuk library kamu!")
+    toast.info("Info || Manga ini udah masuk library kamu!")
   }
 
   async function handleUpvote() {
@@ -142,13 +140,13 @@ export default function QuickMangaModal(props) {
       const response = await animapuApi.PostUpvoteManga(manga)
       const body = await response.json()
       if (response.status !== 200) {
-        alert.error(`${body.error.error_code} || ${body.error.message}`)
+        toast.error(`${body.error.error_code} || ${body.error.message}`)
         return
       }
-      alert.info("Info || Upvote sukses!")
+      toast.info("Info || Upvote sukses!")
 
     } catch (e) {
-      alert.error(e.message)
+      toast.error(e.message)
     }
   }
 
@@ -177,15 +175,9 @@ export default function QuickMangaModal(props) {
 
   return(
     <div>
-      {/* <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={()=>setShow(!show)}>
-        <button className="drop-shadow-sm bg-white bg-opacity-70 rounded-full w-[24px] h-[24px] leading-none">
-          <i className="text-sm fa-solid fa-ellipsis"></i>
-        </button>
-      </div> */}
-      {/* <div className="absolute top-[30px] right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}> */}
-      <div className="absolute top-0 right-0 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
-        <button className="drop-shadow-sm bg-white bg-opacity-70 rounded-full w-[24px] h-[24px] leading-none">
-          <i className={`text-sm fa-solid fa-bookmark ${followed ? "text-[#ec294b]": ""}`}></i>
+      <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
+        <button className="drop-shadow-sm bg-white bg-opacity-50 backdrop-blur rounded-full p-1">
+          <span className={`${followed ? "text-[#ec294b]": ""}`}><HeartIcon size={20} /></span>
         </button>
       </div>
       {
@@ -205,22 +197,22 @@ export default function QuickMangaModal(props) {
               </div>
               <button
                 type="button"
-                className="absolute z-10 top-3 right-2.5 bg-[#ec294b] hover:bg-[#] text-white rounded-full text-xs py-1.5 px-2 inline-flex"
+                className="absolute z-10 top-3 right-2.5 bg-[#ec294b] hover:bg-[#B11F38] text-white rounded-full text-xs py-1.5 px-2 inline-flex"
                 onClick={()=>setShow(!show)}
               >
-                <i className="fa fa-xmark"></i>
+                <XIcon size={14} />
               </button>
               <button
-                className="absolute z-10 top-3 right-[40px] text-xs text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
+                className="absolute z-10 top-3 right-[46px] text-xs text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full flex items-center gap-1"
                 onClick={(e)=>{
                   navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
-                  alert.info("Info || Link berhasil dicopy!")
+                  toast.info("Info || Link berhasil dicopy!")
                 }}
-              ><i className="fa-solid fa-share-nodes"></i> Share</button>
+              ><Share2Icon size={14} /> Share</button>
               <button
-                className="absolute z-10 top-3 right-[100px] text-xs text-white float-right bg-[#ebb62d] hover:bg-[#A57F1F] p-1 rounded-full"
+                className="absolute z-10 top-3 right-[110px] text-xs text-white float-right bg-[#ebb62d] hover:bg-[#A57F1F] p-1 rounded-full flex items-center gap-1"
                 onClick={() => handleUpvote()}
-              ><i className="fa-solid fa-star"></i> Upvote</button>
+              ><StarIcon size={14} /> Upvote</button>
 
               <div className="bg-[#fafafa]">
                 <div className="container mx-auto py-4 px-[20px] max-w-[768px]">
@@ -239,41 +231,38 @@ export default function QuickMangaModal(props) {
                       <div className=''>
                         <small>
                           <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-1 text-center rounded-full" onClick={() => handleFollow()}>
-                            <span className='text-xs'><i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}</span>
+                            <span className='text-xs flex gap-1 items-center justify-center'><HeartIcon size={14} /> {followed ? "Un-Follow" : "Follow"}</span>
                           </button>
                         </small>
-                        {/* <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-0  text-center rounded-full" onClick={() => handleUpvote()}>
-                          <small><i className="fa-solid fa-star"></i> Upvote</small>
-                        </button> */}
                         <small>
                           <Link
                             href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}
+                            className="block w-full bg-[#3db3f2] hover:bg-[#333d43] text-white mt-2 p-1 text-center rounded-full"
                           >
-                            <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full">
-                              <span className='text-xs'><i className="fa-solid fa-eye"></i> Detail</span>
-                            </a>
+                            <span className='text-xs flex gap-1 items-center justify-center'><EyeIcon size={14} /> Detail</span>
                           </Link>
                         </small>
                         <small>
                           <Link
                             href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
+                            className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full"
                           >
-                            <a className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full">
-                              <span><i className="fa-solid fa-book"></i> Start Read</span>
-                            </a>
+                            <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Read</span>
                           </Link>
                         </small>
-                        <div onClick={()=>changeUrl(props.manga)}>
+                        {continueManga.title && <div onClick={()=>changeUrl(props.manga)}>
                           <small>
-                            <Link href={continueManga.last_link || "#"}>
-                              <a className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-1 text-center mt-2 rounded-full`}>
-                                <i className="fa-solid fa-play"></i> {
-                                  continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
-                                }
-                              </a>
+                            <Link
+                              href={continueManga.last_link || "#"}
+                              className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-1 text-center mt-2 rounded-full`}
+                            >
+                              <span className='text-xs flex gap-1 items-center justify-center'>
+                                <PlayIcon size={14} />
+                                Continue Ch {continueManga.last_chapter_read}
+                              </span>
                             </Link>
                           </small>
-                        </div>
+                        </div>}
                       </div>
                     </div>
                     <div className="col-span-3 p-2">
@@ -302,12 +291,11 @@ export default function QuickMangaModal(props) {
                     <div className="p-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
                         <div className="" key={chapter.title} onClick={()=>changeUrl(props.manga)}>
-                          <Link href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}>
-                            <a
-                              className="bg-white hover:bg-gray-300 rounded-full mb-2 py-1 px-2 text-[#5c728a] text-center block w-full"
-                            >
-                              {chapter.title}
-                            </a>
+                          <Link
+                            href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}
+                            className="bg-white hover:bg-gray-300 rounded-full mb-2 py-1 px-2 text-[#5c728a] text-center block w-full"
+                          >
+                            {chapter.title}
                           </Link>
                         </div>
                       ))}

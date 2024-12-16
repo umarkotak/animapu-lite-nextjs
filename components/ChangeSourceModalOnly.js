@@ -3,6 +3,8 @@ import autoAnimate from '@formkit/auto-animate'
 import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
+import { toast } from 'react-toastify'
+import { LinkIcon, XIcon } from 'lucide-react'
 
 var onApiCall = false
 var activeSourceIdxDirect = 0
@@ -35,7 +37,7 @@ export default function ChangeSourceModalOnly(props) {
             disabled: !source.active,
             language: source.language,
             title: source.title,
-            label: <div><div className="flex flex-row justify-between text-left">
+            label: <div className="flex flex-row items-center justify-between text-left">
               <div className="flex flex-row">
                 <img className="mr-2 mt-1 h-[25px] w-[25px]" src={`/images/flags/${source.language}.png`} alt=""/>
                 <div>
@@ -43,10 +45,15 @@ export default function ChangeSourceModalOnly(props) {
                   <div className='font-light mt-[-7px] mb-[-5px]'><small>{source.status}</small></div>
                 </div>
               </div>
-              <Link href={source.web_link || "#"} target="_blank">
-                <a target="_blank"><i className="fa-solid fa-up-right-from-square"></i></a>
+              <Link
+                href={source.web_link || "#"}
+                target="_blank"
+                className='flex flex-col justify-center items-center bg-white rounded hover:bg-gray-300 text-black p-1'
+                rel="noopener"
+              >
+                <LinkIcon size={20} />
               </Link>
-            </div></div>
+            </div>
           }
         })
         setFormattedSources(tempFormattedSources)
@@ -55,24 +62,22 @@ export default function ChangeSourceModalOnly(props) {
           props.setMangaSourcesData(tempFormattedSources)
         }
       } else {
-        alert.error(body.error.message)
+        toast.error(body.error.message)
       }
       onApiCall = false
 
     } catch (e) {
-      alert.error(e.message)
+      toast.error(e.message)
       onApiCall = false
     }
   }
 
   useEffect(() => {
     GetSourceList()
-  // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     setShow(props.show)
-  // eslint-disable-next-line
   }, [props])
 
   function handleSelectSource(source) {
@@ -100,10 +105,10 @@ export default function ChangeSourceModalOnly(props) {
         <div className="relative p-4 w-full max-w-md h-full z-20">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <button
-                className="absolute z-10 top-3 right-2.5 bg-[#ec294b] text-white rounded-full text-sm py-1.5 px-2 inline-flex"
+                className="absolute z-10 top-3 right-2.5 bg-[#ec294b] hover:bg-[#B11F38] text-white rounded-full text-sm py-1.5 px-2 inline-flex"
                 onClick={()=>{closeModal()}}
               >
-                <i className="fa fa-xmark"></i>
+                <XIcon size={18} />
               </button>
               <div className="py-4 px-6 rounded-t border-b dark:border-gray-600">
                 <h3 className="text-base font-semibold text-gray-900 lg:text-xl dark:text-white">

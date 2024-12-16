@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
-import { useAlert } from 'react-alert'
 import { Img } from 'react-image'
 import Link from 'next/link'
 
@@ -22,10 +21,8 @@ export default function ReadManga(props) {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
 
-  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -359,9 +356,13 @@ export default function ReadManga(props) {
         <div className="container mx-auto pt-1 px-1 max-w-[768px]">
           <div className="mt-1 mb-2">
             <div className="flex justify-start text-center text-xs">
-              <Link href={chapter.source_link || "#"}><a target="_blank"
+              <Link
+                href={chapter.source_link || "#"}
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
-              ><i className="fa fa-globe"></i> Source</a></Link>
+                target="_blank"
+              >
+                <i className="fa fa-globe"></i> Source
+              </Link>
               <button
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleFollow()}
               ><i className="fa-solid fa-heart"></i> Follow</button>
@@ -483,9 +484,11 @@ export default function ReadManga(props) {
             ))}
           </div>
 
-          <p className="text-center"><Link href={chapter.source_link || "#"}>
-            <a target="_blank" className={`hover:text-[#3db3f2] ${ darkMode ? "text-white" : ""}`}><b><i className="fa fa-globe"></i> Read from original source</b></a>
-          </Link></p>
+          <p className="text-center">
+            <Link href={chapter.source_link || "#"} target="_blank" className={`hover:text-[#3db3f2] ${ darkMode ? "text-white" : ""}`}>
+              <b><i className="fa fa-globe"></i> Read from original source</b>
+            </Link>
+          </p>
           {successRender ? null : <div>
             <p className={`text-center ${ darkMode ? "text-white" : ""}`}>
               please wait for at most 1 minute, or the image might be broken. sorry for the inconvenience.

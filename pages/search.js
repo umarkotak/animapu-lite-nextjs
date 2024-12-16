@@ -5,9 +5,8 @@ import { useRouter } from "next/router"
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
-import { useAlert } from 'react-alert'
-import ChangeSourceModal from "../components/ChangeSourceModal"
 import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
+import { toast } from 'react-toastify'
 
 var onApiCall = false
 export default function Home() {
@@ -17,10 +16,8 @@ export default function Home() {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
 
-  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -37,7 +34,6 @@ export default function Home() {
 
   useEffect(() => {
     setActiveSource(animapuApi.GetActiveMangaSource())
-  // eslint-disable-next-line
   }, [])
 
   async function SearchManga() {
@@ -73,7 +69,7 @@ export default function Home() {
         if (response.status == 200) {
           setMangas(body.data)
         } else {
-          alert.error(body.error.message)
+          toast.error(body.error.message)
           console.error("FAIL", body)
         }
       }
@@ -84,7 +80,7 @@ export default function Home() {
     } catch (e) {
       console.error(e)
       onApiCall = false
-      alert.error(e.message)
+      toast.error(e.message)
       setIsLoadMoreLoading(false)
     }
   }
@@ -97,14 +93,6 @@ export default function Home() {
     <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
       <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
         <div className="container mx-auto max-w-[768px] pt-2">
-          {/* <div className="flex justify-between">
-            <span className="px-4 mb-4 text-white">
-              <ChangeSourceModal text={activeSource} />
-            </span>
-            <span className="px-4 mb-4 text-white">
-            </span>
-          </div> */}
-
           <h1 className='text-white text-xl mx-2 pt-2'><i className='fa fa-search'></i> Search</h1>
 
           <div className='flex pt-2 mx-2 rounded-lg bg-[#2b2d42] text-white items-center justify-between'>

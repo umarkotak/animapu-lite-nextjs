@@ -19,7 +19,6 @@ export default function Library() {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
 
   // function TestFireBase() {
@@ -187,7 +186,6 @@ export default function Library() {
 
     var libraryMangas = GetLibraryMangas()
     setMangas(libraryMangas)
-    // eslint-disable-next-line
   }, [])
 
   function ExecuteSync() {
@@ -196,7 +194,6 @@ export default function Library() {
   }
 
   useEffect(() => {
-  // eslint-disable-next-line
   }, [mangas])
 
   const [activeTab, setActiveTab] = useState("local")

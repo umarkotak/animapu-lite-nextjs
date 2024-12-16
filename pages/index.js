@@ -1,14 +1,14 @@
 import { useState, useEffect, Fragment } from 'react'
 import { useRouter } from "next/router"
-import { useAlert } from 'react-alert'
 import Link from 'next/link'
 
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
-import ChangeSourceModal from "../components/ChangeSourceModal"
 import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
 import animapuApi from "../apis/AnimapuApi"
 import uuid from 'react-uuid'
+import { CoffeeIcon, GlobeIcon, LogInIcon, MoonIcon, RotateCwIcon, StarIcon, SunIcon, TvIcon } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 var onApiCall = false
 var page = 1
@@ -20,10 +20,8 @@ export default function Home() {
     if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
       setDarkMode(true)
     } else { setDarkMode(false) }
-  // eslint-disable-next-line
   }, [])
 
-  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -46,7 +44,6 @@ export default function Home() {
   }
   useEffect(() => {
     LoginCheck()
-  // eslint-disable-next-line
   }, [])
 
   async function GetLatestManga(append) {
@@ -67,7 +64,7 @@ export default function Home() {
       })
       const body = await response.json()
       if (response.status !== 200) {
-        alert.error(`${body.error.error_code} || ${body.error.message}`)
+        toast.error(`${body.error.error_code} || ${body.error.message}`)
         setIsLoadMoreLoading(false)
         onApiCall = false
 
@@ -89,7 +86,7 @@ export default function Home() {
       undefined, { shallow: true })
 
     } catch (e) {
-      alert.error(e.message)
+      toast.error(e.message)
     }
 
     onApiCall = false
@@ -100,7 +97,6 @@ export default function Home() {
     if (!query) {return}
     targetPage = query.page
     GetLatestManga(false)
-  // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
@@ -120,7 +116,6 @@ export default function Home() {
         }
       } catch(e) {}
     }
-  // eslint-disable-next-line
   }, [mangas])
 
   function GetLatestMangaNextPage() {
@@ -145,7 +140,6 @@ export default function Home() {
   }, [])
   useEffect(() => {
     GetLatestMangaNextPage()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerNextPage])
 
   if (typeof window !== "undefined" && !localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
@@ -177,15 +171,15 @@ export default function Home() {
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[768px] pt-2">
             <div className="flex justify-between">
-              <span className="px-4 mb-4 text-white">
-                {/* <ChangeSourceModal text={activeSource} /> */}
+              <span className="px-4 mb-4 text-white text-xl">
+                Animapu Lite
               </span>
               <span className="px-4 mb-4 text-white">
                 {
                   loggedInUser.email ? <>
-                    <Link href="/setting"><a className="text-[#3db3f2]">Hello, {loggedInUser.email}</a></Link>
+                    <Link href="/setting" className="text-[#3db3f2]">Hello, {loggedInUser.email}</Link>
                   </> : <>
-                    <Link href="/setting"><a className="text-[#3db3f2]"><i className="fa fa-right-to-bracket"></i> Login</a></Link>
+                    <Link href="/setting" className="text-[#3db3f2] flex items-center ga-1"><LogInIcon size={14} /> Login</Link>
                   </>
                 }
               </span>
@@ -245,13 +239,14 @@ export default function Home() {
             <div className='p-2 bg-white bg-opacity-10 backdrop-blur-lg mb-4 mx-4 rounded-lg grid grid-cols-2 gap-2'>
               <div className='relative overflow-hidden rounded-lg'>
                 <Link href="https://animehub-lite.vercel.app/">
-                  <a><img src="/images/animehub_cover.jpeg" className='h-full w-full object-cover rounded-lg hover:scale-105 transition' /></a>
+                  <img src="/images/animehub_cover.jpeg" className='h-full w-full object-cover rounded-lg hover:scale-105 transition' />
                 </Link>
                 <div className='bottom-2 right-2 absolute z-10'>
-                  <Link href="https://animehub-lite.vercel.app/">
-                    <a className='py-1 px-2 rounded-full bg-white hover:bg-gray-300 hover:text-blue-600 bg-opacity-70'>
-                      Watch Anime
-                    </a>
+                  <Link
+                    href="https://animehub-lite.vercel.app/"
+                    className='py-1 px-2 rounded-full bg-white hover:bg-gray-300 hover:text-blue-600 bg-opacity-70 flex items-center'
+                  >
+                    <TvIcon size={18} className='mr-2' /> Watch Anime
                   </Link>
                 </div>
               </div>
@@ -259,30 +254,37 @@ export default function Home() {
                 <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
                   <a
                     href="https://trakteer.id/marumaru" target="_blank" rel="noreferrer"
-                    className='w-full text-sm p-1 rounded-lg text-center bg-red-300 hover:bg-red-400'
+                    className="w-full text-sm p-1 rounded-lg text-center bg-zinc-100 hover:bg-red-400 flex flex-col items-center justify-center"
                   >
-                    <i className="fa fa-coffee"></i><br/>Traktir
+                    <CoffeeIcon size={22} />
+                    Traktir
                   </a>
-                  <Link href="/popular"><a className="w-full  text-sm p-1 rounded-lg bg-yellow-200 hover:bg-yellow-300 text-center">
-                    <i className="fa fa-star"></i><br/>Popular
-                  </a></Link>
+                  <Link
+                    href="/popular"
+                    className="w-full text-sm p-1 rounded-lg text-center bg-zinc-100 hover:bg-red-400 flex flex-col items-center justify-center"
+                  >
+                    <StarIcon size={22} />
+                    Popular
+                  </Link>
                   <button
-                    className="w-full text-sm p-1 rounded-lg bg-gray-100 hover:bg-gray-300 text-center text-gray-900"
+                    className="w-full text-sm p-1 rounded-lg text-center bg-zinc-100 hover:bg-red-400 flex flex-col items-center justify-center"
                     onClick={()=>{
                       localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "false")
                       setDarkMode(false)
                     }}
                   >
-                    <i className="fa fa-sun"></i><br/>Light
+                    <SunIcon size={22} />
+                    Light
                   </button>
                   <button
-                    className="w-full text-sm p-1 rounded-lg bg-gray-950 hover:bg-gray-800 text-center text-gray-100"
+                    className="w-full text-sm p-1 rounded-lg text-center bg-zinc-100 hover:bg-red-400 flex flex-col items-center justify-center"
                     onClick={()=>{
                       localStorage.setItem("ANIMAPU_LITE:DARK_MODE", "true")
                       setDarkMode(true)
                     }}
                   >
-                    <i className="fa fa-moon"></i><br/>Dark
+                    <MoonIcon size={22} />
+                    Dark
                   </button>
                 </div>
               </div>
@@ -291,9 +293,9 @@ export default function Home() {
             <div className='flex p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white items-center justify-between z-20'>
               <h1 className='text-2xl'>{activeSource}</h1>
               <button
-                className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm z-20'
+                className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm z-0 flex items-center gap-2'
                 onClick={()=>{setShowModal(true)}}
-              ><i className='fa fa-repeat'></i> Change</button>
+              ><GlobeIcon size={22} /> Change</button>
             </div>
 
             <div className="relative grid grid-rows-1 grid-flow-col mx-4 z-0">
@@ -317,10 +319,10 @@ export default function Home() {
                 }
               </button>
               <button
-                className={`border block w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mb-2 p-2 text-center ${mangas.length > 0 ? "hidden" : "block"}`}
+                className={`border w-full bg-[#2b2d42] hover:bg-[#3db3f2] text-white rounded mb-2 p-2 text-center flex items-center gap-1 ${mangas.length > 0 ? "hidden" : "block"}`}
                 onClick={() => GetLatestManga(false)}
               >
-                <i className='fa fa-rotate'></i> Retry
+                <RotateCwIcon size={18} /> Retry
               </button>
             </div>
           </div>

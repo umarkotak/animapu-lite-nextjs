@@ -29,7 +29,6 @@ export default function Errlogs() {
 
   useEffect(() => {
     GetLogs()
-  // eslint-disable-next-line
   }, [])
 
   return (

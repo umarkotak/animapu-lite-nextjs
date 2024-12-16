@@ -1,11 +1,11 @@
 import { useRouter } from "next/router"
-import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
 import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
 import {Img} from 'react-image'
 import { useState } from "react"
+import { EyeIcon, StarIcon, UserIcon } from "lucide-react"
 
 export default function MangaCard(props) {
   let router = useRouter()
@@ -73,7 +73,7 @@ export default function MangaCard(props) {
   function subTextDecider(manga) {
     if (props.card_type === "popular") {
       return(
-        <span className="text-[#F0E68C]"><i className="fa fa-star"></i> {manga.popularity_point || 0}</span>
+        <span className="text-[#F0E68C]"><StarIcon size={18} />{manga.popularity_point || 0}</span>
       )
     }
 
@@ -87,7 +87,7 @@ export default function MangaCard(props) {
   function extraSubTextDecider(manga) {
     if (props.card_type === "popular") {
       return(
-        <span className="text-[#F0E68C]"><i className="fa fa-eye"></i> {manga.read_count || 0}</span>
+        <span className="text-[#F0E68C] flex gap-1"><EyeIcon size={16} /> {manga.read_count || 0}</span>
       )
     }
 
@@ -98,7 +98,7 @@ export default function MangaCard(props) {
   function midExtraSubTextDecider(manga) {
     if (props.card_type === "popular") {
       return(
-        <span className="text-[#F0E68C]"><i className="fa fa-user"></i> {manga.follow_count || 0}</span>
+        <span className="text-[#F0E68C] flex gap-1"><UserIcon size={16} /> {manga.follow_count || 0}</span>
       )
     }
 

@@ -35,7 +35,6 @@ export default function Home() {
 
   useEffect(() => {
     GetLatestManga()
-  // eslint-disable-next-line
   }, [])
 
   return (

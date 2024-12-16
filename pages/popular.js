@@ -1,6 +1,5 @@
 import { useState, useEffect, Fragment } from 'react'
 import { useRouter } from "next/router"
-import { useAlert } from 'react-alert'
 import Link from 'next/link'
 
 import BottomMenuBar from "../components/BottomMenuBar"
@@ -9,7 +8,6 @@ import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 
 export default function Popular() {
-  const alert = useAlert()
   let router = useRouter()
   const query = router.query
 
@@ -41,7 +39,6 @@ export default function Popular() {
   useEffect(() => {
     if (!query) {return}
     GetPopularMangas()
-  // eslint-disable-next-line
   }, [query])
 
   return (
@@ -52,8 +49,8 @@ export default function Popular() {
             <div className="flex justify-between">
               <span className="px-4 mb-4 text-white"><i className="fa fa-globe"></i> <span className="text-[#3db3f2] font-bold">{activeSource}</span></span>
               <span className="px-4 mb-4 text-white">
-                <Link href="/home"><a className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-home"></i> Home</a></Link>
-                <Link href="/popular"><a className="mx-2 text-[#3db3f2]"><i className="fa fa-star"></i> Popular</a></Link>
+                <Link href="/home" className="mx-2 hover:text-[#3db3f2]"><i className="fa fa-home"></i> Home</Link>
+                <Link href="/popular" className="mx-2 text-[#3db3f2]"><i className="fa fa-star"></i> Popular</Link>
               </span>
             </div>
           </div>
