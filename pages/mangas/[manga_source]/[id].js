@@ -95,7 +95,7 @@ export default function MangaDetail(props) {
     localStorage.setItem(detailKey, JSON.stringify(tempManga))
     setFollowed(isInLibrary())
 
-    toast.info("Info || Manga ini udah masuk library kamu!")
+    toast.info("Manga ini udah masuk library kamu!")
   }
 
   async function handleUpvote() {
@@ -109,7 +109,7 @@ export default function MangaDetail(props) {
         toast.error(`${body.error.error_code} || ${body.error.message}`)
         return
       }
-      toast.info("Info || Upvote sukses!")
+      toast.info("Upvote sukses!")
 
     } catch (e) {
       toast.error(e.message)
@@ -186,7 +186,7 @@ export default function MangaDetail(props) {
                 className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
                 onClick={(e)=>{
                   navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
-                  toast.info("Info || Link berhasil dicopy!")
+                  toast.info("Link berhasil dicopy!")
                 }}
               ><i className="fa-solid fa-share-nodes"></i> Share</button>
               <h1 className="text-[#5c728a] text-xl mb-1">

@@ -161,7 +161,7 @@ export default function ReadManga(props) {
       }
 
       if (star) {
-        toast.info("Info || Upvote sukses!")
+        toast.info("Upvote sukses!")
       }
 
     } catch (e) {
@@ -191,7 +191,7 @@ export default function ReadManga(props) {
 
     var followDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
     localStorage.setItem(followDetailKey, JSON.stringify(tempManga))
-    toast.info("Info || Manga ini udah masuk library kamu!")
+    toast.info("Manga ini udah masuk library kamu!")
   }
 
   function isBottom(el) {
@@ -361,7 +361,7 @@ export default function ReadManga(props) {
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
                 onClick={()=>{
                   navigator.clipboard.writeText(shareUrlText())
-                  toast.info("Info || Link berhasil dicopy!")
+                  toast.info("Link berhasil dicopy!")
                 }}
               ><i className="fa-solid fa-share-nodes"></i> Share</button>
               {historySaved && <button

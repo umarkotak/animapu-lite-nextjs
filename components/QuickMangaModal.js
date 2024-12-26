@@ -129,7 +129,7 @@ export default function QuickMangaModal(props) {
       console.log(e.message)
     }
 
-    toast.info("Info || Manga ini udah masuk library kamu!")
+    toast.info("Manga ini udah masuk library kamu!")
   }
 
   async function handleUpvote() {
@@ -143,7 +143,7 @@ export default function QuickMangaModal(props) {
         toast.error(`${body.error.error_code} || ${body.error.message}`)
         return
       }
-      toast.info("Info || Upvote sukses!")
+      toast.info("Upvote sukses!")
 
     } catch (e) {
       toast.error(e.message)
@@ -206,7 +206,7 @@ export default function QuickMangaModal(props) {
                 className="absolute z-10 top-3 right-[46px] text-xs text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full flex items-center gap-1"
                 onClick={(e)=>{
                   navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu-lite.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
-                  toast.info("Info || Link berhasil dicopy!")
+                  toast.info("Link berhasil dicopy!")
                 }}
               ><Share2Icon size={14} /> Share</button>
               <button

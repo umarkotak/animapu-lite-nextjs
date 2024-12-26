@@ -142,7 +142,7 @@ export default function Setting() {
       localStorage.setItem(detailKey, JSON.stringify(manga))
     })
 
-    toast.info("Info || Load library success!")
+    toast.info("Load library success!")
   }
 
   function GoogleLoginCallback(response) {
@@ -161,7 +161,7 @@ export default function Setting() {
       })
       setLoggedIn(true)
 
-      toast.info("Info || Login sukses!")
+      toast.info("Login sukses!")
     } catch(e) {
       toast.error("Error", e)
     }
@@ -172,7 +172,7 @@ export default function Setting() {
     localStorage.removeItem("ANIMAPU_LITE:USER:UNIQUE_SHA")
     localStorage.removeItem("ANIMAPU_LITE:USER:EMAIL")
     setLoggedIn(false)
-    toast.info("Info || Logout sukses!")
+    toast.info("Logout sukses!")
   }
 
   function LoginCheck() {
@@ -188,22 +188,22 @@ export default function Setting() {
 
   function HandleSyncHistoryFromCloudToLocal() {
     // TODO: Implement sync mechanism
-    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Maaf, fitur ini masih dalam pengerjaan")
   }
 
   function HandleSyncHistoryFromLocalToCloud() {
     // TODO: Implement sync mechanism
-    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Maaf, fitur ini masih dalam pengerjaan")
   }
 
   function HandleSyncLibraryFromCloudToLocal() {
     // TODO: Implement sync mechanism
-    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Maaf, fitur ini masih dalam pengerjaan")
   }
 
   function HandleSyncLibraryFromLocalToCloud() {
     // TODO: Implement sync mechanism
-    toast.error("Error || Maaf, fitur ini masih dalam pengerjaan")
+    toast.error("Maaf, fitur ini masih dalam pengerjaan")
   }
 
   return (
