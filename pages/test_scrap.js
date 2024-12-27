@@ -32,54 +32,51 @@ export default function TestScrap() {
           <div className="container mx-auto max-w-[768px]">
             <div className="grid grid-rows-1 grid-flow-col">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-                <div className={`flex justify-center px-1 mb-4`}>
-                  <div className="w-[175px] h-[265px]">
-                    <div className="flex flex-col relative shadow-xl rounded-lg">
-                      <div onClick={()=>{}}>
-                        <Link href={"#"} className="bg-gray-600 rounded-lg">
-                          <img
-                            className={`w-full h-[265px] rounded-lg`}
-                            src={"https://temp.compsci88.com/cover/Kingdom.jpg"}
-                            alt="thumb"
-                          />
-                        </Link>
-                      </div>
+                <div className="w-[175px] h-[265px]">
+                  <div className="flex flex-col relative shadow-xl rounded-lg">
+                    <div onClick={()=>{}}>
+                      <Link href={"#"} className="bg-gray-600 rounded-lg">
+                        <img
+                          className={`w-full h-[265px] rounded-lg`}
+                          src={"https://cover.komiku.id/wp-content/uploads/2023/01/Baek-XX-2.png?resize=240,171"}
+                          alt="thumb"
+                        />
+                      </Link>
+                    </div>
 
-                      <div onClick={()=>{}}>
-                        <Link href={"#"} className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
-                          <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
-                            test
-                          </p>
-                          <div className={`flex flex-col text-sm text-[#75b5f0]`}>
-                            sub test
-                          </div>
-                        </Link>
-                      </div>
+                    <div onClick={()=>{}}>
+                      <Link href={"#"} className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
+                        <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
+                          thumbnail test
+                        </p>
+                        <div className={`flex flex-col text-sm text-[#75b5f0]`}>
+                          thumbnail test
+                        </div>
+                      </Link>
                     </div>
                   </div>
+                </div>
+                <div className="w-[175px] h-[265px]">
+                  <div className="flex flex-col relative shadow-xl rounded-lg">
+                    <div onClick={()=>{}}>
+                      <Link href={"#"} className="bg-gray-600 rounded-lg">
+                        <img
+                          className={`w-full h-[265px] rounded-lg`}
+                          src={"https://cdn.komiku.id/uploads2/2655992-1.jpg"}
+                          alt="thumb"
+                        />
+                      </Link>
+                    </div>
 
-                  <div className="w-[175px] h-[265px]">
-                    <div className="flex flex-col relative shadow-xl rounded-lg">
-                      <div onClick={()=>{}}>
-                        <Link href={"#"} className="bg-gray-600 rounded-lg">
-                          <img
-                            className={`w-full h-[265px] rounded-lg`}
-                            src={"https://k7rzspb5flu6zayatfe4mh.my/data/741239/60/ce486faf73752072820ed71de9c3f1c1/PyU1K0Bg5huKBnklaemr9BL6upKMckM3wYXM7Ykw.jpg"}
-                            alt="thumb"
-                          />
-                        </Link>
-                      </div>
-
-                      <div onClick={()=>{}}>
-                        <Link href={"#"} className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
-                          <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
-                            test
-                          </p>
-                          <div className={`flex flex-col text-sm text-[#75b5f0]`}>
-                            sub test
-                          </div>
-                        </Link>
-                      </div>
+                    <div onClick={()=>{}}>
+                      <Link href={"#"} className="absolute bottom-0 p-2 text-white z-3 rounded-b-lg w-full bg-black bg-opacity-75">
+                        <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
+                          page test
+                        </p>
+                        <div className={`flex flex-col text-sm text-[#75b5f0]`}>
+                          page test
+                        </div>
+                      </Link>
                     </div>
                   </div>
                 </div>
