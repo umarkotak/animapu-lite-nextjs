@@ -377,17 +377,19 @@ export default function ReadManga(props) {
             </div>
           </div>
 
+          <div className='bg-white p-4 rounded-xl text-center my-8 text-2xl'>
+            {manga.title}
+          </div>
+
           <div id="chapter_manga_image">
             {chapters.map((oneChapter, oneChIdx) => (
               <div key={`multi-ch-${oneChapter.id}-${oneChIdx}`}>
                 <div
                   id={`${oneChapter.id}-top`}
                 ></div>
-                <hr className='border-black border-2 rounded mb-1'/>
-                <div className='flex justify-start items-center bg-white rounded-full p-4'>
-                  <p className='text-center font-semibold text-3xl'>~ Chapter: {oneChapter.number} ~</p>
+                <div className='flex justify-center items-center bg-white rounded-t-xl px-4 py-10 w-full'>
+                  <p className='text-5xl'>Chapter - {oneChapter.number}</p>
                 </div>
-                <hr className='border-black border-2 rounded mb-2 mt-1'/>
                 {oneChapter.chapter_images.map((imageObj, idx) => (
                   <div
                     id={`${oneChapter.id}---${idx}`}
@@ -426,7 +428,7 @@ export default function ReadManga(props) {
                   id={`${oneChapter.id}-bottom`}
                 ><hr/></div>
                 <div
-                  className='h-[150px] bg-gradient-to-b from-blue-400 to-transparent'
+                  className='h-[250px] bg-gradient-to-b from-white to-transparent mb-40'
                 ></div>
               </div>
             ))}

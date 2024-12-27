@@ -38,7 +38,7 @@ export default function TestScrap() {
                       <Link href={"#"} className="bg-gray-600 rounded-lg">
                         <img
                           className={`w-full h-[265px] rounded-lg`}
-                          src={"https://cover.komiku.id/wp-content/uploads/2023/01/Baek-XX-2.png?resize=240,171"}
+                          src={"https://komikcast.bz/wp-content/uploads/2019/12/i301dasd23da289.jpg"}
                           alt="thumb"
                         />
                       </Link>
@@ -62,7 +62,7 @@ export default function TestScrap() {
                       <Link href={"#"} className="bg-gray-600 rounded-lg">
                         <img
                           className={`w-full h-[265px] rounded-lg`}
-                          src={"https://cdn.komiku.id/uploads2/2655992-1.jpg"}
+                          src={"https://sv1.imgkc1.my.id/wp-content/img/B/Bloody_Monday/078/001.jpg"}
                           alt="thumb"
                         />
                       </Link>
