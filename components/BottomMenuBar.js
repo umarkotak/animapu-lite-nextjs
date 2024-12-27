@@ -172,7 +172,7 @@ export default function BottomMenuBar(props) {
                     className="text-sm py-0.5 px-2 bg-white hover:bg-gray-300 rounded flex gap-1 items-center min-w-16"
                     onClick={()=>setShowChaptersModal(!showChaptersModal)}
                   >
-                    <span>Ch</span>
+                    {!`${chapters[currentIdx]?.label}`.toLowerCase().startsWith("ch") ? <span>Ch</span> : null}
                     <span>{chapters[currentIdx]?.label}</span>
                     <ChevronDownIcon size={14} />
                   </button>

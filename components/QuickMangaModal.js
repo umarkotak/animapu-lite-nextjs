@@ -173,6 +173,17 @@ export default function QuickMangaModal(props) {
     }
   }
 
+  useEffect(() => {
+    if (show) { return }
+
+    router.push({
+      pathname: window.location.pathname,
+      query: {
+        page: query.page || 1
+      }
+    }, undefined, { shallow: true })
+  }, [show])
+
   return(
     <div>
       <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
@@ -223,7 +234,7 @@ export default function QuickMangaModal(props) {
                           <a>
                             <img
                               className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
-                              src={(props.manga.cover_image && props.manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
+                              src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
                             />
                           </a>
                         {/* </Link> */}
@@ -258,7 +269,7 @@ export default function QuickMangaModal(props) {
                             >
                               <span className='text-xs flex gap-1 items-center justify-center'>
                                 <PlayIcon size={14} />
-                                Continue Ch {continueManga.last_chapter_read}
+                                Cont Ch {continueManga.last_chapter_read}
                               </span>
                             </Link>
                           </small>
