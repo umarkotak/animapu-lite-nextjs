@@ -68,7 +68,7 @@ export default function Home() {
         setIsLoadMoreLoading(false)
         onApiCall = false
 
-        GetLatestManga()
+        // GetLatestManga()
 
         return
       }
@@ -127,7 +127,8 @@ export default function Home() {
     var position = window.pageYOffset
     var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-    if (maxPosition-position <= 1200) {
+    console.log(maxPosition-position)
+    if (maxPosition-position <= 400) {
       if (onApiCall) {return}
       setTriggerNextPage(position)
     }
