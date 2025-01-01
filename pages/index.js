@@ -190,7 +190,7 @@ export default function Home() {
 
         <div className="pt-4 flex">
           <div className="container mx-auto max-w-[768px]">
-            <div className='fixed z-0 hidden 2xl:flex mt-[110px] text-white'>
+            <div className='fixed z-0 hidden xl:flex mt-[110px] text-white'>
               <div className='ml-[-280px] w-[280px] flex flex-col gap-2'>
                 <div className='bg-[#2b2d42] p-2 rounded'>
                   Your Ads Here
