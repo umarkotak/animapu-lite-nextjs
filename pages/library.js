@@ -6,6 +6,7 @@ import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 import clientCredentials from "../firebase/clientCredentials"
+import AdsFloater from '@/components/AdsFloater'
 
 var mangaSynced = false
 var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
@@ -267,92 +268,96 @@ export default function Library() {
   }
 
   return (
-    <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
-      <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
-        <div className="container mx-auto max-w-[768px] pt-2">
-          <div className="flex justify-between">
-            <span className="px-4 mb-4 text-white">
-              Library
-            </span>
-            <span className="px-4 mb-4 text-white">
-              <button className={`mx-2 ${getTabColor("local")}`} onClick={()=>{setActiveTab("local")}}><i className="fa-solid fa-file"></i> Local</button>
-              <button className={`mx-2 ${getTabColor("online")}`} onClick={()=>{setActiveTab("online")}}><i className="fa-solid fa-cloud"></i> Online</button>
-              <button className={`mx-2 hover:text-[#3db3f2]`} onClick={()=>{ExecuteSync()}}><i className="fa-solid fa-wifi"></i> Sync</button>
-            </span>
-          </div>
-        </div>
-      </div>
+    <>
+      <AdsFloater />
 
-      <div className='pt-0'>
-        <div className="container mx-auto max-w-[768px]">
-          <div className='px-2 flex flex-col gap-2 text-white'>
-            <span className='ml-2'><b><i className='fa fa-filter'></i> Filters: </b></span>
-
-            <div className="flex justify-start">
-              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
-                All
-              </button>
-              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
-                Unread
-              </button>
-              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
-                Ongoing
-              </button>
-              <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("finished")}`} onClick={()=>{setActiveFilter("finished")}}>
-                Finished
-              </button>
-            </div>
-
-            <div className='px-2'>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                placeholder="Search"
-                onChange={(e) => setMangaFilter(e.target.value)}
-                value={mangaFilter}
-              />
+      <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
+        <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
+          <div className="container mx-auto max-w-[768px] pt-2">
+            <div className="flex justify-between">
+              <span className="px-4 mb-4 text-white">
+                Library
+              </span>
+              <span className="px-4 mb-4 text-white">
+                <button className={`mx-2 ${getTabColor("local")}`} onClick={()=>{setActiveTab("local")}}><i className="fa-solid fa-file"></i> Local</button>
+                <button className={`mx-2 ${getTabColor("online")}`} onClick={()=>{setActiveTab("online")}}><i className="fa-solid fa-cloud"></i> Online</button>
+                <button className={`mx-2 hover:text-[#3db3f2]`} onClick={()=>{ExecuteSync()}}><i className="fa-solid fa-wifi"></i> Sync</button>
+              </span>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="pt-4">
-        <div className="container mx-auto max-w-[768px]">
-          <div className={`px-4 ${updateStatus.finished || updateStatus.max <= 0 ? "hidden" : "block"}`}>
-            <div className="mb-1 text-base font-medium text-white">
-              <div className='flex justify-between'>
-                <span>Checking for updates</span>
-                <span>{updateStatus.current}/{updateStatus.max}</span>
+        <div className='pt-0'>
+          <div className="container mx-auto max-w-[768px]">
+            <div className='px-2 flex flex-col gap-2 text-white'>
+              <span className='ml-2'><b><i className='fa fa-filter'></i> Filters: </b></span>
+
+              <div className="flex justify-start">
+                <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("all")}`} onClick={()=>{setActiveFilter("all")}}>
+                  All
+                </button>
+                <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("unread")}`} onClick={()=>{setActiveFilter("unread")}}>
+                  Unread
+                </button>
+                <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("ongoing")}`} onClick={()=>{setActiveFilter("ongoing")}}>
+                  Ongoing
+                </button>
+                <button className={`py-0.5 px-2 rounded-full bg-blue-900 text-sm ml-2 ${getFilterColor("finished")}`} onClick={()=>{setActiveFilter("finished")}}>
+                  Finished
+                </button>
               </div>
-              <small>{updateStatus.currentTitle.length > 40 ? updateStatus.currentTitle.slice(0, 38)+"..." : updateStatus.currentTitle}</small>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full mb-8">
-              <div className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.2 leading-none rounded-full" style={{width: `${updateStatus.percent}%`}}>
-                {Math.floor(updateStatus.percent)}%
+
+              <div className='px-2'>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  type="text"
+                  placeholder="Search"
+                  onChange={(e) => setMangaFilter(e.target.value)}
+                  value={mangaFilter}
+                />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="grid grid-rows-1 grid-flow-col">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-              {(activeTab === "local") &&
-                filterMangas(mangas, activeTab, activeFilter).map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
-                ))
-              }
-              {/* TODO: Change mangas to onlineMangas */}
-              {(activeTab === "online") && mangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} />}
-              {(activeTab === "online") &&
-                filterMangas(mangas, activeTab, activeFilter).map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
-                ))
-              }
+        <div className="pt-4">
+          <div className="container mx-auto max-w-[768px]">
+            <div className={`px-4 ${updateStatus.finished || updateStatus.max <= 0 ? "hidden" : "block"}`}>
+              <div className="mb-1 text-base font-medium text-white">
+                <div className='flex justify-between'>
+                  <span>Checking for updates</span>
+                  <span>{updateStatus.current}/{updateStatus.max}</span>
+                </div>
+                <small>{updateStatus.currentTitle.length > 40 ? updateStatus.currentTitle.slice(0, 38)+"..." : updateStatus.currentTitle}</small>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full mb-8">
+                <div className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.2 leading-none rounded-full" style={{width: `${updateStatus.percent}%`}}>
+                  {Math.floor(updateStatus.percent)}%
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-rows-1 grid-flow-col">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+                {(activeTab === "local") &&
+                  filterMangas(mangas, activeTab, activeFilter).map((manga, idx) => (
+                    <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} />
+                  ))
+                }
+                {/* TODO: Change mangas to onlineMangas */}
+                {(activeTab === "online") && mangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} />}
+                {(activeTab === "online") &&
+                  filterMangas(mangas, activeTab, activeFilter).map((manga, idx) => (
+                    <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" />
+                  ))
+                }
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <BottomMenuBar />
-    </div>
+        <BottomMenuBar />
+      </div>
+    </>
   )
 }

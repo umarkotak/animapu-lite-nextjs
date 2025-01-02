@@ -9,6 +9,7 @@ import animapuApi from "../apis/AnimapuApi"
 import uuid from 'react-uuid'
 import { CoffeeIcon, GlobeIcon, LogInIcon, MoonIcon, RotateCwIcon, StarIcon, SunIcon, TvIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
+import AdsFloater from '@/components/AdsFloater'
 
 var onApiCall = false
 var page = 1
@@ -30,8 +31,6 @@ export default function Home() {
   const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState({})
-
-  const [prayerTimes, setPrayerTimes] = useState({})
 
   function LoginCheck() {
     if (typeof window !== "undefined") {
@@ -151,23 +150,10 @@ export default function Home() {
     setShowModal(false)
   }
 
-  useEffect(() => {
-    const fetchPrayerTimes = async () => {
-      try {
-        // Replace with your actual API endpoint
-        const response = await fetch('https://api.aladhan.com/v1/calendarByCity?city=Jakarta&country=Indonesia&method=2&month=12&year=2024');
-        const data = await response.json(); // Parse the response as JSON
-        setPrayerTimes(data.data[0].timings);
-      } catch (err) {
-        console.error(err)
-      }
-    };
-
-    fetchPrayerTimes();
-  }, [])
-
   return (
-    <div>
+    <>
+      <AdsFloater />
+
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[768px] pt-2">
@@ -190,53 +176,6 @@ export default function Home() {
 
         <div className="pt-4 flex">
           <div className="container mx-auto max-w-[768px]">
-            <div className='fixed z-0 hidden xl:flex mt-[110px] text-white'>
-              <div className='ml-[-280px] w-[280px] flex flex-col gap-2'>
-                <div className='bg-[#2b2d42] p-2 rounded'>
-                  Your Ads Here
-                </div>
-                <Link href=".">
-                  <img className='cursor-pointer rounded' src="https://placehold.co/280" />
-                </Link>
-                <Link href=".">
-                  <img className='cursor-pointer rounded' src="https://placehold.co/280" />
-                </Link>
-              </div>
-              <div className='ml-[770px] w-[280px] flex flex-col gap-2'>
-                <div className='bg-[#2b2d42] p-2 rounded'>
-                  Jadwal Sholat
-                </div>
-                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
-                  <span>Subuh</span>
-                  <span>{prayerTimes.Fajr}</span>
-                </div>
-                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
-                  <span>Sunrise</span>
-                  <span>{prayerTimes.Sunrise}</span>
-                </div>
-                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
-                  <span>Dhuhr</span>
-                  <span>{prayerTimes.Dhuhr}</span>
-                </div>
-                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
-                  <span>Asr</span>
-                  <span>{prayerTimes.Asr}</span>
-                </div>
-                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
-                  <span>Maghrib</span>
-                  <span>{prayerTimes.Maghrib}</span>
-                </div>
-                <div className='bg-[#3b3e5a] flex justify-between p-2 rounded text-xs'>
-                  <span>Isha</span>
-                  <span>{prayerTimes.Isha}</span>
-                </div>
-
-                <Link href=".">
-                  <img className='cursor-pointer rounded' src="https://placehold.co/280" />
-                </Link>
-              </div>
-            </div>
-
             <div className='p-2 bg-white bg-opacity-10 backdrop-blur-lg mb-4 mx-4 rounded-lg grid grid-cols-2 gap-2'>
               <div className='relative overflow-hidden rounded-lg'>
                 <Link href="https://animehub-lite.vercel.app/">
@@ -333,6 +272,6 @@ export default function Home() {
 
         <BottomMenuBar />
       </div>
-    </div>
+    </>
   )
 }
