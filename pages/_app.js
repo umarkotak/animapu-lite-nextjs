@@ -32,20 +32,20 @@ function MyApp({ Component, pageProps }) {
 
         <meta itemProp="name" content="Animapu - Lite" />
         <meta itemProp="description" content="Baca komik gratis tanpa iklan" />
-        <meta itemProp="image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
+        <meta itemProp="image" content="https://animapu.vercel.app/images/cover.jpeg" />
 
         <link rel='manifest' href='/manifest.json' />
 
-        <meta name="og:url" content="https://animapu-lite.vercel.app/" />
+        <meta name="og:url" content="https://animapu.vercel.app/" />
         <meta name="og:type" content="website" />
         <meta name="og:title" content="Animapu - Lite" />
         <meta name="og:description" content="Baca komik gratis tanpa iklan" />
-        <meta name="og:image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
+        <meta name="og:image" content="https://animapu.vercel.app/images/cover.jpeg" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Animapu - Lite" />
         <meta name="twitter:description" content="Baca komik gratis tanpa iklan" />
-        <meta name="twitter:image" content="https://animapu-lite.vercel.app/images/cover.jpeg" />
+        <meta name="twitter:image" content="https://animapu.vercel.app/images/cover.jpeg" />
       </Head>
 
       <Component {...pageProps} />
