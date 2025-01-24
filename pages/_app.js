@@ -49,6 +49,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
 
       <Component {...pageProps} />
+
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -61,9 +62,6 @@ function MyApp({ Component, pageProps }) {
         pauseOnHover
         theme="light"
       />
-
-      {/* <Script src="https://rum.cronitor.io/script.js" /> */}
-      {/* <Script src="/cronitor_impl.js" /> */}
     </>
   )
 }

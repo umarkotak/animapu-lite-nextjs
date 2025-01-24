@@ -93,7 +93,7 @@ export default function Home() {
   return (
     <>
       <AdsFloater />
-    
+
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60 z-10`}>
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[768px] pt-2">

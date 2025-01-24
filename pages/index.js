@@ -66,23 +66,18 @@ export default function Home() {
         toast.error(`${body.error.error_code} || ${body.error.message}`)
         setIsLoadMoreLoading(false)
         onApiCall = false
-
-        // GetLatestManga()
-
         return
       }
       if (append) {
         setMangas(mangas.concat(body.data))
+        query.page = page
+        router.push({
+          pathname: '/',
+          query: query
+        }, undefined, { shallow: true })
       } else {
         setMangas(body.data)
       }
-
-      query.page = page
-      router.push({
-        pathname: '/',
-        query: query
-      },
-      undefined, { shallow: true })
 
     } catch (e) {
       toast.error(e.message)
@@ -99,6 +94,9 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    if (targetPage === 1 || page === 1) {
+      return
+    }
     if (page === 1 && mangas.length <= 2) {
       if (typeof window !== "undefined") { window.scrollTo(0, 0) }
     }
