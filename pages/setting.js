@@ -17,7 +17,7 @@ var sha512 = require('js-sha512').sha512
 var onApiCall = false
 var activeSourceIdxDirect = 0
 
-var G_CLIENT_ID = "334886517586-djci4jil803sqjk042f6nne3016bngni.apps.googleusercontent.com"
+var G_CLIENT_ID = "915149914245-vd6k2rs1qgaeqddb1mticba2aumtaq4h.apps.googleusercontent.com"
 
 export default function Setting() {
   const [darkMode, setDarkMode] = useState(true)

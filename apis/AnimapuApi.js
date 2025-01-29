@@ -6,7 +6,7 @@ class AnimapuApi {
       this.AnimapuApiHost = "https://animapu-api-m4.cloudflare-avatar-id-1.site"
     } else {
       this.AnimapuApiHost = "https://animapu-api-m4.cloudflare-avatar-id-1.site"
-      // this.AnimapuApiHost = "http://localhost:6001"
+      this.AnimapuApiHost = "http://localhost:6001"
     }
   }
 
