@@ -3,7 +3,6 @@ import { useRouter } from "next/router"
 import animapuApi from "../apis/AnimapuApi"
 import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
-import {Img} from 'react-image'
 import { useState } from "react"
 import { EyeIcon, StarIcon, UserIcon } from "lucide-react"
 
@@ -11,22 +10,6 @@ export default function MangaCard(props) {
   let router = useRouter()
   const query = router.query
   const [showModal, setShowModal] = useState(false)
-
-  function goToManga(manga) {
-    if (!router) {return "#"}
-
-    if (props.card_type === "history") {
-      if (manga.last_link) {
-        return manga.last_link
-      }
-    }
-
-    if (!manga.source || manga.source == "") {
-      manga.source = animapuApi.GetActiveMangaSource()
-    }
-
-    return `/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`
-  }
 
   function changeUrl(manga) {
     if (typeof window !== "undefined") {
@@ -173,70 +156,43 @@ export default function MangaCard(props) {
     >
       <div className={`${props.remove_margination ? "w-full" : ""} max-w-[175px] h-[265px]`} id={props.manga.source_id}>
         <div className="flex flex-col relative shadow-xl rounded-lg">
-          {/* Kiri atas */}
-          {/* <div className="absolute top-0 left-0 text-black hover:text-[#ec294b] leading-0 m-1" onClick={()=>{}}>
-            <span className="text-[#F0E68C]"><i className="fa fa-star"></i> {props.manga.popularity_point || 0}</span>
-          </div>
-          {
-            followed(props.manga) &&
-            <div className="absolute top-6 left-0 p-1 rounded-lg text-[#ec294b]">
-              <button className="shadow-sm bg-white bg-opacity-75 rounded-full w-[18px] h-[18px] leading-none"><i className="text-sm fa-solid fa-heart"></i></button>
-            </div>
-          } */}
-
-          {/* Kanan atas */}
           <QuickMangaModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
-          {/* {
-            followed(props.manga) &&
-            <div className="absolute top-6 right-0 p-1 rounded-lg text-[#ec294b]">
-              <button className="shadow-sm bg-white bg-opacity-75 rounded-full w-[18px] h-[18px] leading-none"><i className="text-sm fa-solid fa-heart"></i></button>
-            </div>
-          } */}
 
           <div onClick={()=>changeUrl(props.manga)} className="overflow-hidden rounded-lg">
-            {/* <Link href={goToManga(props.manga)}> */}
-              <div className="bg-black rounded-lg" onClick={()=>setShowModal(!showModal)}>
-                <img
-                  className={`w-full object-cover h-[265px] rounded-lg hover:scale-105 transition z-0 cursor-pointer`}
-                  src={
-                    (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
-                      || "/images/default-book.png"
-                  }
-                  alt="thumb"
-                />
-                {/* <Img
-                  className={`w-full h-[265px] rounded-lg hover:scale-105 transition`}
-                  src={[props.manga.cover_image, props.manga.cover_image[0].image_urls[0], "/images/default-book.png"]}
-                  alt="thumb"
-                /> */}
-              </div>
-            {/* </Link> */}
+            <div className="bg-black rounded-lg" onClick={()=>setShowModal(!showModal)}>
+              <img
+                className={`w-full object-cover h-[265px] rounded-lg hover:scale-105 transition z-0 cursor-pointer`}
+                src={
+                  (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                    || "/images/default-book.png"
+                }
+                alt="thumb"
+              />
+            </div>
           </div>
 
           <div onClick={()=>changeUrl(props.manga)}>
-            {/* <Link href={goToManga(props.manga)}> */}
-              <div
-                className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90 cursor-pointer"
-                onClick={()=>setShowModal(!showModal)}
-              >
-                {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
-                  <small>{props.manga.source}</small>
-                </div>}
+            <div
+              className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90 cursor-pointer"
+              onClick={()=>setShowModal(!showModal)}
+            >
+              {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
+                <small>{props.manga.source}</small>
+              </div>}
 
-                <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
-                  {followed(props.manga) && <span className="rounded-full leading-none mr-1"><i className="text-[16px] text-[#ec294b] text-sm fa-solid fa-bookmark"></i></span>}
-                  {formatTitle(props.manga)}
-                </p>
-                <div className={`flex flex-col text-sm text-[#75b5f0]`}>
-                  <div className="flex justify-between">
-                    <b>{subTextDecider(props.manga)}</b>
-                    <b>{midExtraSubTextDecider(props.manga)}</b>
-                    <b>{extraSubTextDecider(props.manga)}</b>
-                  </div>
-                  <small className="mt-[-3px]">{smallTextDecider(props.manga)}</small>
+              <p className="rounded-lg text-sm leading-5 font-sans pb-1 overflow-hidden">
+                {followed(props.manga) && <span className="rounded-full leading-none mr-1"><i className="text-[16px] text-[#ec294b] text-sm fa-solid fa-bookmark"></i></span>}
+                {formatTitle(props.manga)}
+              </p>
+              <div className={`flex flex-col text-sm text-[#75b5f0]`}>
+                <div className="flex justify-between">
+                  <b>{subTextDecider(props.manga)}</b>
+                  <b>{midExtraSubTextDecider(props.manga)}</b>
+                  <b>{extraSubTextDecider(props.manga)}</b>
                 </div>
+                <small className="mt-[-3px]">{smallTextDecider(props.manga)}</small>
               </div>
-            {/* </Link> */}
+            </div>
           </div>
         </div>
       </div>

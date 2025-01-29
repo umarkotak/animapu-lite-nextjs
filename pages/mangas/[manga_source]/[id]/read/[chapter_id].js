@@ -40,7 +40,6 @@ export default function ReadManga(props) {
     if (typeof window === "undefined") { return }
     if (!query.chapter_id) { return }
     getChapter()
-    handleUpvote(false)
 
   }, [query])
 
@@ -136,7 +135,7 @@ export default function ReadManga(props) {
         "manga": tempManga
       }
 
-      const response = await animapuApi.PostUserHistories({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, postUserHistoryParams)
+      const response = await animapuApi.PostUserHistories(postUserHistoryParams)
 
       if (response.status === 200) {
         var mangaObj = new Manga(tempManga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
@@ -144,27 +143,6 @@ export default function ReadManga(props) {
       }
 
     } catch (e)  {
-      toast.error(e.message)
-    }
-  }
-
-  async function handleUpvote(star) {
-    if (!manga.source_id && !(typeof window !== "undefined")) { return }
-
-    try {
-      manga.star = star
-      const response = await animapuApi.PostUpvoteManga(manga)
-      const body = await response.json()
-      if (response.status !== 200) {
-        toast.error(`${body.error.error_code} || ${body.error.message}`)
-        return
-      }
-
-      if (star) {
-        toast.info("Upvote sukses!")
-      }
-
-    } catch (e) {
       toast.error(e.message)
     }
   }
@@ -355,9 +333,6 @@ export default function ReadManga(props) {
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleFollow()}
               ><i className="fa-solid fa-heart"></i> Follow</button>
               <button
-                className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1" onClick={() => handleUpvote(true)}
-              ><i className="fa-solid fa-star"></i> Upvote</button>
-              <button
                 className="bg-white hover:bg-sky-300 rounded-lg mr-1 p-1"
                 onClick={()=>{
                   navigator.clipboard.writeText(shareUrlText())
@@ -456,7 +431,6 @@ export async function getServerSideProps(context) {
   var query = context.query
 
   var manga = {}
-  var chapter = {}
 
   try {
     const response = await animapuApi.GetMangaDetail({
@@ -473,5 +447,5 @@ export async function getServerSideProps(context) {
     console.error(e)
   }
 
-  return { props: { manga: manga, chapter: chapter } }
+  return { props: { manga: manga } }
 }

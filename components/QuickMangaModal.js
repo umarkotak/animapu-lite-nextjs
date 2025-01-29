@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
-import { BookIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
+import { BookIcon, BookmarkIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 export default function QuickMangaModal(props) {
@@ -119,7 +119,7 @@ export default function QuickMangaModal(props) {
 
     // API CALL
     try {
-      const response = await animapuApi.PostFollowManga({uid: localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA")}, manga)
+      const response = await animapuApi.PostFollowManga(manga)
       const body = await response.json()
       if (response.status !== 200) {
         console.log(`${body.error.error_code} || ${body.error.message}`)
@@ -188,7 +188,7 @@ export default function QuickMangaModal(props) {
     <div>
       <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
         <button className="drop-shadow-sm bg-white bg-opacity-50 backdrop-blur rounded-full p-1">
-          <span className={`${followed ? "text-[#ec294b]": ""}`}><HeartIcon size={20} /></span>
+          <span className={`${followed ? "text-[#ec294b]": ""}`}><BookmarkIcon strokeWidth={3} size={20} /></span>
         </button>
       </div>
       {

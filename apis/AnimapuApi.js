@@ -6,75 +6,40 @@ class AnimapuApi {
       this.AnimapuApiHost = "https://animapu-api-m4.cloudflare-avatar-id-1.site"
       // this.AnimapuApiHost = "http://localhost:6001"
     }
-
-    this.AnimapuLambdaHost = "https://animapu-lite-lambda.vercel.app"
   }
 
   async GetLatestManga(params) {
-    if (params.use_lambda) {
-      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/latest?page=${params.page}`
-    } else {
-      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?page=${params.page}`
-    }
-    // var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?` + new URLSearchParams(params)
+    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/latest?page=${params.page}`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
 
   async GetMangaDetail(params) {
-    if (params.use_lambda) {
-      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/detail/${params.manga_id}`
-    } else {
-      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/detail/${params.manga_id}`
-    }
+    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/detail/${params.manga_id}`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
 
   async GetReadManga(params) {
-    if (params.use_lambda) {
-      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}`
-    } else {
-      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}`
-    }
+    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
 
   async SearchManga(params) {
-    if (params.use_lambda) {
-      var uri = `${this.AnimapuLambdaHost}/mangas/${params.manga_source}/search?title=${params.title}`
-    } else {
-      var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/search?title=${params.title}`
-    }
+    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/search?title=${params.title}`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
@@ -83,11 +48,7 @@ class AnimapuApi {
     var uri = `${this.AnimapuApiHost}/mangas/sources`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
@@ -96,11 +57,7 @@ class AnimapuApi {
     var uri = `${this.AnimapuApiHost}/logs`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
@@ -109,11 +66,7 @@ class AnimapuApi {
     var uri = `${this.AnimapuApiHost}/mangas/popular`
     const response = await fetch(uri, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
+      headers: this.GenHeaders(),
     })
     return response
   }
@@ -122,29 +75,65 @@ class AnimapuApi {
     var uri = `${this.AnimapuApiHost}/mangas/upvote`
     const response = await fetch(uri, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      },
+      headers: this.GenHeaders(),
       body: JSON.stringify(params)
     })
     return response
   }
 
-  async PostFollowManga(user, params) {
+  async PostFollowManga(params) {
     var uri = `${this.AnimapuApiHost}/mangas/follow`
     const response = await fetch(uri, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Animapu-User-Uid': user.uid,
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      },
+      headers: this.GenHeaders(),
       body: JSON.stringify(params)
     })
     return response
+  }
+
+  async PostUserHistories(params) {
+    try {
+      var uri = `${this.AnimapuApiHost}/users/mangas/histories`
+      const response = await fetch(uri, {
+        method: 'POST',
+        headers: this.GenHeaders(),
+        body: JSON.stringify(params)
+      })
+      return response
+    } catch (e) {
+      console.error(e)
+      return {}
+    }
+  }
+
+  async GetUserReadHistories() {
+    var uri = `${this.AnimapuApiHost}/users/mangas/histories`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async GetUserReadHistoriesV2() {
+    var uri = `${this.AnimapuApiHost}/users/mangas/histories_v2`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  GenHeaders() {
+    var user = this.GetUserLogin()
+
+    return {
+      'Content-Type': 'application/json',
+      'Animapu-User-Uid': user.uid,
+      'Animapu-User-Email': user.email,
+      'X-Visitor-Id': this.GetVisitorID(),
+      'X-From-Path': this.GetFromPath(),
+    }
   }
 
   GetActiveMangaSource() {
@@ -156,58 +145,34 @@ class AnimapuApi {
     return "mangabat"
   }
 
-  async PostUserHistories(user, params) {
-    try {
-      var uri = `${this.AnimapuApiHost}/users/mangas/histories`
-      const response = await fetch(uri, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Animapu-User-Uid': user.uid,
-          'X-Visitor-Id': this.GetVisitorID(),
-          'X-From-Path': this.GetFromPath(),
-        },
-        body: JSON.stringify(params)
-      })
-      return response
-    } catch (e) {
-      console.error(e)
-      return {}
-    }
-  }
-
-  async GetUserReadHistories(user) {
-    var uri = `${this.AnimapuApiHost}/users/mangas/histories`
-    const response = await fetch(uri, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Animapu-User-Uid': user.uid,
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
-    })
-    return response
-  }
-
-  async GetDisqusDiscussion(params) {
-    var uri = `${this.AnimapuApiHost}/mangas/comments/disqus?` + new URLSearchParams(params)
-    const response = await fetch(uri, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Visitor-Id': this.GetVisitorID(),
-        'X-From-Path': this.GetFromPath(),
-      }
-    })
-    return response
-  }
-
   GetVisitorID() {
     if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
       return localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")
     }
+
+    if (typeof window !== "undefined" && !localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
+      var visitorID = `VISITOR_ID:${uuid()}`
+      localStorage.setItem("ANIMAPU_LITE:VISITOR_ID", visitorID)
+      return visitorID
+    }
+
     return ""
+  }
+
+  GetUserLogin() {
+    if (typeof window !== "undefined" && localStorage) {
+      return {
+        "logged_in": localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") || "",
+        "uid": localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA") || "",
+        "email": localStorage.getItem("ANIMAPU_LITE:USER:EMAIL") || "",
+      }
+    }
+
+    return {
+      "logged_in": "",
+      "uid": "",
+      "email": "",
+    }
   }
 
   GetFromPath() {

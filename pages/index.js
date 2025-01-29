@@ -140,10 +140,6 @@ export default function Home() {
     GetLatestMangaNextPage()
   }, [triggerNextPage])
 
-  if (typeof window !== "undefined" && !localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
-    localStorage.setItem("ANIMAPU_LITE:VISITOR_ID", `VISITOR_ID:${uuid()}`)
-  }
-
   const closeModal = () => {
     setShowModal(false)
   }
@@ -197,13 +193,6 @@ export default function Home() {
                     <CoffeeIcon size={22} />
                     Traktir
                   </a>
-                  <Link
-                    href="/popular"
-                    className="w-full text-sm p-1 rounded-lg text-center bg-zinc-100 hover:bg-red-400 flex flex-col items-center justify-center"
-                  >
-                    <StarIcon size={22} />
-                    Popular
-                  </Link>
                   <button
                     className="w-full text-sm p-1 rounded-lg text-center bg-zinc-100 hover:bg-red-400 flex flex-col items-center justify-center"
                     onClick={()=>{
@@ -226,6 +215,10 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+            </div>
+
+            <div className='flex p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white items-center justify-between z-20'>
+              <h1 className='text-lg tracking-wide'>perhatian!, saat ini sedang dilakukan pengembangan server animapu! mungkin akan terjadi beberapa bug ketika pengembangan sedang berlangsung</h1>
             </div>
 
             <div className='flex p-2 mb-4 mx-4 rounded-lg bg-[#2b2d42] text-white items-center justify-between z-20'>

@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react'
-import { ref, onValue, child, get} from "firebase/database"
-
 import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
-import clientCredentials from "../firebase/clientCredentials"
 import AdsFloater from '@/components/AdsFloater'
 
 var mangaSynced = false
@@ -21,22 +18,6 @@ export default function Library() {
       setDarkMode(true)
     } else { setDarkMode(false) }
   }, [])
-
-  // function TestFireBase() {
-  //   const rtDb = clientCredentials.GetDB()
-
-  //   console.log("clicked")
-  //   const rootRef = ref(rtDb, 'animapu-lite-api')
-  //   get(child(rootRef, `users`)).then((snapshot) => {
-  //     if (snapshot.exists()) {
-  //       console.log(snapshot.val())
-  //     } else {
-  //       console.log("No data available")
-  //     }
-  //   }).catch((error) => {
-  //     console.error(error)
-  //   })
-  // }
 
   const [mangas, setMangas] = useState([])
   const [onlineMangas, setOnlineMangas] = useState([])

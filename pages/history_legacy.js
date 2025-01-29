@@ -4,15 +4,14 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
-import { CloudIcon, FolderIcon, HistoryIcon } from 'lucide-react'
+import { CloudIcon, FolderIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import AdsFloater from '@/components/AdsFloater'
-import Link from 'next/link'
 
 var tempAllMangas = []
 var limit = 16
 
-export default function History() {
+export default function Home() {
   const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) {return}
@@ -21,17 +20,36 @@ export default function History() {
     } else { setDarkMode(false) }
   }, [])
 
+  const [activeTab, setActiveTab] = useState("local")
+
   var dummyMangas = [
     {id: "dummy-1", shimmer: true},
     {id: "dummy-2", shimmer: true},
     {id: "dummy-3", shimmer: true}
   ]
 
+  const [mangas, setMangas] = useState(dummyMangas)
   const [onlineMangas, setOnlineMangas] = useState(dummyMangas)
 
+  async function GetLocalReadHistories() {
+    var listKey = `ANIMAPU_LITE:HISTORY:LOCAL:LIST`
+    var historyArrayString = localStorage.getItem(listKey)
+
+    if (historyArrayString) {
+      setMangas(JSON.parse(historyArrayString))
+    } else {
+      setMangas([])
+    }
+  }
+
   async function GetOnlineReadHistories() {
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") !== "true") {
+      setOnlineMangas([])
+      return
+    }
+
     try {
-      const response = await animapuApi.GetUserReadHistoriesV2()
+      const response = await animapuApi.GetUserReadHistories()
       const body = await response.json()
 
       if (response.status !== 200) {
@@ -51,13 +69,25 @@ export default function History() {
   }
 
   useEffect(() => {
+    GetLocalReadHistories()
     GetOnlineReadHistories()
+
+    if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+      setActiveTab("online")
+    }
   }, [])
 
   useEffect(() => {
     SyncOnlineHistoriesToLocalStorage(onlineMangas)
 
   }, [onlineMangas])
+
+  function getTabColor(tabString) {
+    if (activeTab === tabString) {
+      return "text-[#3db3f2]"
+    }
+    return "hover:text-[#3db3f2]"
+  }
 
   async function SyncOnlineHistoriesToLocalStorage(mangaHistories) {
     mangaHistories.map((mangaHistory) => {
@@ -99,7 +129,8 @@ export default function History() {
                 History
               </span>
               <span className="px-4 mb-4 text-white flex gap-2">
-                <Link className={`mx-2 flex items-center gap-1`} href="/history_legacy"><HistoryIcon size={18} /> Old History</Link>
+                <button className={`mx-2 ${getTabColor("local")} flex items-center gap-1`} onClick={()=>{setActiveTab("local")}}><FolderIcon size={18} /> Local</button>
+                <button className={`mx-2 ${getTabColor("online")} flex items-center gap-1`} onClick={()=>{setActiveTab("online")}}><CloudIcon size={18} /> Online</button>
               </span>
             </div>
           </div>
@@ -109,9 +140,17 @@ export default function History() {
           <div className="container mx-auto max-w-[768px]">
             <div className="grid grid-rows-1 grid-flow-col mx-4">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-                {onlineMangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" remove_margination={true} />
-                ))}
+                {(activeTab === "local") &&
+                  mangas.map((manga, idx) => (
+                    <MangaCard manga={manga} idx={idx} key={`local-${idx}-${manga.id}`} card_type="history" remove_margination={true} />
+                  ))
+                }
+                {(activeTab === "online") && onlineMangas.length === 0 && <MangaCard manga={{id: "dummy-1", shimmer: true}} remove_margination={true} />}
+                {(activeTab === "online") &&
+                  onlineMangas.map((manga, idx) => (
+                    <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" remove_margination={true} />
+                  ))
+                }
               </div>
             </div>
           </div>
