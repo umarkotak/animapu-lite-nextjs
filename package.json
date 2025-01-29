@@ -26,7 +26,8 @@
     "react-image": "^4.1.0",
     "react-select": "^5.9.0",
     "react-toastify": "^10.0.6",
-    "react-uuid": "^2.0.0"
+    "react-uuid": "^2.0.0",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "postcss": "^8",

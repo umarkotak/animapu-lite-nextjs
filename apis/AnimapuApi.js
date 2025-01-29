@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 class AnimapuApi {
   constructor() {
     if (typeof(window) !== "undefined" && window.location.protocol === "https:") {
@@ -151,7 +153,7 @@ class AnimapuApi {
     }
 
     if (typeof window !== "undefined" && !localStorage.getItem("ANIMAPU_LITE:VISITOR_ID")) {
-      var visitorID = `VISITOR_ID:${uuid()}`
+      var visitorID = `VISITOR_ID:${uuidv4()}`
       localStorage.setItem("ANIMAPU_LITE:VISITOR_ID", visitorID)
       return visitorID
     }
