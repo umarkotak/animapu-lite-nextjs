@@ -14,7 +14,7 @@ import AdsFloater from '@/components/AdsFloater'
 var onApiCall = false
 var page = 1
 var targetPage = 1
-export default function Home() {
+export default function HomeLegacy() {
   const [darkMode, setDarkMode] = useState(true)
   useEffect(() => {
     if (!localStorage) {return}
