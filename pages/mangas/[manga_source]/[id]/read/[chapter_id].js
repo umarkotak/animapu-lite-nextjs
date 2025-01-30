@@ -72,11 +72,13 @@ export default function ReadManga(props) {
       })
       const body = await response.json()
 
+      var chapterData = body.data
+
       if (response.status == 200) {
         if (append) {
-          tempChapters = tempChapters.concat([body.data])
+          tempChapters = tempChapters.concat([chapterData])
         } else {
-          tempChapters = [body.data]
+          tempChapters = [chapterData]
         }
         setChapters(tempChapters)
       }
@@ -233,6 +235,7 @@ export default function ReadManga(props) {
                   {
                     !imageObj.simple_render ?
                       <Img
+                        loading='lazy'
                         className="w-full max-w-[800px] mb-1 bg-gray-600"
                         src={imageObj.image_urls}
                         // onLoad={()=>{setSuccessRender(1)}}
