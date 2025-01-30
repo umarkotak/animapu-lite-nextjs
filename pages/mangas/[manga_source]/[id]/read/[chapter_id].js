@@ -14,19 +14,24 @@ import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ChevronDownIcon, XIcon } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 
 var tempChapters = []
 var onApiCall = false
 export default function ReadManga(props) {
   let router = useRouter()
   const query = router.query
+  const pathName = usePathname()
 
   const [manga, setManga] = useState(props.manga)
   const [chapters, setChapters] = useState([])
   const [onApiCallSt, setOnApiCallSt] = useState(onApiCall)
+  const [showChaptersModal, setShowChaptersModal] = useState(false)
 
   useEffect(() => {
     tempChapters = []
+    setChapters(tempChapters)
 
     if (!manga.source_id || manga.source_id === "") {
       GetMangaDetail()
@@ -34,7 +39,7 @@ export default function ReadManga(props) {
     }
 
     GetChapter(false, query.chapter_id)
-  }, manga)
+  }, [manga, pathName])
 
   async function GetMangaDetail() {
     try {
@@ -85,33 +90,33 @@ export default function ReadManga(props) {
   }
 
   const handleScroll = () => {
-      var position = window.pageYOffset
-      var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
+    var position = window.pageYOffset
+    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-      if (maxPosition-position <= 900) {
-        var targetIdx = 0
+    if (maxPosition-position <= 900) {
+      var targetIdx = 0
 
-        if (!tempChapters || tempChapters.length === 0) {
-          return
+      if (!tempChapters || tempChapters.length === 0) {
+        return
+      }
+
+      manga.chapters.map((tmpChapter, idx) => {
+        if (tmpChapter.id === tempChapters[tempChapters.length-1].id) {
+          targetIdx = idx - 1
         }
+      })
 
-        manga.chapters.map((tmpChapter, idx) => {
-          if (tmpChapter.id === tempChapters[tempChapters.length-1].id) {
-            targetIdx = idx - 1
-          }
-        })
-
-        if (manga.chapters[targetIdx]) {
-          GetChapter(true, manga.chapters[targetIdx].id)
-        }
+      if (manga.chapters[targetIdx]) {
+        GetChapter(true, manga.chapters[targetIdx].id)
       }
     }
-    useEffect(() => {
-      window.addEventListener("scroll", handleScroll, { passive: true })
-      return () => {
-        window.removeEventListener("scroll", handleScroll)
-      }
-    }, [])
+  }
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   return (
     <DefaultLayout>
@@ -131,27 +136,66 @@ export default function ReadManga(props) {
       </Head>
 
       <div className="flex flex-col gap-4">
-        <Card>
-          <CardHeader className="p-4">
+        <Card className="border-none">
+          <CardHeader className="p-0">
             <CardTitle className='text-2xl tracking-wide'>{manga.title}</CardTitle>
           </CardHeader>
-          <CardContent className="px-4 flex justify-start gap-2">
+          <CardContent className="p-0 flex justify-start gap-2">
             <Button variant="" size="sm">read on original source</Button>
             <Button variant="" size="sm">bookmark</Button>
             <Button variant="" size="sm">share</Button>
           </CardContent>
         </Card>
 
+        <div className={`fixed top-0 mt-[90px] inset-x-0 mx-auto z-20 justify-center items-center flex ${showChaptersModal ? "block" : "hidden"}`}>
+          <div
+            className={`fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm`}
+            onClick={()=>{setShowChaptersModal(false)}}>
+          </div>
+          <Card className="w-full max-w-md relative z-20">
+            <CardHeader className="p-4">
+              <CardTitle className="flex items-center justify-between">
+                <div>Select Chapters</div>
+                <Button
+                  variant="outline"
+                  size="icon_sm"
+                  onClick={()=>{setShowChaptersModal(false)}}
+                >
+                  <XIcon size={18} />
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="overflow-auto max-h-[450px] flex flex-col gap-2 p-4">
+              {manga.chapters.map((mangaChapter) => (
+                <Link
+                  href={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
+                  onClick={()=>{setShowChaptersModal(false)}}
+                  key={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
+                >
+                  <Button variant="outline" className="w-full">
+                    {mangaChapter.title}
+                  </Button>
+                </Link>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
+
         <div>
           {chapters.map((oneChapter) => (
             <div key={`chapter-${oneChapter.id}-${oneChapter.number}`}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className='text-5xl'>
+              <Card className="sticky top-12 border-none rounded-none">
+                <CardContent className="p-0 flex justify-between">
+                  <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>
+                    Select Chapter
+                    <ChevronDownIcon size={14} />
+                  </Button>
+                  <Button size="sm" variant="outline">
                     Chapter - {oneChapter.number}
-                  </CardTitle>
-                </CardHeader>
+                  </Button>
+                </CardContent>
               </Card>
+
               {oneChapter.chapter_images.map((imageObj, idx) => (
                 <div
                   id={`${oneChapter.id}---${idx}`}
@@ -186,12 +230,12 @@ export default function ReadManga(props) {
                 id={`${oneChapter.id}-bottom`}
               ><hr/></div>
               <div
-                className='h-[270px] bg-gradient-to-b from-primary to-transparent mb-40'
+                className='h-[150px] bg-gradient-to-b from-primary to-transparent mb-40'
               ></div>
             </div>
           ))}
-          {onApiCallSt && <Button className="w-full my-4">Please wait, loading next chapter...</Button>}
-          <div className='h-[800px]'></div>
+          {onApiCallSt && <Button className="w-full my-4 text-xl">Please wait, loading next chapter...</Button>}
+          <div className='h-[150px]'></div>
         </div>
       </div>
     </DefaultLayout>
