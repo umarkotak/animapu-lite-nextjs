@@ -114,7 +114,6 @@ export function MangaCardModal(props) {
       const response = await animapuApi.GetMangaDetail({
         manga_source: props.manga.source,
         manga_id: props.manga.source_id,
-        secondary_source_id: props.manga.secondary_source_id
       })
       const body = await response.json()
       if (response.status == 200) {
@@ -137,12 +136,9 @@ export function MangaCardModal(props) {
     props.setShowModal(show)
   }, [show])
 
-  var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
   const [chapters, setChapters] = useState([{id: 1}])
   const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
   const [followed, setFollowed] = useState(props.manga.is_in_library)
-
 
   function isContinuePossible() {
     try {
