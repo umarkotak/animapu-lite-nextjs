@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronDownIcon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
 
 var tempChapters = []
 var onApiCall = false
@@ -147,39 +148,33 @@ export default function ReadManga(props) {
           </CardContent>
         </Card>
 
-        <div className={`fixed top-0 mt-[90px] inset-x-0 mx-auto z-20 justify-center items-center flex ${showChaptersModal ? "block" : "hidden"}`}>
-          <div
-            className={`fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm`}
-            onClick={()=>{setShowChaptersModal(false)}}>
-          </div>
-          <Card className="w-full max-w-md relative z-20">
-            <CardHeader className="p-4">
-              <CardTitle className="flex items-center justify-between">
-                <div>Select Chapters</div>
-                <Button
-                  variant="outline"
-                  size="icon_sm"
-                  onClick={()=>{setShowChaptersModal(false)}}
-                >
-                  <XIcon size={18} />
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="overflow-auto max-h-[450px] flex flex-col gap-2 p-4">
-              {manga.chapters.map((mangaChapter) => (
-                <Link
-                  href={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
-                  onClick={()=>{setShowChaptersModal(false)}}
-                  key={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
-                >
-                  <Button variant="outline" className="w-full">
-                    {mangaChapter.title}
-                  </Button>
-                </Link>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
+        <Drawer open={showChaptersModal} onOpenChange={setShowChaptersModal}>
+          <DrawerContent>
+            <div className='overflow-auto max-h-[450px] mx-auto w-full max-w-md'>
+              <DrawerHeader className="text-left">
+                <DrawerTitle>Select Chapters</DrawerTitle>
+              </DrawerHeader>
+              <div className='flex flex-col gap-2 p-4'>
+                {manga.chapters.map((mangaChapter) => (
+                  <Link
+                    href={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
+                    onClick={()=>{setShowChaptersModal(false)}}
+                    key={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
+                  >
+                    <Button variant="outline" className="w-full">
+                      {mangaChapter.title}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+              <DrawerFooter className="pt-2">
+                <DrawerClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </div>
+          </DrawerContent>
+        </Drawer>
 
         <div>
           {chapters.map((oneChapter) => (
