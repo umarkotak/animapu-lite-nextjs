@@ -34,15 +34,15 @@ export default function MangaCardV2(props) {
   if (props.manga.shimmer) {
     return(
       <div
-        className={`flex justify-center px-1 mb-4`}
+        className={`w-full max-w-[175px] h-[265px] mx-auto rounded-xl`}
         key={`card-${props.manga.source}-${props.manga.source_id}`}
       >
-        <div className="w-[175px] h-[265px]">
+        <div className="w-[175px] h-[265px] rounded-xl">
           <div className="flex flex-col justify-end relative z-10 animate-pulse shadow-xl">
-            <div className="w-full h-[265px] rounded bg-slate-500">
+            <div className="w-full h-[265px] rounded-xl bg-slate-500">
             </div>
 
-            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded w-full">
+            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded-b-xl w-full">
               <div className="h-2 bg-slate-500 rounded mb-2"></div>
               <div className="h-2 bg-slate-500 rounded mb-2"></div>
               <div className="h-3 w-12 bg-blue-500 rounded"></div>
@@ -58,13 +58,13 @@ export default function MangaCardV2(props) {
       className={`w-full max-w-[175px] h-[265px] mx-auto`}
       key={`${props.manga.source}-${props.manga.source_id}`}
     >
-      <div className="flex flex-col relative shadow-xl rounded-lg">
+      <div className="flex flex-col relative shadow-xl rounded-xl">
         <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
 
-        <div onClick={()=>changeUrl(props.manga)} className="overflow-hidden rounded-lg">
-          <div className="bg-black rounded-lg" onClick={()=>setShowModal(!showModal)}>
+        <div onClick={()=>changeUrl(props.manga)} className="overflow-hidden rounded-xl">
+          <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
             <img
-              className={`w-full object-cover h-[265px] rounded-lg hover:scale-105 transition z-0 cursor-pointer`}
+              className={`w-full object-cover h-[265px] rounded-xl hover:scale-105 transition z-0 cursor-pointer`}
               src={
                 (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
                   || "/images/default-book.png"
@@ -76,14 +76,14 @@ export default function MangaCardV2(props) {
 
         <div onClick={()=>changeUrl(props.manga)}>
           <div
-            className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"
+            className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"
             onClick={()=>setShowModal(!showModal)}
           >
             {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
               <small>{props.manga.source}</small>
             </div>}
 
-            <p className="text-sm leading-5 font-sans line-clamp-3">
+            <p className="text-sm leading-1 line-clamp-1">
               {props.manga.title}
             </p>
             <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
@@ -166,7 +166,7 @@ export function MangaCardModal(props) {
     isContinuePossible()
   }, [manga])
 
-  async function handleFollow() {
+  async function HandleBookmark() {
     if (!manga.source_id) { return }
 
     if (followed) {
@@ -255,7 +255,7 @@ export function MangaCardModal(props) {
 
   return(
     <div>
-      <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => handleFollow()}>
+      <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => HandleBookmark()}>
         <button className="drop-shadow-sm bg-white bg-opacity-50 backdrop-blur rounded-full p-1">
           <span className={`${followed ? "text-[#ec294b]": ""}`}><BookmarkIcon strokeWidth={3} size={20} /></span>
         </button>
@@ -310,7 +310,7 @@ export function MangaCardModal(props) {
                       </div>
                       <div className=''>
                         <small>
-                          <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-1 text-center rounded-full" onClick={() => handleFollow()}>
+                          <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-1 text-center rounded-full" onClick={() => HandleBookmark()}>
                             <span className='text-xs flex gap-1 items-center justify-center'><HeartIcon size={14} /> {followed ? "Un-Follow" : "Follow"}</span>
                           </button>
                         </small>

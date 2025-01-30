@@ -119,6 +119,34 @@ export default function ReadManga(props) {
     }
   }, [])
 
+  async function HandleBookmark() {
+    if (!manga.source_id) { return }
+
+    try {
+      var callParams = {source: manga.source, source_id: manga.source_id}
+      const response = await animapuApi.PostAddMangaToLibrary(callParams)
+      const body = await response.json()
+      if (response.status !== 200) {
+        toast.error(`${body.error.error_code} || ${body.error.message}`)
+        return
+      }
+    } catch (e) {
+      toast.error(`Error: ${e}`)
+    }
+
+    toast.info("Manga ini udah disimpen ke library kamu!")
+  }
+
+  function ShareUrlText() {
+    if (chapters.length === 0) { return }
+
+    var ShareUrl = `Read *${manga.title.trim()}* - *Chapter ${chapters[0].number}* for free at ${window.location.href}`
+
+    navigator.clipboard.writeText(ShareUrl)
+
+    toast.info("Link berhasil dicopy!")
+  }
+
   return (
     <DefaultLayout>
       <Head>
@@ -138,13 +166,12 @@ export default function ReadManga(props) {
 
       <div className="flex flex-col gap-4">
         <Card className="border-none">
-          <CardHeader className="p-0">
+          <CardHeader className="p-0 pb-2">
             <CardTitle className='text-2xl tracking-wide'>{manga.title}</CardTitle>
           </CardHeader>
           <CardContent className="p-0 flex justify-start gap-2">
-            <Button variant="" size="sm">read on original source</Button>
-            <Button variant="" size="sm">bookmark</Button>
-            <Button variant="" size="sm">share</Button>
+            <Button size="sm" onClick={()=>HandleBookmark()}>bookmark</Button>
+            <Button size="sm" onClick={()=>ShareUrlText()}>share</Button>
           </CardContent>
         </Card>
 
@@ -185,9 +212,14 @@ export default function ReadManga(props) {
                     Select Chapter
                     <ChevronDownIcon size={14} />
                   </Button>
-                  <Button size="sm" variant="outline">
-                    Chapter - {oneChapter.number}
-                  </Button>
+                  <div className='flex items-center gap-2'>
+                    <a href={oneChapter.source_link}>
+                      <Button size="sm" variant="outline">read on original source</Button>
+                    </a>
+                    <Button size="sm" variant="outline">
+                      Chapter - {oneChapter.number}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
