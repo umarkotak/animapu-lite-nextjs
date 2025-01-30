@@ -13,16 +13,13 @@ import MangaCardV2 from "@/components/MangaCardV2"
 
 var onApiCall = false
 var page = 1
-var targetPage = 1
-
 var dummyMangas = [
   {source: "shimmer", source_id: "shimmer-1", shimmer: true},
   {source: "shimmer", source_id: "shimmer-2", shimmer: true},
 ]
-
+var tempMangas = []
 export default function Home() {
   let router = useRouter()
-  const query = router.query
 
   const [activeSource, setActiveSource] = useState("")
   const [mangas, setMangas] = useState(dummyMangas)
@@ -36,7 +33,7 @@ export default function Home() {
     if (append) {
       page = page + 1
     } else {
-      setActiveSource(animapuApi.GetActiveMangaSource())
+      tempMangas = []
       page = 1
     }
 
@@ -47,22 +44,21 @@ export default function Home() {
         page: page
       })
       const body = await response.json()
+
       if (response.status !== 200) {
         toast.error(`${body.error.error_code} || ${body.error.message}`)
         setIsLoadMoreLoading(false)
         onApiCall = false
         return
       }
+
+      console.warn("APPEND", page, append)
       if (append) {
-        setMangas(mangas.concat(body.data))
-        query.page = page
-        router.push({
-          pathname: "/",
-          query: query
-        }, undefined, { shallow: true })
+        tempMangas = tempMangas.concat(body.data)
       } else {
-        setMangas(body.data)
+        tempMangas = body.data
       }
+      setMangas(tempMangas)
 
     } catch (e) {
       toast.error(e.message)
@@ -73,40 +69,38 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!query) {return}
-    targetPage = query.page
+    setActiveSource(animapuApi.GetActiveMangaSource())
     GetLatestManga(false)
   }, [])
 
-  useEffect(() => {
-    if (targetPage === 1 || page === 1) {
-      return
-    }
-    if (page === 1 && mangas.length <= 2) {
-      if (typeof window !== "undefined") { window.scrollTo(0, 0) }
-    }
-    if (page < targetPage) {
-      GetLatestManga(true)
-    }
-    if (typeof window !== "undefined" && query.selected && query.selected !== "") {
-      try {
-        const section = document.querySelector(`#${query.selected}`)
-        if (section) {
-          query.selected = ""
-          section.scrollIntoView( { behavior: "smooth", block: "start" } )
-        }
-      } catch(e) {}
-    }
-  }, [mangas])
+  // useEffect(() => {
+  //   if (targetPage === 1 || page === 1) {
+  //     return
+  //   }
+  //   if (page === 1 && mangas.length <= 2) {
+  //     if (typeof window !== "undefined") { window.scrollTo(0, 0) }
+  //   }
+  //   if (page < targetPage) {
+  //     GetLatestManga(true)
+  //   }
+  //   if (typeof window !== "undefined" && query.selected && query.selected !== "") {
+  //     try {
+  //       const section = document.querySelector(`#${query.selected}`)
+  //       if (section) {
+  //         query.selected = ""
+  //         section.scrollIntoView( { behavior: "smooth", block: "start" } )
+  //       }
+  //     } catch(e) {}
+  //   }
+  // }, [mangas])
 
-  const [triggerNextPage, setTriggerNextPage] = useState(0)
   const handleScroll = () => {
     var position = window.pageYOffset
     var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
     if (maxPosition-position <= 400) {
       if (onApiCall) {return}
-      setTriggerNextPage(position)
+      GetLatestManga(true)
     }
   }
   useEffect(() => {
@@ -115,9 +109,6 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll)
     }
   }, [])
-  useEffect(() => {
-    GetLatestManga(true)
-  }, [triggerNextPage])
 
   return (
     <DefaultLayout>
@@ -145,7 +136,7 @@ export default function Home() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
           {mangas.map((manga, idx) => (
-            <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
+            <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
           ))}
         </div>
 

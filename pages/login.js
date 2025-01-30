@@ -55,7 +55,7 @@ function SignInForm({className, ...props}) {
       localStorage.setItem("ANIMAPU_LITE:USER:EMAIL", decoded.email)
 
       toast.info("Login sukses!")
-      router.push("/")
+      router.push("/home")
     } catch(e) {
       toast.error(`Error: ${e}`)
     }

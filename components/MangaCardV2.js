@@ -35,7 +35,7 @@ export default function MangaCardV2(props) {
     return(
       <div
         className={`flex justify-center px-1 mb-4`}
-        key={`${props.idx}-${props.manga.id}`}
+        key={`card-${props.manga.source}-${props.manga.source_id}`}
       >
         <div className="w-[175px] h-[265px]">
           <div className="flex flex-col justify-end relative z-10 animate-pulse shadow-xl">
@@ -54,7 +54,10 @@ export default function MangaCardV2(props) {
   }
 
   return(
-    <div className={`w-full max-w-[175px] h-[265px] mx-auto`}>
+    <div
+      className={`w-full max-w-[175px] h-[265px] mx-auto`}
+      key={`${props.manga.source}-${props.manga.source_id}`}
+    >
       <div className="flex flex-col relative shadow-xl rounded-lg">
         <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
 
