@@ -83,12 +83,31 @@ class AnimapuApi {
     return response
   }
 
-  async PostFollowManga(params) {
-    var uri = `${this.AnimapuApiHost}/mangas/follow`
+  async PostAddMangaToLibrary(params) {
+    var uri = `${this.AnimapuApiHost}/users/mangas/libraries/${params.source}/${params.source_id}/add`
     const response = await fetch(uri, {
       method: 'POST',
       headers: this.GenHeaders(),
       body: JSON.stringify(params)
+    })
+    return response
+  }
+
+  async PostRemoveMangaFromLibrary(params) {
+    var uri = `${this.AnimapuApiHost}/users/mangas/libraries/${params.source}/${params.source_id}/remove`
+    const response = await fetch(uri, {
+      method: 'POST',
+      headers: this.GenHeaders(),
+      body: JSON.stringify(params)
+    })
+    return response
+  }
+
+  async GetUserMangaLibraries() {
+    var uri = `${this.AnimapuApiHost}/users/mangas/libraries`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
     })
     return response
   }

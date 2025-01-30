@@ -8,14 +8,6 @@ import animapuApi from "../apis/AnimapuApi"
 import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
 import { toast } from 'react-toastify'
 import AdsFloater from '@/components/AdsFloater'
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Search } from 'lucide-react'
 
 var onApiCall = false
 export default function Home() {
@@ -99,58 +91,55 @@ export default function Home() {
   }
 
   return (
-    <DefaultLayout>
-      <div className='flex flex-col gap-4'>
-        <Card>
-          <CardHeader className="p-4">
-            <CardTitle className="flex justify-between items-center">
-              <div>
-                <h1 className='text-xl'>{activeSource}</h1>
-              </div>
-              <div>
-                <Button onClick={()=>{setShowModal(true)}}>Ganti Sumber</Button>
-              </div>
-            </CardTitle>
-          </CardHeader>
-        </Card>
+    <>
+      <AdsFloater />
 
-        <Card>
-          <CardHeader className="p-4">
-            <CardTitle className="flex justify-between items-center">
-              <div>
-                <h1 className='text-xl'>Search</h1>
-              </div>
-              <div>
-                <Link href="/search_legacy">
-                  <Button>Old Search</Button>
-                </Link>
-              </div>
-            </CardTitle>
-          </CardHeader>
+      <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60 z-10`}>
+        <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
+          <div className="container mx-auto max-w-[768px] pt-2">
+            <h1 className='text-white text-xl mx-2 pt-2'><i className='fa fa-search'></i> Search</h1>
 
-          <CardContent className="p-4">
-            <div className='flex items-center gap-2'>
-              <Input
+            <div className='flex pt-2 mx-2 rounded-lg bg-[#2b2d42] text-white items-center justify-between'>
+              <h1 className='text-2xl'>{activeSource}</h1>
+              <button
+                className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm'
+                onClick={()=>{setShowModal(true)}}
+              ><i className='fa fa-repeat'></i> Change</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-10">
+          <div className="container mx-auto max-w-[768px]">
+            <div className="bg-[#2b2d42] rounded m-2">
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 placeholder="Search"
                 onChange={(e) => setTitle(e.target.value)}
                 onKeyDown={(e) => handleKeyDown(e)}
               />
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="global-search"
-                  checked={searchMode==="global"}
-                  onClick={()=>{searchMode==="global" ? setSearchMode("single") : setSearchMode("global")}}
-                />
-                <Label htmlFor="global-search">Global Search</Label>
-              </div>
-              <Button onClick={()=>SearchManga()}>
-                <Search />
-                Search
-              </Button>
             </div>
-          </CardContent>
-        </Card>
+
+            <div className='m-2 flex gap-2'>
+              <button className='bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm'>
+                Search Mode:
+              </button>
+              <button
+                className={`${searchMode === "global" ? "bg-green-400" : "bg-blue-100" } bg-blue-100 p-1 text-black hover:bg-blue-300 rounded-lg text-sm`}
+                onClick={()=>setSearchMode("global")}
+              >
+                global
+              </button>
+              <button
+                className={`${searchMode === "single" ? "bg-green-400" : "bg-blue-100" } p-1 text-black hover:bg-blue-300 rounded-lg text-sm`}
+                onClick={()=>setSearchMode("single")}
+              >
+                single
+              </button>
+            </div>
+          </div>
+        </div>
 
         {
           isLoadMoreLoading ? <svg role="status" className="mx-auto w-8 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -166,7 +155,9 @@ export default function Home() {
         </div>
 
         <ChangeSourceModalOnly show={showModal} onClose={closeModal} setMangaSourcesData={setMangaSourcesData} />
+
+        <BottomMenuBar />
       </div>
-    </DefaultLayout>
+    </>
   )
 }

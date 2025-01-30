@@ -8,9 +8,18 @@ import { CloudIcon, FolderIcon, HistoryIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import AdsFloater from '@/components/AdsFloater'
 import Link from 'next/link'
+import { DefaultLayout } from '@/components/layouts/DefaultLayout'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import MangaCardV2 from '@/components/MangaCardV2'
 
 var tempAllMangas = []
 var limit = 16
+
+var dummyMangas = [
+  {source: "shimmer", source_id: "shimmer-1", shimmer: true},
+  {source: "shimmer", source_id: "shimmer-2", shimmer: true},
+]
 
 export default function History() {
   const [darkMode, setDarkMode] = useState(true)
@@ -20,12 +29,6 @@ export default function History() {
       setDarkMode(true)
     } else { setDarkMode(false) }
   }, [])
-
-  var dummyMangas = [
-    {id: "dummy-1", shimmer: true},
-    {id: "dummy-2", shimmer: true},
-    {id: "dummy-3", shimmer: true}
-  ]
 
   const [onlineMangas, setOnlineMangas] = useState(dummyMangas)
 
@@ -40,7 +43,7 @@ export default function History() {
         return
       }
 
-      tempAllMangas = body.data.manga_histories
+      tempAllMangas = body.data
       const tempSelectedMangas = tempAllMangas.slice(0, limit)
       setOnlineMangas(tempSelectedMangas)
 
@@ -88,37 +91,29 @@ export default function History() {
   }, [triggerNextPage])
 
   return (
-    <>
-      <AdsFloater />
-
-      <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
-        <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
-          <div className="container mx-auto max-w-[768px] pt-2">
-            <div className="flex justify-between">
-              <span className="px-4 mb-4 text-white">
-                History
-              </span>
-              <span className="px-4 mb-4 text-white flex gap-2">
-                <Link className={`mx-2 flex items-center gap-1`} href="/history_legacy"><HistoryIcon size={18} /> Old History</Link>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="pt-4">
-          <div className="container mx-auto max-w-[768px]">
-            <div className="grid grid-rows-1 grid-flow-col mx-4">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-                {onlineMangas.map((manga, idx) => (
-                  <MangaCard manga={manga} idx={idx} key={`online-${idx}-${manga.id}`} card_type="history" remove_margination={true} />
-                ))}
+    <DefaultLayout>
+      <div className='flex flex-col gap-4'>
+        <Card>
+          <CardHeader className="p-4">
+            <CardTitle className="flex justify-between items-center">
+              <div>
+                <h1 className='text-xl'>History</h1>
               </div>
-            </div>
-          </div>
-        </div>
+              <div>
+                <Link href="/history_legacy">
+                  <Button>Old History</Button>
+                </Link>
+              </div>
+            </CardTitle>
+          </CardHeader>
+        </Card>
 
-        <BottomMenuBar />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
+          {onlineMangas.map((manga, idx) => (
+            <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
+          ))}
+        </div>
       </div>
-    </>
+    </DefaultLayout>
   )
 }

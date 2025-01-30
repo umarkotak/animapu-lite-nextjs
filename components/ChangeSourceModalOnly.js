@@ -96,13 +96,13 @@ export default function ChangeSourceModalOnly(props) {
     <div ref={parent}>
       <div
         tabIndex="-1"
-        className={`fixed top-0 mt-[90px] inset-x-0 mx-auto z-20 justify-center items-center flex ${show ? "block" : "hidden"}`}
+        className={`fixed top-0 mt-[90px] inset-x-0 mx-auto z-50 justify-center items-center flex ${show ? "block" : "hidden"}`}
       >
         <div
-          className={`fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm`}
+          className={`fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-50 backdrop-blur-sm`}
           onClick={()=>{closeModal()}}>
         </div>
-        <div className="relative p-4 w-full max-w-md h-full z-20">
+        <div className="relative p-4 w-full max-w-md h-full z-50">
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
               <button
                 className="absolute z-10 top-3 right-2.5 bg-[#ec294b] hover:bg-[#B11F38] text-white rounded-full text-sm py-1.5 px-2 inline-flex"

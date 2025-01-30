@@ -7,6 +7,7 @@ import Script from 'next/script'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';
+import { ThemeProvider } from 'next-themes'
 
 // NProgress.configure({
 //   minimum: 0.3,
@@ -48,7 +49,13 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:image" content="https://animapu.vercel.app/images/cover.jpeg" />
       </Head>
 
-      <Component {...pageProps} />
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+      >
+        <Component {...pageProps} />
+      </ThemeProvider>
 
       <ToastContainer
         position="top-right"

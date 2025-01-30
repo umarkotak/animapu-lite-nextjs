@@ -1,13 +1,100 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/router"
+import { BookIcon, BookmarkIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
+import { toast } from 'react-toastify'
 import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
+import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
-import { BookIcon, BookmarkIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
-import { toast } from 'react-toastify'
 
-export default function QuickMangaModal(props) {
+export default function MangaCardV2(props) {
+  let router = useRouter()
+  const query = router.query
+  const [showModal, setShowModal] = useState(false)
+
+  function changeUrl(manga) {
+    if (typeof window !== "undefined") {
+      router.push({
+        pathname: window.location.pathname,
+        query: {
+          page: query.page,
+          selected: manga.source_id,
+        }
+      }, undefined, { shallow: true })
+    }
+  }
+
+  function lastReadChapter() {
+    if (props.manga.last_link) {
+      return(`continue: ch ${props.manga.last_chapter_read}`)
+    }
+  }
+
+  if (props.manga.shimmer) {
+    return(
+      <div
+        className={`flex justify-center px-1 mb-4`}
+        key={`${props.idx}-${props.manga.id}`}
+      >
+        <div className="w-[175px] h-[265px]">
+          <div className="flex flex-col justify-end relative z-10 animate-pulse shadow-xl">
+            <div className="w-full h-[265px] rounded bg-slate-500">
+            </div>
+
+            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded w-full">
+              <div className="h-2 bg-slate-500 rounded mb-2"></div>
+              <div className="h-2 bg-slate-500 rounded mb-2"></div>
+              <div className="h-3 w-12 bg-blue-500 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return(
+    <div className={`w-full max-w-[175px] h-[265px] mx-auto`}>
+      <div className="flex flex-col relative shadow-xl rounded-lg">
+        <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
+
+        <div onClick={()=>changeUrl(props.manga)} className="overflow-hidden rounded-lg">
+          <div className="bg-black rounded-lg" onClick={()=>setShowModal(!showModal)}>
+            <img
+              className={`w-full object-cover h-[265px] rounded-lg hover:scale-105 transition z-0 cursor-pointer`}
+              src={
+                (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                  || "/images/default-book.png"
+              }
+              alt="thumb"
+            />
+          </div>
+        </div>
+
+        <div onClick={()=>changeUrl(props.manga)}>
+          <div
+            className="absolute bottom-0 p-2 text-white rounded-b-lg w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"
+            onClick={()=>setShowModal(!showModal)}
+          >
+            {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
+              <small>{props.manga.source}</small>
+            </div>}
+
+            <p className="text-sm leading-5 font-sans line-clamp-3">
+              {props.manga.title}
+            </p>
+            <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
+              <span>{`Ch ${props.manga.latest_chapter_number}`}</span>
+              <span className="text-[12px]">{lastReadChapter()}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function MangaCardModal(props) {
   let router = useRouter()
   const query = router.query
 
@@ -47,13 +134,12 @@ export default function QuickMangaModal(props) {
     props.setShowModal(show)
   }, [show])
 
-  var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
   var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
   var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
   const [chapters, setChapters] = useState([{id: 1}])
   const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
+  const [followed, setFollowed] = useState(props.manga.is_in_library)
 
-  const [followed, setFollowed] = useState(false)
 
   function isContinuePossible() {
     try {
@@ -76,45 +162,19 @@ export default function QuickMangaModal(props) {
     }
   }
 
-  function isInLibrary() {
-    try {
-      if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
-    } catch (e) {}
-    return false
-  }
-
   useEffect(() => {
     setChapters(manga.chapters)
-    setFollowed(isInLibrary())
     isContinuePossible()
   }, [manga])
 
   async function handleFollow() {
     if (!manga.source_id) { return }
 
-    var libraryArrayString = localStorage.getItem(listKey)
-
-    var libraryArray
-    if (libraryArrayString) {
-      libraryArray = JSON.parse(libraryArrayString)
-    } else {
-      libraryArray = []
-    }
-
-    libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
-
     if (followed) {
-      localStorage.setItem(listKey, JSON.stringify(libraryArray))
-      localStorage.removeItem(detailKey)
+      setFollowed(false)
     } else {
-      var tempManga = manga
-      libraryArray.unshift(tempManga)
-
-      localStorage.setItem(listKey, JSON.stringify(libraryArray))
-      localStorage.setItem(detailKey, JSON.stringify(tempManga))
+      setFollowed(true)
     }
-    setFollowed(isInLibrary())
-
 
     // API CALL
     try {
@@ -165,9 +225,6 @@ export default function QuickMangaModal(props) {
 
   function startReadDecider(chapters) {
     try {
-      if (!chapters) { return 1 }
-      if (!chapters.at(-1)) { return 1 }
-      if (!chapters.at(-1).id) { return 1 }
       return chapters.at(-1).id
     } catch {
       return 1
