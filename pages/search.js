@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Search } from 'lucide-react'
+import MangaCardV2 from '@/components/MangaCardV2'
 
 var onApiCall = false
 export default function Home() {
@@ -161,7 +162,7 @@ export default function Home() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
           {mangas.map((manga, idx) => (
-            <MangaCard manga={manga} idx={idx} key={`${idx}-${manga.id}`} remove_margination={true} />
+            <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
           ))}
         </div>
 

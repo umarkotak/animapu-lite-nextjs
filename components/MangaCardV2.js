@@ -87,7 +87,7 @@ export default function MangaCardV2(props) {
               {props.manga.title}
             </p>
             <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
-              <span>{`Ch ${props.manga.latest_chapter_number}`}</span>
+              <span>{props.manga.latest_chapter_number !== 0 ? `Ch ${props.manga.latest_chapter_number}` : "Read"}</span>
               <span className="text-[12px]">{lastReadChapter()}</span>
             </div>
           </div>
