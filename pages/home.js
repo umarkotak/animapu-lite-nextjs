@@ -57,6 +57,7 @@ export default function Home() {
       mangasData = injectObjectEveryNthElement(mangasData, {
         is_ads: true
       }, 10)
+      console.warn("MANGAS DATA", mangasData)
 
       if (append) {
         tempMangas = tempMangas.concat(mangasData)
