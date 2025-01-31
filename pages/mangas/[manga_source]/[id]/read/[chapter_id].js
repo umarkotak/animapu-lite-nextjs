@@ -17,6 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronDownIcon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
+import AdsCard from '@/components/AdsCard'
 
 var tempChapters = []
 var onApiCall = false
@@ -208,6 +209,10 @@ export default function ReadManga(props) {
         <div>
           {chapters.map((oneChapter) => (
             <div key={`chapter-${oneChapter.id}-${oneChapter.number}`}>
+              <div className='mb-4'>
+                <AdsCard variant={"manga_chapter"} limit={2} />
+              </div>
+
               <Card className="sticky top-12 border-none rounded-none">
                 <CardContent className="p-0 flex justify-between">
                   <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>

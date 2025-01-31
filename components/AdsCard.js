@@ -11,7 +11,7 @@ import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Badge } from './ui/badge'
 
-export default function AdsCard({variant}) {
+export default function AdsCard({variant, limit = 1}) {
   const [affiliateLinkList, setAffiliateLinkList] = useState([])
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function AdsCard({variant}) {
 
   async function GetAffiliateLinks() {
     try {
-      const response = await animapuApi.GetRandomAffiliateLinks(1)
+      const response = await animapuApi.GetRandomAffiliateLinks(limit)
       const body = await response.json()
       if (response.status == 200) {
         setAffiliateLinkList(body.data)
@@ -34,6 +34,31 @@ export default function AdsCard({variant}) {
 
   async function trackClick(codename) {
     Cronitor.track(`ADS_CLICK_${codename}`)
+  }
+
+  if (variant === "manga_chapter") {
+    return(<>
+      <div className='grid grid-cols-2 w-full h-[195px] rounded-xl shadow-lg'>
+        {affiliateLinkList.map((oneAds) => (
+          <div key={`${new Date}-${oneAds.short_link}`} className='rounded-xl overflow-hidden hover:border hover:border-primary'>
+            <Link href={oneAds.short_link} target="_blank" onClick={()=>trackClick(oneAds.short_link)}>
+              <div className="w-full flex flex-row justify-start">
+                <img
+                  className={`h-[195px] object-scale-down`}
+                  src={oneAds.image_url}
+                  alt="thumb"
+                />
+                <div>
+                  <span className="p-2 text-sm line-clamp-6">
+                    <Badge>ads</Badge> {oneAds.name}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        ))}
+      </div>
+    </>)
   }
 
   return(<>
