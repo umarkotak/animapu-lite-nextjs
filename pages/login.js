@@ -37,11 +37,6 @@ export default function Login() {
 function SignInForm({className, ...props}) {
   const router = useRouter()
 
-  const [userData, setUserData] = useState({
-    email: '',
-    password: '',
-  })
-
   function GoogleLoginCallback(response) {
     try {
       var googleData = response

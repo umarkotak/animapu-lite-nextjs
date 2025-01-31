@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  AppWindowMacIcon,
   BadgeCheck,
   Bell,
   ChevronsUpDown,
@@ -36,14 +37,20 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { toast } from "react-toastify"
+import { usePathname } from "next/navigation"
 
 var defaultUser = {
   avatar: "/images/usertemp.png",
 }
 
+const ADM_EMS = [
+  "umarkotak@gmail.com"
+]
+
 export function SidebarUser() {
   const router = useRouter()
   const { isMobile } = useSidebar()
+  const pathName = usePathname()
 
   const [user, setUser] = useState(defaultUser)
 
@@ -60,6 +67,14 @@ export function SidebarUser() {
   useEffect(() => {
     LoginCheck()
   }, [])
+
+  useEffect(() => {
+    if (pathName.startsWith("/admin")) {
+      if (!ADM_EMS.includes(localStorage.getItem("ANIMAPU_LITE:USER:EMAIL"))) {
+        router.push("/")
+      }
+    }
+  }, [pathName])
 
   function Logout() {
     localStorage.removeItem("ANIMAPU_LITE:USER:LOGGED_IN")
@@ -142,28 +157,15 @@ export function SidebarUser() {
                   </div>
                 </div>
               </DropdownMenuLabel>
-              {/* <DropdownMenuSeparator />
-              <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <BadgeCheck />
-                  Account
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard />
-                  Billing
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Bell />
-                  Notifications
-                </DropdownMenuItem>
-              </DropdownMenuGroup> */}
+                {ADM_EMS.includes(user.email) && <Link href="/admin">
+                  <DropdownMenuItem>
+                    <AppWindowMacIcon />
+                    Admin
+                  </DropdownMenuItem>
+                </Link>}
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={()=>Logout()}>
                 <LogOut />
