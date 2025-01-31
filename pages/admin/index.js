@@ -25,10 +25,9 @@ export default function AdminIndex() {
             <CardDescription>admin menu</CardDescription>
           </CardHeader>
           <CardContent className="p-4">
-            <div className="grid grid-cols-2">
-              <Link href="/admin/affiliate_link">
-                <Button className="w-full">Affiliate Link Management</Button>
-              </Link>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <Link href="/admin/affiliate_link"><Button className="w-full">Affiliate Link Management</Button></Link>
+              <Link href="/admin/user_activity"><Button className="w-full">User Activity</Button></Link>
             </div>
           </CardContent>
         </Card>

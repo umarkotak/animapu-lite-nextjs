@@ -159,12 +159,12 @@ export function SidebarUser() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                {ADM_EMS.includes(user.email) && <Link href="/admin">
+                {ADM_EMS.includes(user.email) && <a href="/admin">
                   <DropdownMenuItem>
                     <AppWindowMacIcon />
                     Admin
                   </DropdownMenuItem>
-                </Link>}
+                </a>}
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={()=>Logout()}>
