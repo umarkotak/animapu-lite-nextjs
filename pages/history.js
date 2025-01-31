@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react'
 
-import BottomMenuBar from "../components/BottomMenuBar"
-import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
-import { CloudIcon, FolderIcon, HistoryIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
-import AdsFloater from '@/components/AdsFloater'
 import Link from 'next/link'
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import MangaCardV2 from '@/components/MangaCardV2'
@@ -83,29 +78,27 @@ export default function History() {
   }, [triggerNextPage])
 
   return (
-    <DefaultLayout>
-      <div className='flex flex-col gap-4'>
-        <Card>
-          <CardHeader className="p-4">
-            <CardTitle className="flex justify-between items-center">
-              <div>
-                <h1 className='text-xl'>History</h1>
-              </div>
-              <div>
-                <Link href="/history_legacy">
-                  <Button>Old History</Button>
-                </Link>
-              </div>
-            </CardTitle>
-          </CardHeader>
-        </Card>
+    <div className='flex flex-col gap-4'>
+      <Card>
+        <CardHeader className="p-4">
+          <CardTitle className="flex justify-between items-center">
+            <div>
+              <h1 className='text-xl'>History</h1>
+            </div>
+            <div>
+              <Link href="/history_legacy">
+                <Button>Old History</Button>
+              </Link>
+            </div>
+          </CardTitle>
+        </CardHeader>
+      </Card>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-          {onlineMangas.map((manga, idx) => (
-            <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
-          ))}
-        </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
+        {onlineMangas.map((manga, idx) => (
+          <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
+        ))}
       </div>
-    </DefaultLayout>
+    </div>
   )
 }

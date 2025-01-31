@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
 import { toast } from 'react-toastify';
-import { Download, LogOutIcon, Upload } from 'lucide-react';
-import { DefaultLayout } from '@/components/layouts/DefaultLayout';
+import { Download, Upload } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -57,55 +56,53 @@ export default function Setting() {
   }
 
   return (
-    <DefaultLayout>
-      <div className='flex flex-col gap-4'>
-        <Card>
-          <CardHeader>
-            <CardTitle>Library</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className='flex flex-col gap-2'>
-              <div>
-                <Button className="w-full" onClick={() => {downloadLibrary()}}>
-                  <Download />
-                  Download
-                </Button>
-              </div>
-              <div className='flex items-center gap-2'>
-                <Input
-                  type="file"
-                  onChange={(e)=>initLibraryFile(e)}
-                />
-                <Button
-                  className="w-1/3"
-                  onClick={() => {loadLibraryFile()}}
-                ><Upload /> Restore From File</Button>
-              </div>
+    <div className='flex flex-col gap-4'>
+      <Card>
+        <CardHeader>
+          <CardTitle>Library</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className='flex flex-col gap-2'>
+            <div>
+              <Button className="w-full" onClick={() => {downloadLibrary()}}>
+                <Download />
+                Download
+              </Button>
             </div>
-          </CardContent>
-        </Card>
+            <div className='flex items-center gap-2'>
+              <Input
+                type="file"
+                onChange={(e)=>initLibraryFile(e)}
+              />
+              <Button
+                className="w-1/3"
+                onClick={() => {loadLibraryFile()}}
+              ><Upload /> Restore From File</Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>History</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Button
-              className="w-full"
-              onClick={() => {
-                if(confirm("Are you sure?")) {
-                  localStorage.removeItem(`ANIMAPU_LITE:HISTORY:LOCAL:LIST`)
-                }
-                toast.info("Clear history success!")
-              }}
-            >Clear Local History</Button>
-          </CardContent>
-        </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Button
+            className="w-full"
+            onClick={() => {
+              if(confirm("Are you sure?")) {
+                localStorage.removeItem(`ANIMAPU_LITE:HISTORY:LOCAL:LIST`)
+              }
+              toast.info("Clear history success!")
+            }}
+          >Clear Local History</Button>
+        </CardContent>
+      </Card>
 
-        <p className={`text-center`}>Animapu {version} | 2020 - 2025</p>
+      <p className={`text-center`}>Animapu {version} | 2020 - 2025</p>
 
-        <a className="invisible" href="#" ref={downloadFileRef} target="_blank">_</a>
-      </div>
-    </DefaultLayout>
+      <a className="invisible" href="#" ref={downloadFileRef} target="_blank">_</a>
+    </div>
   )
 }

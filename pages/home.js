@@ -1,15 +1,9 @@
 import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
 import { toast } from "react-toastify"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 import animapuApi from "@/apis/AnimapuApi"
-import MangaCard from "@/components/MangaCard"
-import ChangeSourceModalOnly from "@/components/ChangeSourceModalOnly"
-import { DefaultLayout } from "@/components/layouts/DefaultLayout"
-import MangaCardV2 from "@/components/MangaCardV2"
-import AdsCard from "@/components/AdsCard"
 import Latest from "./latest"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
@@ -47,7 +41,7 @@ export default function Home() {
   }, [])
 
   return (
-    <DefaultLayout>
+    <>
       <div className="mb-6">
         <Carousel
           opts={{
@@ -93,6 +87,6 @@ export default function Home() {
       </Card>
 
       <Latest content_only={true} />
-    </DefaultLayout>
+    </>
   )
 }

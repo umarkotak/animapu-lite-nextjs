@@ -5,18 +5,14 @@ import { Img } from 'react-image'
 import Link from 'next/link'
 import * as Cronitor from "@cronitorio/cronitor-rum";
 
-import BottomMenuBar from "../../../../../components/BottomMenuBar"
 import animapuApi from "../../../../../apis/AnimapuApi"
-import Manga from "../../../../../models/Manga"
 import { toast } from 'react-toastify'
-import Utils from '@/models/Utils'
-import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChevronDownIcon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer'
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import AdsCard from '@/components/AdsCard'
 
 var tempChapters = []
@@ -151,7 +147,7 @@ export default function ReadManga(props) {
   }
 
   return (
-    <DefaultLayout>
+    <>
       <Head>
         {manga.title && <>
           <meta itemProp="description" content={`${props.manga.title}`} />
@@ -273,7 +269,7 @@ export default function ReadManga(props) {
           <div className='h-[150px]'></div>
         </div>
       </div>
-    </DefaultLayout>
+    </>
   )
 }
 

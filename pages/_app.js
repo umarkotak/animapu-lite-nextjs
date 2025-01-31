@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';
 import { ThemeProvider } from 'next-themes'
 import { Geist, Roboto } from 'next/font/google'
+import { DefaultLayout } from '@/components/layouts/DefaultLayout'
 
 const roboto = Geist({
   weight: '400',
@@ -50,7 +51,9 @@ function MyApp({ Component, pageProps }) {
         enableSystem
       >
         <div className={roboto.className}>
-          <Component {...pageProps} />
+          <DefaultLayout>
+            <Component {...pageProps} />
+          </DefaultLayout>
         </div>
       </ThemeProvider>
 

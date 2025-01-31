@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import { RotateCwIcon } from "lucide-react"
 import { toast } from "react-toastify"
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 import animapuApi from "@/apis/AnimapuApi"
-import MangaCard from "@/components/MangaCard"
 import ChangeSourceModalOnly from "@/components/ChangeSourceModalOnly"
-import { DefaultLayout } from "@/components/layouts/DefaultLayout"
 import MangaCardV2 from "@/components/MangaCardV2"
 import AdsCard from "@/components/AdsCard"
 
@@ -161,35 +158,33 @@ export default function Latest({content_only}) {
   }
 
   return (
-    <DefaultLayout>
-      <div className="flex flex-col gap-4">
-        <Card>
-          <CardHeader className="p-4">
-            <CardTitle className="flex justify-between items-center">
-              <div>
-                <h1 className="text-xl">{activeSource}</h1>
-              </div>
-              <div>
-                <Button onClick={()=>{setShowModal(true)}}>Ganti Sumber</Button>
-                <ChangeSourceModalOnly show={showModal} onClose={()=>setShowModal(false)} />
-              </div>
-            </CardTitle>
-          </CardHeader>
-        </Card>
+    <div className="flex flex-col gap-4">
+      <Card>
+        <CardHeader className="p-4">
+          <CardTitle className="flex justify-between items-center">
+            <div>
+              <h1 className="text-xl">{activeSource}</h1>
+            </div>
+            <div>
+              <Button onClick={()=>{setShowModal(true)}}>Ganti Sumber</Button>
+              <ChangeSourceModalOnly show={showModal} onClose={()=>setShowModal(false)} />
+            </div>
+          </CardTitle>
+        </CardHeader>
+      </Card>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-          <AdsCard />
-          {mangas.map((manga, idx) => (
-            manga.is_ads
-            ? <AdsCard />
-            : <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
-          ))}
-        </div>
-
-        {isLoadMoreLoading && <Button className="w-full">
-          Loading...
-        </Button>}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
+        <AdsCard />
+        {mangas.map((manga, idx) => (
+          manga.is_ads
+          ? <AdsCard />
+          : <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
+        ))}
       </div>
-    </DefaultLayout>
+
+      {isLoadMoreLoading && <Button className="w-full">
+        Loading...
+      </Button>}
+    </div>
   )
 }
