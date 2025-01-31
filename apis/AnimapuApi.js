@@ -154,6 +154,25 @@ class AnimapuApi {
     return response
   }
 
+  async GetAffiliateLinks(limit) {
+    var uri = `${this.AnimapuApiHost}/affiliate_links?limit=${limit}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async PostAddTokopediaAffiliateLink(params) {
+    var uri = `${this.AnimapuApiHost}/affiliate_links/tokopedia/add`
+    const response = await fetch(uri, {
+      method: 'POST',
+      headers: this.GenHeaders(),
+      body: JSON.stringify(params)
+    })
+    return response
+  }
+
   GenHeaders() {
     var user = this.GetUserLogin()
 
