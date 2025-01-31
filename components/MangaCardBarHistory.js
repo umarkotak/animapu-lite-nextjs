@@ -30,28 +30,6 @@ export default function MangaCardBarHistory(props) {
     }
   }
 
-  // if (props.manga.shimmer) {
-  //   return(
-  //     <div
-  //       className={`w-full max-w-[175px] h-[265px] mx-auto rounded-xl`}
-  //       key={`card-${props.manga.source}-${props.manga.source_id}`}
-  //     >
-  //       <div className="w-[175px] h-[265px] rounded-xl">
-  //         <div className="flex flex-col justify-end relative z-10 animate-pulse shadow-xl">
-  //           <div className="w-full h-[265px] rounded-xl bg-slate-500">
-  //           </div>
-
-  //           <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded-b-xl w-full">
-  //             <div className="h-2 bg-slate-500 rounded mb-2"></div>
-  //             <div className="h-2 bg-slate-500 rounded mb-2"></div>
-  //             <div className="h-3 w-12 bg-blue-500 rounded"></div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
-
   return(
     <div
       className={`flex-none w-[220px] h-[100px] cursor-pointer hover:border hover:border-primary`}
@@ -129,18 +107,8 @@ export function MangaCardModal(props) {
     try {
       var mangaObj = new Manga(props.manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
 
-      if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
-        if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
-          var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
-          setContinueManga(onlineManga)
-        }
-      }
-
-      if (typeof window !== "undefined") {
-        if (localStorage.getItem(mangaObj.GetLocalHistoryKey())) {
-          var localManga = JSON.parse(mangaObj.GetLocalHistoryKey())
-          setContinueManga(localManga)
-        }
+      if (props.manga.last_chapter_read) {
+        setContinueManga({last_link: props.manga.last_link, last_chapter_read: props.manga.last_chapter_read})
       }
     } catch (e) {
     }
@@ -274,24 +242,16 @@ export function MangaCardModal(props) {
                   toast.info("Link berhasil dicopy!")
                 }}
               ><Share2Icon size={14} /> Share</button>
-              <button
-                className="absolute z-10 top-3 right-[110px] text-xs text-white float-right bg-[#ebb62d] hover:bg-[#A57F1F] p-1 rounded-full flex items-center gap-1"
-                onClick={() => handleUpvote()}
-              ><StarIcon size={14} /> Upvote</button>
 
               <div className="bg-[#fafafa]">
                 <div className="container mx-auto py-4 px-[20px] max-w-[768px]">
                   <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
                     <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
                       <div className="grid justify-items-center">
-                        {/* <Link href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}> */}
-                          <a>
-                            <img
-                              className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
-                              src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
-                            />
-                          </a>
-                        {/* </Link> */}
+                        <img
+                          className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
+                          src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
+                        />
                       </div>
                       <div className=''>
                         <small>
@@ -315,11 +275,11 @@ export function MangaCardModal(props) {
                             <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Read</span>
                           </Link>
                         </small>
-                        {continueManga.title && <div onClick={()=>changeUrl(props.manga)}>
+                        {continueManga.last_link && <div onClick={()=>changeUrl(props.manga)}>
                           <small>
                             <Link
                               href={continueManga.last_link || "#"}
-                              className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-1 text-center mt-2 rounded-full`}
+                              className={`block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-1 text-center mt-2 rounded-full`}
                             >
                               <span className='text-xs flex gap-1 items-center justify-center'>
                                 <PlayIcon size={14} />
