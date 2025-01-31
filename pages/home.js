@@ -10,6 +10,7 @@ import MangaCard from "@/components/MangaCard"
 import ChangeSourceModalOnly from "@/components/ChangeSourceModalOnly"
 import { DefaultLayout } from "@/components/layouts/DefaultLayout"
 import MangaCardV2 from "@/components/MangaCardV2"
+import AdsCard from "@/components/AdsCard"
 
 var onApiCall = false
 var page = 1
@@ -52,11 +53,15 @@ export default function Home() {
         return
       }
 
-      console.warn("APPEND", page, append)
+      var mangasData = body.data
+      mangasData = injectObjectEveryNthElement(mangasData, {
+        is_ads: true
+      }, 10)
+
       if (append) {
-        tempMangas = tempMangas.concat(body.data)
+        tempMangas = tempMangas.concat(mangasData)
       } else {
-        tempMangas = body.data
+        tempMangas = mangasData
       }
       setMangas(tempMangas)
 
@@ -72,6 +77,16 @@ export default function Home() {
     setActiveSource(animapuApi.GetActiveMangaSource())
     GetLatestManga(false)
   }, [])
+
+  function injectObjectEveryNthElement(array, object, n) {
+    return array.reduce((acc, item, index) => {
+        acc.push(item);
+        if ((index + 1) % n === 0 && index !== array.length - 1) {
+            acc.push(object);
+        }
+        return acc;
+    }, []);
+  }
 
   // useEffect(() => {
   //   if (targetPage === 1 || page === 1) {
@@ -135,8 +150,11 @@ export default function Home() {
         </Card>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
+          <AdsCard />
           {mangas.map((manga, idx) => (
-            <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
+            manga.is_ads
+            ? <AdsCard />
+            : <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
           ))}
         </div>
 
