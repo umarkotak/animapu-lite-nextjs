@@ -64,10 +64,10 @@ export default function AffiliateLink() {
       const body = await response.json()
 
       if (response.status == 200) {
-        toast.success("affiliate link berhasil dimasukkan")
-        GetAffiliateLinks()
         setTokopediaAffiliateLinkParams({})
         setIsLoading(false)
+        GetAffiliateLinks()
+        toast.success("affiliate link berhasil dimasukkan")
         return
       }
 

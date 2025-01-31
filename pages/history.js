@@ -22,19 +22,11 @@ var dummyMangas = [
 ]
 
 export default function History() {
-  const [darkMode, setDarkMode] = useState(true)
-  useEffect(() => {
-    if (!localStorage) {return}
-    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
-      setDarkMode(true)
-    } else { setDarkMode(false) }
-  }, [])
-
   const [onlineMangas, setOnlineMangas] = useState(dummyMangas)
 
   async function GetOnlineReadHistories() {
     try {
-      const response = await animapuApi.GetUserReadHistoriesV2()
+      const response = await animapuApi.GetUserReadHistoriesV2(10000, 1)
       const body = await response.json()
 
       if (response.status !== 200) {

@@ -136,8 +136,8 @@ class AnimapuApi {
     return response
   }
 
-  async GetUserReadHistoriesV2() {
-    var uri = `${this.AnimapuApiHost}/users/mangas/histories_v2`
+  async GetUserReadHistoriesV2(limit, page) {
+    var uri = `${this.AnimapuApiHost}/users/mangas/histories_v2?limit=${limit}&page=${page}`
     const response = await fetch(uri, {
       method: 'GET',
       headers: this.GenHeaders(),

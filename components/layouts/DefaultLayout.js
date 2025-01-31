@@ -22,6 +22,8 @@ import { ChangeThemeButton } from "../utils/ChangeThemeButton"
 import { usePathname } from "next/navigation"
 import { Button } from "../ui/button"
 import Link from "next/link"
+import { Separator } from "@radix-ui/react-separator"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from "../ui/breadcrumb"
 
 const menuItems = [
   { title: "Home", url: "/home", icon: Home },
@@ -156,8 +158,12 @@ function SidebarMain({ children }) {
     isMobile,
     toggleSidebar,
   } = useSidebar()
+  const [breadcrumb, setBreadcrumb] = React.useState("")
 
   React.useEffect(() => {
+    var tempBreadcrumb = pathName
+    setBreadcrumb(tempBreadcrumb.split("/")[1])
+
     if (pathName.startsWith("/watch")) {
       setOpen(false)
       return
@@ -172,6 +178,11 @@ function SidebarMain({ children }) {
       {/* <header className="flex justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 backdrop-blur-md z-50 bg-inherit"> */}
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
+          <Breadcrumb>
+            <BreadcrumbList><BreadcrumbItem>
+              <BreadcrumbLink href="#">{breadcrumb}</BreadcrumbLink>
+            </BreadcrumbItem></BreadcrumbList>
+          </Breadcrumb>
         </div>
         <div className="flex justify-end items-center gap-2 px-4">
           <a href="https://trakteer.id/marumaru">
