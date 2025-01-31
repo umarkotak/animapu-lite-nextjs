@@ -20,9 +20,7 @@ export default function AdsCard({variant}) {
 
   async function GetAffiliateLinks() {
     try {
-      const response = await animapuApi.GetRandomAffiliateLinks({
-        limit: 1
-      })
+      const response = await animapuApi.GetRandomAffiliateLinks(1)
       const body = await response.json()
       if (response.status == 200) {
         setAffiliateLinkList(body.data)
