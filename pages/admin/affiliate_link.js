@@ -107,37 +107,39 @@ export default function AffiliateLink() {
             <CardTitle>Affiliate Link Management</CardTitle>
           </CardHeader>
           <CardContent className="p-4">
-            <Table className="border">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center"><Checkbox /></TableHead>
-                  <TableHead className="text-center">ID</TableHead>
-                  <TableHead className="text-center">Image</TableHead>
-                  <TableHead className="text-center">Name</TableHead>
-                  <TableHead className="text-center">Link</TableHead>
-                  <TableHead className="text-center">Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {affiliateLinkList.map((affiliateLink) => (
-                  <TableRow className="text-left text-xs" key={affiliateLink.short_link}>
-                    <TableCell><Checkbox /></TableCell>
-                    <TableCell>{affiliateLink.id}</TableCell>
-                    <TableCell className><img src={affiliateLink.image_url} className="h-12 w-12 object-contain" /></TableCell>
-                    <TableCell>{affiliateLink.name}</TableCell>
-                    <TableCell>{affiliateLink.short_link}</TableCell>
-                    <TableCell><DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm"><MoreHorizontal /></Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuItem onClick={()=>{DeleteAffiliateLink(affiliateLink.id)}}><Trash /> delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu></TableCell>
+            <div className="border rounded-xl">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="text-center"><Checkbox /></TableHead>
+                    <TableHead className="text-center">ID</TableHead>
+                    <TableHead className="text-center">Image</TableHead>
+                    <TableHead className="text-center">Name</TableHead>
+                    <TableHead className="text-center">Link</TableHead>
+                    <TableHead className="text-center">Action</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {affiliateLinkList.map((affiliateLink) => (
+                    <TableRow className="text-left text-xs" key={affiliateLink.short_link}>
+                      <TableCell><Checkbox /></TableCell>
+                      <TableCell>{affiliateLink.id}</TableCell>
+                      <TableCell className><img src={affiliateLink.image_url} className="h-12 w-12 object-contain" /></TableCell>
+                      <TableCell>{affiliateLink.name}</TableCell>
+                      <TableCell>{affiliateLink.short_link}</TableCell>
+                      <TableCell><DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm"><MoreHorizontal /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          <DropdownMenuItem onClick={()=>{DeleteAffiliateLink(affiliateLink.id)}}><Trash /> delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>
