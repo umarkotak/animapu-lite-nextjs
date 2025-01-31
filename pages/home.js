@@ -58,6 +58,7 @@ export default function Home() {
         is_ads: true
       }, 10)
       console.warn("MANGAS DATA", mangasData)
+      console.log("MANGAS DATA", mangasData)
 
       if (append) {
         tempMangas = tempMangas.concat(mangasData)

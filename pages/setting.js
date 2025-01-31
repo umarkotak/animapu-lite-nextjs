@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-var version = "v4.0.0"
+var version = "v4.0.1"
 
 export default function Setting() {
   const downloadFileRef = useRef(null)

@@ -145,6 +145,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetRandomAffiliateLinks(limit) {
+    var uri = `${this.AnimapuApiHost}/affiliate_links/random?limit=${limit}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   GenHeaders() {
     var user = this.GetUserLogin()
 
