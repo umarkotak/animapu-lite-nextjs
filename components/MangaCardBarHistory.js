@@ -6,6 +6,7 @@ import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
+import utils from "@/models/Utils"
 
 export default function MangaCardBarHistory(props) {
   let router = useRouter()
@@ -26,7 +27,7 @@ export default function MangaCardBarHistory(props) {
 
   function lastReadChapter() {
     if (props.manga.last_link) {
-      return(`continue: ch ${props.manga.last_chapter_read}`)
+      return(`cont ch ${props.manga.last_chapter_read}`)
     }
   }
 
@@ -39,19 +40,24 @@ export default function MangaCardBarHistory(props) {
       <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
 
       <div className="flex flex-row gap-2 h-full">
-        <img
-          className={`flex-none object-cover h-full w-[100px]`}
-          src={
-            (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
-              || "/images/default-book.png"
-          }
-          alt="thumb"
-        />
+        <div className="relative flex-none">
+          <img
+            className={`flex-none object-cover h-full w-[100px]`}
+            src={
+              (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                || "/images/default-book.png"
+            }
+            alt="thumb"
+          />
+          {props.show_last_access && <div className="absolute bottom-0 w-full bg-black bg-opacity-50 text-[10px] p-0.5">
+            {utils.GetTimeElapsed(props.manga.last_read_at)}
+          </div>}
+        </div>
         <div className="flex flex-col justify-between">
           <p className="text-xs leading-1 line-clamp-2">{props.manga.title}</p>
 
           <div className="flex flex-col pb-4">
-            <span className="text-xs">{props.manga.latest_chapter_number !== 0 ? `Ch ${props.manga.latest_chapter_number}` : "Read"}</span>
+            <span className="text-xs">{props.manga.latest_chapter_number !== 0 ? `ch ${props.manga.latest_chapter_number}` : "Read"}</span>
             <span className="text-xs">{lastReadChapter()}</span>
           </div>
         </div>

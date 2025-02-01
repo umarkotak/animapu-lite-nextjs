@@ -59,7 +59,7 @@ export default function AffiliateLink() {
                   <div className="flex flex-row gap-4 overflow-auto">
                     {oneUsersMangaActivity.manga_histories.map((manga) => (
                       <div className="flex-none">
-                        <MangaCardBarHistory manga={manga} key={`${manga.source}-${manga.source_id}`} />
+                        <MangaCardBarHistory manga={manga} key={`${manga.source}-${manga.source_id}`} show_last_access={true} />
                       </div>
                     ))}
                   </div>
