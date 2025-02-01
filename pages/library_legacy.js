@@ -3,7 +3,6 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
-import AdsFloater from '@/components/AdsFloater'
 
 var mangaSynced = false
 var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
@@ -86,6 +85,9 @@ export default function Library() {
 
       var mangaDetail
       try {
+        var callParams = {source: manga.source, source_id: manga.source_id}
+        animapuApi.PostAddMangaToLibrary(callParams)
+
         const response = await animapuApi.GetMangaDetail({
           manga_source: manga.source,
           manga_id: manga.source_id,
@@ -250,8 +252,6 @@ export default function Library() {
 
   return (
     <>
-      <AdsFloater />
-
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[768px] pt-2">
@@ -336,8 +336,6 @@ export default function Library() {
             </div>
           </div>
         </div>
-
-        <BottomMenuBar />
       </div>
     </>
   )

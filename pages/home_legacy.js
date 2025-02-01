@@ -6,10 +6,8 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
 import animapuApi from "../apis/AnimapuApi"
-import uuid from 'react-uuid'
 import { CoffeeIcon, GlobeIcon, LogInIcon, MoonIcon, RotateCwIcon, StarIcon, SunIcon, TvIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
-import AdsFloater from '@/components/AdsFloater'
 
 var onApiCall = false
 var page = 1
@@ -146,8 +144,6 @@ export default function HomeLegacy() {
 
   return (
     <>
-      <AdsFloater />
-
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
         <div className="bg-[#2b2d42] h-[140px] mb-[-100px]">
           <div className="container mx-auto max-w-[768px] pt-2">
