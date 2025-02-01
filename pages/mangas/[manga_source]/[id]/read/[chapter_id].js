@@ -93,7 +93,7 @@ export default function ReadManga(props) {
     var position = window.pageYOffset
     var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-    if (maxPosition-position <= 900) {
+    if (maxPosition-position <= 1200) {
       var targetIdx = 0
 
       if (!tempChapters || tempChapters.length === 0) {

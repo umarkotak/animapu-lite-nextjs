@@ -4,7 +4,7 @@ import BottomMenuBar from "../components/BottomMenuBar"
 import MangaCard from "../components/MangaCard"
 import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
-import { CloudIcon, FolderIcon } from 'lucide-react'
+import { CloudIcon, FolderIcon, RefreshCcw } from 'lucide-react'
 import { toast } from 'react-toastify'
 import AdsFloater from '@/components/AdsFloater'
 
@@ -117,6 +117,32 @@ export default function Home() {
     setOnlineMangas(tempSelectedMangas)
   }, [triggerNextPage])
 
+  async function SyncToNewSystem() {
+    var tmpOnlineMangas = onlineMangas.reverse()
+    toast.info("proses sync history dimulai, harap tunggu hingga selesai")
+    for (let index = 0; index < tmpOnlineMangas.length; index++) {
+      const oneManga = tmpOnlineMangas[index];
+      
+      if (oneManga.source_id === "") { return }
+      
+      var splitted = oneManga.last_link.split("?")[0]
+      splitted = splitted.split("/")
+      
+      var last_chapter_id = splitted[splitted.length-1]
+      
+      var ch = {
+        manga_source: oneManga.source,
+        manga_id: oneManga.source_id,
+        chapter_id: last_chapter_id,
+      }
+
+      console.warn(ch)
+      
+      await animapuApi.GetReadManga(ch)
+    }
+    toast.success("proses sync history selesai!")
+  }
+
   return (
     <>
       <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
@@ -129,6 +155,7 @@ export default function Home() {
               <span className="px-4 mb-4 text-white flex gap-2">
                 <button className={`mx-2 ${getTabColor("local")} flex items-center gap-1`} onClick={()=>{setActiveTab("local")}}><FolderIcon size={18} /> Local</button>
                 <button className={`mx-2 ${getTabColor("online")} flex items-center gap-1`} onClick={()=>{setActiveTab("online")}}><CloudIcon size={18} /> Online</button>
+                <button className={`mx-2 flex items-center gap-1`} onClick={()=>{SyncToNewSystem()}}><RefreshCcw size={18} /> Sync To New System</button>
               </span>
             </div>
           </div>
