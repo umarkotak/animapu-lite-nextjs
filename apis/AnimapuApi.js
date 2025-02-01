@@ -163,6 +163,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetUsersMangaActivities() {
+    var uri = `${this.AnimapuApiHost}/users/mangas/activities`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async PostAddTokopediaAffiliateLink(params) {
     var uri = `${this.AnimapuApiHost}/affiliate_links/tokopedia/add`
     const response = await fetch(uri, {
