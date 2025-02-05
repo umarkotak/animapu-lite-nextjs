@@ -11,29 +11,24 @@ class Utils {
       .replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
   }
 
-  GetTimeElapsed(dateString) {
-    const now = new Date(); // Current date and time
-    const pastDate = new Date(dateString); // Given date
+  GetTimeElapsed(timestamp) {
+    const now = new Date();
+    const past = new Date(timestamp);
+    const elapsedMilliseconds = now - past;
   
-    // Check if the input date is valid
-    if (isNaN(pastDate.getTime())) {
-      throw new Error('Invalid date string');
+    const elapsedSeconds = Math.floor(elapsedMilliseconds / 1000);
+    const elapsedMinutes = Math.floor(elapsedSeconds / 60);
+    const elapsedHours = Math.floor(elapsedMinutes / 60);
+  
+    if (elapsedSeconds < 60) {
+      return `${elapsedSeconds} sec${elapsedSeconds !== 1 ? 's' : ''} ago`;
+    } else if (elapsedMinutes < 60) {
+      return `${elapsedMinutes} min${elapsedMinutes !== 1 ? 's' : ''} ago`;
+    } else if (elapsedHours < 24) {
+      return `${elapsedHours} hr${elapsedHours !== 1 ? 's' : ''} ago`;
+    } else {
+      return `${Math.floor(elapsedHours/24)} days ago`;
     }
-  
-    // Calculate the difference in milliseconds
-    const timeDiff = now - pastDate;
-  
-    // Convert milliseconds to hours
-    const hoursDiff = timeDiff / (1000 * 60 * 60);
-  
-    // If less than 24 hours, return in hours (rounded up)
-    if (hoursDiff < 24) {
-      return `${Math.ceil(hoursDiff)} hours ago`;
-    }
-  
-    // Otherwise, return in days (rounded up)
-    const daysDiff = hoursDiff / 24;
-    return `${Math.ceil(daysDiff)} days ago`;
   }
 }
 

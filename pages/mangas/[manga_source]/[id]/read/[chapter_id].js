@@ -210,14 +210,14 @@ export default function ReadManga(props) {
               </div>
 
               <Card className="sticky top-12 border-none rounded-none">
-                <CardContent className="p-0 flex justify-between">
+                <CardContent className="p-0 flex justify-between gap-1">
                   <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>
                     Select Chapter
                     <ChevronDownIcon size={14} />
                   </Button>
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-1'>
                     <a href={oneChapter.source_link}>
-                      <Button size="sm" variant="outline">read on original source</Button>
+                      <Button size="sm" variant="outline">read on source</Button>
                     </a>
                     <Button size="sm" variant="outline">
                       Chapter - {oneChapter.number}

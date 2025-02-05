@@ -38,17 +38,17 @@ export default function AdsCard({variant, limit = 1}) {
 
   if (variant === "manga_chapter") {
     return(<>
-      <div className='grid grid-cols-2 w-full h-[195px] rounded-xl shadow-lg'>
+      <div className='grid grid-cols-2 gap-1 w-full h-[195px] shadow-lg'>
         {affiliateLinkList.map((oneAds) => (
-          <div key={`${new Date}-${oneAds.short_link}`} className='rounded-xl overflow-hidden hover:border hover:border-primary'>
+          <div key={`${new Date}-${oneAds.short_link}`} className='overflow-hidden hover:border hover:border-primary'>
             <Link href={oneAds.short_link} target="_blank" onClick={()=>trackClick(oneAds.short_link)}>
               <div className="w-full flex flex-row justify-start">
                 <img
-                  className={`h-[195px] object-scale-down`}
+                  className={`h-[195px] object-cover w-full`}
                   src={oneAds.image_url}
                   alt="thumb"
                 />
-                <div>
+                <div className='hidden sm:block'>
                   <span className="p-2 text-sm line-clamp-6">
                     <Badge>ads</Badge> {oneAds.name}
                   </span>

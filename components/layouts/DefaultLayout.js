@@ -24,6 +24,7 @@ import { Button } from "../ui/button"
 import Link from "next/link"
 import { Separator } from "@radix-ui/react-separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from "../ui/breadcrumb"
+import { useSwipeable } from 'react-swipeable'
 
 const menuItems = [
   { title: "Home", url: "/home", icon: Home },
@@ -172,6 +173,16 @@ function SidebarMain({ children }) {
     setOpen(true)
   }, [pathName])
 
+  var swipeConfig = {}
+  const handlers = useSwipeable({
+    // onSwiped: (eventData) => console.log("User Swiped!", eventData),
+    onSwipedRight: () => {
+      setOpen(true)
+      setOpenMobile(true)
+    },
+    ...swipeConfig,
+  });
+
   return(
     <div className={`${!isMobile ? open ? "w-[calc(100%-13rem)]": "w-[calc(100%-3rem)]" : "w-full"}`}>
       <header className="sticky top-0 flex justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 z-40 bg-background border-b border-primary">
@@ -195,7 +206,10 @@ function SidebarMain({ children }) {
         </div>
       </header>
 
-      <div className="p-2 w-full">
+      <div
+        className="p-2 w-full"
+        {...handlers}
+      >
         <div className="mx-auto w-full max-w-[768px]">
           {children}
         </div>
