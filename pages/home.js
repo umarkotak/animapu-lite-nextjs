@@ -49,8 +49,8 @@ export default function Home() {
           }}
         >
           <CarouselContent>
-            {CarouselData.map((oneCarouselData) => (
-              <CarouselItem key={oneCarouselData.target_url}>
+            {CarouselData.map((oneCarouselData, idx) => (
+              <CarouselItem key={idx}>
                 <a href={oneCarouselData.target_url}>
                   <CardContent className="p-0 relative">
                     <img src={oneCarouselData.image_url} className="h-[100px] md:h-[180px] w-full object-cover rounded-xl" />
@@ -68,7 +68,7 @@ export default function Home() {
         </Carousel>
       </div>
 
-      <Card className="mb-4">
+      {/* <Card className="mb-4">
         <CardHeader className="px-4 pt-4 pb-0">
           <CardTitle className="flex justify-between items-center">
             <span>Continue Read</span>
@@ -84,7 +84,7 @@ export default function Home() {
             ))}
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       <Latest content_only={true} />
     </>

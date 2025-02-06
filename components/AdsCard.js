@@ -80,9 +80,9 @@ export default function AdsCard({variant, limit = 1}) {
             </div>
             <div>
               <div className="absolute bottom-0 p-2 text-white rounded-b-xl w-full hover:text-primary">
-                <p className="text-xs leading-1 line-clamp-4">
+                <div className="text-xs leading-1 line-clamp-4">
                   <Badge>ads</Badge> {oneAds.name}
-                </p>
+                </div>
               </div>
             </div>
           </div>

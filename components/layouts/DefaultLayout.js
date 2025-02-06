@@ -187,7 +187,7 @@ function SidebarMain({ children }) {
 
   return(
     <div className={`${!isMobile ? open ? "w-[calc(100%-13rem)]": "w-[calc(100%-3rem)]" : "w-full"}`}>
-      <header className="sticky top-0 flex justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 z-40 bg-background border-b border-primary">
+      <header className="sticky top-0 flex justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 z-10 bg-background border-b border-primary">
       {/* <header className="flex justify-between h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 backdrop-blur-md z-50 bg-inherit"> */}
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />

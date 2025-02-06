@@ -9,8 +9,6 @@ import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
 
 export default function MangaCardV2(props) {
-  let router = useRouter()
-  const query = router.query
   const [showModal, setShowModal] = useState(false)
 
   function lastReadChapter() {
@@ -45,6 +43,7 @@ export default function MangaCardV2(props) {
     <div
       className={`w-full max-w-[175px] h-[265px] mx-auto`}
       key={`${props.manga.source}-${props.manga.source_id}`}
+      id={`${props.manga.source}-${props.manga.source_id}`}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
         <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
@@ -209,22 +208,18 @@ export function MangaCardModal(props) {
   }
 
   useEffect(() => {
-    var query = {}
     if (show) {
-      query = {
-        page: query.page || 1,
-        selected: manga.source_id,
-      }
-    } else {
-      query = {
-        page: query.page || 1,
-      }
+      router.push({
+        pathname: window.location.pathname,
+        query: {
+          ...query,
+          back_page: query.page,
+          selected: `${props.manga.source}-${props.manga.source_id}`,
+        },
+      }, undefined, { shallow: true })
+      return
     }
 
-    router.push({
-      pathname: window.location.pathname,
-      query: query,
-    }, undefined, { shallow: true })
   }, [show])
 
   return(

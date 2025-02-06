@@ -16,8 +16,10 @@ var dummyMangas = [
   {source: "shimmer", source_id: "shimmer-2", shimmer: true},
 ]
 var tempMangas = []
+var scrolledToSelect = false
 export default function Latest({content_only}) {
   let router = useRouter()
+  const query = router.query
 
   const [activeSource, setActiveSource] = useState("")
   const [mangas, setMangas] = useState(dummyMangas)
@@ -33,10 +35,12 @@ export default function Latest({content_only}) {
     } else {
       tempMangas = []
       page = 1
+      scrolledToSelect = false
     }
 
     try {
       setIsLoadMoreLoading(true)
+
       const response = await animapuApi.GetLatestManga({
         manga_source: animapuApi.GetActiveMangaSource(),
         page: page
@@ -57,6 +61,11 @@ export default function Latest({content_only}) {
       // console.warn("MANGAS DATA", mangasData)
       // console.log("MANGAS DATA", mangasData)
 
+      router.push({
+        pathname: window.location.pathname,
+        query: {...query, page: page},
+      }, undefined, { shallow: true })
+
       if (append) {
         tempMangas = tempMangas.concat(mangasData)
       } else {
@@ -70,7 +79,21 @@ export default function Latest({content_only}) {
 
     onApiCall = false
     setIsLoadMoreLoading(false)
+
+    var back_page = parseInt(query.back_page)
+    if (back_page > 1 && page < back_page) {
+      GetLatestManga(true)
+    }
   }
+
+  useEffect(() => {
+    if (scrolledToSelect) { return }
+    var targetMangaCardID = query.selected
+    try {
+      document.querySelector(`#${targetMangaCardID}`).scrollIntoView( { behavior: "smooth", block: "start" } )
+      scrolledToSelect = true
+    } catch (e) {}
+  }, [mangas])
 
   useEffect(() => {
     setActiveSource(animapuApi.GetActiveMangaSource())
@@ -145,7 +168,7 @@ export default function Latest({content_only}) {
           <AdsCard />
           {mangas.map((manga, idx) => (
             manga.is_ads
-            ? <AdsCard />
+            ? <AdsCard key={`ads-${idx}`} />
             : <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
           ))}
         </div>
