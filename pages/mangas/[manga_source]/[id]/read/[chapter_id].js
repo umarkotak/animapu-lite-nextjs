@@ -17,6 +17,7 @@ import AdsCard from '@/components/AdsCard'
 
 var tempChapters = []
 var onApiCall = false
+var tempLoadedImageUrls = {}
 export default function ReadManga(props) {
   let router = useRouter()
   const query = router.query
@@ -26,6 +27,7 @@ export default function ReadManga(props) {
   const [chapters, setChapters] = useState([])
   const [onApiCallSt, setOnApiCallSt] = useState(onApiCall)
   const [showChaptersModal, setShowChaptersModal] = useState(false)
+  const [loadedImageUrls, setLoadedImageUrls] = useState({})
 
   useEffect(() => {
     tempChapters = []
@@ -86,6 +88,38 @@ export default function ReadManga(props) {
       onApiCall = false
       setOnApiCallSt(false)
       toast.error(`Error fetching chapter: ${e}`)
+    }
+
+    try {
+      var failCount = 0
+      for (let i = 0; i < chapterData.chapter_images.length; i++) {
+        if (failCount > 15) { break }
+        
+        const imageObj = chapterData.chapter_images[i];
+        
+        for (let j = 0; j < imageObj.image_urls.length; j++) {
+          const oneImageUrl = imageObj.image_urls[j];
+
+          const image = new Image();
+          image.src = oneImageUrl;
+
+          await new Promise((resolve, reject) => {
+            image.onload = () => {
+              tempLoadedImageUrls[imageObj.image_urls.join(";")] = true
+              resolve()
+            };
+            image.onerror = () => {
+              failCount = failCount + 1
+              reject()
+            };
+          });
+
+          setLoadedImageUrls({...tempLoadedImageUrls})
+        }
+      }
+      console.warn(tempLoadedImageUrls)
+    } catch(e) {
+      console.warn("ERR", e)
     }
   }
 
@@ -226,18 +260,17 @@ export default function ReadManga(props) {
                 </CardContent>
               </Card>
 
-              {oneChapter.chapter_images.map((imageObj, idx) => (
-                <div
-                  id={`${oneChapter.id}---${idx}`}
-                  key={`${oneChapter.id}-${idx}`}
-                  // onLoad={()=>anyChapterImageLoaded(oneChapter, idx, `${oneChapter.id}---${idx}`)}
-                  className='flex w-full justify-center'
-                >
-                  {
-                    !imageObj.simple_render ?
-                      <Img
+              <div className='flex flex-col items-center gap-1 w-full max-w-[800px]'>
+                {oneChapter.chapter_images.map((imageObj, idx) => (
+                  <div
+                    id={`${oneChapter.id}---${idx}`}
+                    key={`${oneChapter.id}-${idx}`}
+                    // onLoad={()=>anyChapterImageLoaded(oneChapter, idx, `${oneChapter.id}---${idx}`)}
+                    className='flex w-full justify-center'
+                  >
+                    { loadedImageUrls[imageObj.image_urls.join(";")] && <Img
                         loading='lazy'
-                        className="w-full max-w-[800px] mb-1 bg-gray-600"
+                        className="w-full"
                         src={imageObj.image_urls}
                         // onLoad={()=>{setSuccessRender(1)}}
                         onError={()=>{}}
@@ -245,18 +278,10 @@ export default function ReadManga(props) {
                         loader={
                           <Skeleton className="my-2 h-6 w-6 rounded-full" />
                         }
-                      />
-                    :
-                      <>
-                        <img
-                          className="w-full max-w-[800px] mb-1 bg-gray-600"
-                          loading="lazy"
-                          src={imageObj.image_urls[0]}
-                        />
-                      </>
-                  }
-                </div>
-              ))}
+                      /> }
+                  </div>
+                ))}
+              </div>
               <div
                 id={`${oneChapter.id}-bottom`}
               ><hr/></div>
