@@ -68,7 +68,7 @@ export default function Home() {
         </Carousel>
       </div>
 
-      {/* <Card className="mb-4">
+      <Card className="mb-4">
         <CardHeader className="px-4 pt-4 pb-0">
           <CardTitle className="flex justify-between items-center">
             <span>Continue Read</span>
@@ -84,7 +84,7 @@ export default function Home() {
             ))}
           </div>
         </CardContent>
-      </Card> */}
+      </Card>
 
       <Latest content_only={true} />
     </>
