@@ -112,17 +112,23 @@ export function SidebarUser() {
 
   return (
     <SidebarMenu>
+      {deferredPrompt &&
+        <SidebarMenuItem>
+          <SidebarMenuButton onClick={()=>handleInstall()}>
+            <Download />
+            <span>Install App</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      }
+      <Link href="/setting">
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild>
+              <Settings />
+              <span>Setting</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </Link>
       <SidebarMenuItem>
-        {deferredPrompt && <SidebarMenuButton onClick={()=>handleInstall()}>
-          <Download />
-          <span>Install App</span>
-        </SidebarMenuButton>}
-        <SidebarMenuButton asChild>
-          <Link href="/setting">
-            <Settings />
-            <span>Setting</span>
-          </Link>
-        </SidebarMenuButton>
         {user.email ?
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
