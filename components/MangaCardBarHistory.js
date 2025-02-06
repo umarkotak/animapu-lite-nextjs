@@ -13,18 +13,6 @@ export default function MangaCardBarHistory(props) {
   const query = router.query
   const [showModal, setShowModal] = useState(false)
 
-  function changeUrl(manga) {
-    if (typeof window !== "undefined") {
-      router.push({
-        pathname: window.location.pathname,
-        query: {
-          page: query.page,
-          selected: manga.source_id,
-        }
-      }, undefined, { shallow: true })
-    }
-  }
-
   function lastReadChapter() {
     if (props.manga.last_link) {
       return(`cont ch ${props.manga.last_chapter_read}`)
@@ -189,27 +177,24 @@ export function MangaCardModal(props) {
     }
   }
 
-  function changeUrl(manga) {
-    if (typeof window !== "undefined" && (window.location.pathname === "/")) {
-      router.push({
-        pathname: window.location.pathname,
-        query: {
-          selected: manga.source_id,
-          page: query.page || 1
-        }
-      }, undefined, { shallow: true })
-    }
-  }
-
   useEffect(() => {
-    if (show) { return }
+    var query = {}
+    if (show) {
+      query = {
+        page: query.page || 1,
+        selected: manga.source_id,
+      }
+    } else {
+      query = {
+        page: query.page || 1,
+      }
+    }
 
     router.push({
       pathname: window.location.pathname,
-      query: {
-        page: query.page || 1
-      }
+      query: query,
     }, undefined, { shallow: true })
+
   }, [show])
 
   return(
@@ -281,7 +266,7 @@ export function MangaCardModal(props) {
                             <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Read</span>
                           </Link>
                         </small>
-                        {continueManga.last_link && <div onClick={()=>changeUrl(props.manga)}>
+                        {continueManga.last_link && continueManga.last_link !== "#" && <div>
                           <small>
                             <Link
                               href={continueManga.last_link || "#"}
@@ -321,7 +306,7 @@ export function MangaCardModal(props) {
                   <div className="grid grid-cols-1">
                     <div className="p-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
-                        <div className="" key={chapter.title} onClick={()=>changeUrl(props.manga)}>
+                        <div className="" key={chapter.title}>
                           <Link
                             href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}
                             className="bg-white hover:bg-gray-300 rounded-full mb-2 py-1 px-2 text-[#5c728a] text-center block w-full"

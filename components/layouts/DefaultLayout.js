@@ -56,22 +56,24 @@ export function DefaultLayout({ children }) {
         >
           <SidebarHeader>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
-                    <img src="/images/cover192.png" className="rounded-lg" />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
-                      Animapu
-                    </span>
-                    <span className="truncate text-xs">from weebs to weebs</span>
-                  </div>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              <a href="/">
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    size="lg"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  >
+                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg">
+                      <img src="/images/cover192.png" className="rounded-lg" />
+                    </div>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        Animapu
+                      </span>
+                      <span className="truncate text-xs">from weebs to weebs</span>
+                    </div>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </a>
             </SidebarMenu>
           </SidebarHeader>
 
