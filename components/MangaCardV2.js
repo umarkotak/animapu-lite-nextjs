@@ -62,14 +62,13 @@ export default function MangaCardV2(props) {
         </div>
 
         <div>
+          {props.show_hover_source && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
+            <small>{props.manga.source}</small>
+          </div>}
           <div
             className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"
             onClick={()=>setShowModal(!showModal)}
           >
-            {props.show_hover_source && <div className="absolute mt-[-35px] px-2 py-1 leading-none rounded-full bg-black bg-opacity-75">
-              <small>{props.manga.source}</small>
-            </div>}
-
             <p className="text-sm leading-1 line-clamp-1">
               {props.manga.title}
             </p>

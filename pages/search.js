@@ -148,7 +148,7 @@ export default function Home() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
         {mangas.map((manga, idx) => (
-          <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
+          <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} show_hover_source={true} />
         ))}
       </div>
 

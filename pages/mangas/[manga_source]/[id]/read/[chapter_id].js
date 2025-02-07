@@ -94,9 +94,9 @@ export default function ReadManga(props) {
       var failCount = 0
       for (let i = 0; i < chapterData.chapter_images.length; i++) {
         if (failCount > 15) { break }
-        
+
         const imageObj = chapterData.chapter_images[i];
-        
+
         for (let j = 0; j < imageObj.image_urls.length; j++) {
           const oneImageUrl = imageObj.image_urls[j];
 
@@ -200,7 +200,7 @@ export default function ReadManga(props) {
       <div className="flex flex-col gap-4">
         <Card className="border-none">
           <CardHeader className="p-0 pb-2">
-            <CardTitle className='text-2xl tracking-wide'>{manga.title}</CardTitle>
+            <CardTitle className='text-2xl tracking-wide'>[{manga.source}] {manga.title}</CardTitle>
           </CardHeader>
           <CardContent className="p-0 flex justify-start gap-2">
             <Button size="sm" onClick={()=>HandleBookmark()}>bookmark</Button>

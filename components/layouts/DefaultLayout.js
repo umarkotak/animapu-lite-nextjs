@@ -38,6 +38,7 @@ const mangaItems = [
 ]
 
 const animeItems = [
+  { title: "Latest", url: "/anime/latest", icon: Play },
   { title: "Season", url: "/anime/season", icon: Sun },
   // { title: "Search", url: "/anime/search", icon: Search },
   // { title: "Library", url: "/anime/library", icon: BookMarked },
