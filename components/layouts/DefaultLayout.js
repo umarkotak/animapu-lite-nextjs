@@ -117,14 +117,6 @@ export function DefaultLayout({ children }) {
               <SidebarGroupLabel>Anime</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <a href="https://animehub-lite.vercel.app">
-                        <Play />
-                        <span>Watch Anime</span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
                   {animeItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={item.url == pathname}>
@@ -168,7 +160,7 @@ function SidebarMain({ children }) {
     var tempBreadcrumb = pathName
     setBreadcrumb(tempBreadcrumb.split("/")[1])
 
-    if (pathName.startsWith("/watch")) {
+    if (pathName.includes("/watch/")) {
       setOpen(false)
       return
     }
@@ -213,7 +205,7 @@ function SidebarMain({ children }) {
         className="p-2 w-full"
         {...handlers}
       >
-        <div className="mx-auto w-full max-w-[768px]">
+        <div className={`mx-auto w-full ${pathName.includes("/watch/") ? "" : "max-w-[768px]"}`}>
           {children}
         </div>
       </div>

@@ -55,6 +55,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetAnimeSourceList(params) {
+    var uri = `${this.AnimapuApiHost}/animes/sources`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async GetLogs(params) {
     var uri = `${this.AnimapuApiHost}/logs`
     const response = await fetch(uri, {
@@ -190,6 +199,42 @@ class AnimapuApi {
     return response
   }
 
+  async GetAnimeDetail(params) {
+    var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/detail/${params.anime_id}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async GetAnimeWatch(params) {
+    var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/watch/${params.anime_id}/${params.episode_id}?resolution=${params.resolution}&stream_idx=${params.stream_idx}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async GetAnimeSearch(params) {
+    var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/search?title=${params.title}&search_all=${params.search_all}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async GetAnimeRandom(params) {
+    var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/random`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async PostAddTokopediaAffiliateLink(params) {
     var uri = `${this.AnimapuApiHost}/affiliate_links/tokopedia/add`
     const response = await fetch(uri, {
@@ -219,6 +264,15 @@ class AnimapuApi {
       }
     }
     return "mangabat"
+  }
+
+  GetActiveAnimeSource() {
+    if (typeof window !== "undefined") {
+      if (localStorage.getItem("ANIMAPU_LITE:ACTIVE_ANIME_SOURCE")) {
+        return localStorage.getItem("ANIMAPU_LITE:ACTIVE_ANIME_SOURCE")
+      }
+    }
+    return "otakudesu"
   }
 
   GetVisitorID() {

@@ -12,7 +12,7 @@ export default function ChangeAnimeSourceModalOnly(props) {
   const [show, setShow] = useState(props.show)
   const parent = useRef(null)
 
-  const [formattedSources, setFormattedSources] = useState([{value: "mangabat", label: "select source"}])
+  const [formattedSources, setFormattedSources] = useState([{value: "otakudesu", label: "select source"}])
 
   useEffect(() => {
     parent.current && autoAnimate(parent.current)
@@ -22,13 +22,13 @@ export default function ChangeAnimeSourceModalOnly(props) {
     if (onApiCall) {return}
     onApiCall = true
     try {
-      const response = await animapuApi.GetSourceList({})
+      const response = await animapuApi.GetAnimeSourceList({})
       const body = await response.json()
       if (response.status == 200) {
         var tempFormattedSources = body.data.filter(
           (source) => ( source.active )
         ).map((source, idx) => {
-          if (source.id === animapuApi.GetActiveMangaSource()) {
+          if (source.id === animapuApi.GetActiveAnimeSource()) {
             activeSourceIdxDirect = idx
           }
           return {
@@ -58,9 +58,6 @@ export default function ChangeAnimeSourceModalOnly(props) {
         })
         setFormattedSources(tempFormattedSources)
 
-        if (props.setMangaSourcesData) {
-          props.setMangaSourcesData(tempFormattedSources)
-        }
       } else {
         toast.error(body.error.message)
       }
@@ -82,7 +79,7 @@ export default function ChangeAnimeSourceModalOnly(props) {
 
   function handleSelectSource(source) {
     if (typeof window !== "undefined") {
-      localStorage.setItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE", source)
+      localStorage.setItem("ANIMAPU_LITE:ACTIVE_ANIME_SOURCE", source)
       window.location.reload()
     }
   }
