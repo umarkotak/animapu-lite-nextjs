@@ -1,214 +1,201 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-
-import animapuApi from "../../apis/AnimapuApi"
-import { toast } from 'react-toastify'
 import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import MangaCardV2 from '@/components/MangaCardV2'
-import { useParams } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router'
 import Select from 'react-select'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
-import AnimeSeasonCard from '@/components/AnimeSeasonCard'
+import { useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 
-var tempAllMangas = []
-var limit = 16
+import AnimeSourceCard from '@/components/AnimeSourceCard'
+import AnimeHistoryCard from '@/components/AnimeHistoryCard'
+import animapuApi from '@/apis/AnimapuApi'
 
-export default function AnimeSeason() {
+var page = 1
+var onApiCall = false
+export default function AnimeSourceHome() {
   const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const [seasonFilters, setSeasonFilters] = useState([])
-  const [animePerSeasons, setAnimePerSeasons] = useState([{animes: []}])
-  const [selectedSeason, setSelectedSeason] = useState({})
+  const [animes, setAnimes] = useState([])
+
+  var endReached = false
 
   useEffect(() => {
-    if (!window) { return }
+    GetLatestAnime(false)
+  }, [params, searchParams])
 
-    var tmpSeasonFilters = []
+  async function GetLatestAnime(append) {
+    if (!window) {return}
 
-    var allSeasonContents = generateSeasonData(1999, "fall", 2025, "winter")
+    if (onApiCall) {return}
+    onApiCall = true
 
-    allSeasonContents.forEach((oneSeasonContent) => {
-      tmpSeasonFilters.push({
-        value: `${oneSeasonContent.year} - ${oneSeasonContent.season_name}`,
-        label: `${oneSeasonContent.year} - ${oneSeasonContent.season_name}`,
-        season_name: oneSeasonContent.season_name,
-        year: oneSeasonContent.year,
-      })
-    })
+    if (endReached) {return}
 
-    setSeasonFilters(tmpSeasonFilters)
-  }, [])
-
-  function generateSeasonData(minYear, minSeason, maxYear, maxSeason) {
-    const seasons = ["winter", "spring", "summer", "fall"]
-    var data = [];
-
-    for (let year = maxYear; year >= minYear; year--) {
-      let startSeasonIndex = 0;
-      let endSeasonIndex = seasons.length - 1;
-
-      if (year === minYear) {
-        startSeasonIndex = seasons.indexOf(minSeason);
-      }
-
-      if (year === maxYear) {
-        endSeasonIndex = seasons.indexOf(maxSeason);
-      }
-
-      for (let i = endSeasonIndex; i >=startSeasonIndex ; i--) {
-        data.push({
-          year: year,
-          season_name: seasons[i],
-        });
-      }
-    }
-
-    return data;
-  }
-
-  useEffect(() => {
-    if (!seasonFilters || seasonFilters.length === 0) {
-      return
-    }
-
-    var year = searchParams.get('year') || seasonFilters[0].year
-    var season = searchParams.get('season') || seasonFilters[0].season_name
-
-    GetAnimesBySeason(year, season, 0)
-  }, [seasonFilters, searchParams])
-
-  async function GetAnimesBySeason(year, season, iter) {
-    if (iter >= 10) {
-      toast.error("error get season")
-      return
+    if (!append) {
+      page = 1
     }
 
     try {
-      const response = await animapuApi.GetAnimesBySeason({
+      const response = await animapuApi.GetLatestAnime({
         anime_source: params.anime_source,
-        year: year,
-        season: season
+        page: page,
       })
       const body = await response.json()
       if (response.status !== 200) {
         console.log("error", body)
+        onApiCall = false
         return
       }
-      setAnimePerSeasons([body.data])
-      setSelectedSeason({
-        value: `${year} - ${season}`,
-        label: `${year} - ${season}`,
-        season_name: season,
-        year: year,
-      })
+
+      if (body.data && body.data.length <= 0) {
+        endReached = true
+        onApiCall = false
+        return
+      }
+
+      if (append) {
+        setAnimes(animes.concat(body.data))
+      } else {
+        setAnimes(body.data)
+      }
+      page = page + 1
+      onApiCall = false
 
     } catch (e) {
-      toast.error(`error get season, ${year}, ${season}. ${iter}`)
-      // GetAnimesBySeason(year, season, iter + 1)
+      console.error(e.message)
+      onApiCall = false
     }
   }
 
-  function handleChange(selectedOption) {
-    router.push(`/animes/${params.anime_source}/season?year=${selectedOption.year}&season=${selectedOption.season_name}`)
-  }
+  const [triggerNextPage, setTriggerNextPage] = useState(0)
+  const handleScroll = () => {
+    var position = window.pageYOffset
+    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-  function SeasonIconGenerator(seasonName) {
-    if (seasonName === "winter") { return "fa-solid fa-snowflake" }
-    if (seasonName === "spring") { return "fa-solid fa-fan" }
-    if (seasonName === "summer") { return "fa-solid fa-sun" }
-    if (seasonName === "fall") { return "fa-solid fa-leaf" }
-    return "fa-solid fa-border-all"
-  }
-
-  function prevSeason() {
-    var currIndex = 0
-
-    if (!searchParams.get('year') && !searchParams.get('season')) {
-      return
+    if (maxPosition-position <= 1200) {
+      setTriggerNextPage(position)
     }
-
-    seasonFilters.forEach((val, idx) => {
-      if (`${val.year}` === searchParams.get('year') && val.season_name === searchParams.get('season')) {
-        currIndex = idx
-      }
-    })
-
-    if (currIndex <= 0) {
-      return
-    }
-
-    router.push(`/anime/season?year=${seasonFilters[currIndex-1].year}&season=${seasonFilters[currIndex-1].season_name}`)
   }
-
-  function nextSeason() {
-    var currIndex = 0
-
-    if (!searchParams.get('year') && !searchParams.get('season')) {
-      console.log("a")
-      router.push(`/anime/season?year=${seasonFilters[1].year}&season=${seasonFilters[1].season_name}`)
-      return
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
     }
+  }, [])
+  useEffect(() => {
+    GetLatestAnime(true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerNextPage])
 
-    seasonFilters.forEach((val, idx) => {
-      if (`${val.year}` === searchParams.get('year') && val.season_name === searchParams.get('season')) {
-        currIndex = idx
-      }
-    })
+  const [showChangeSourceModal, setShowChangeSourceModal] = useState(false)
 
-    if (currIndex >= seasonFilters.length-1) {
-      return
-    }
-
-    router.push(`/anime/season?year=${seasonFilters[currIndex+1].year}&season=${seasonFilters[currIndex+1].season_name}`)
-  }
+  const [animeHistories, setAnimeHistories] = useState([])
+  useEffect(() => {
+    if (!localStorage) { return }
+    var keyHistoryList = "ANIMEHUB-LITE:HISTORY_LIST:V2"
+    if (!localStorage.getItem(keyHistoryList)) { return }
+    var episodeHistories = JSON.parse(localStorage.getItem(keyHistoryList))
+    const filteredArray = filterDuplicateObjects(episodeHistories);
+    setAnimeHistories(filteredArray)
+  }, [])
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-row gap-2 w-full">
-        <Button
-          onClick={()=>prevSeason()}
-        >
-          <ArrowLeft />
-        </Button>
-        <Select
-          // defaultValue={seasonFilters[0]}
-          options={seasonFilters}
-          className='w-[180px] bg-background text-black'
-          onChange={handleChange}
-          placeholder={'Select season'}
-          value={selectedSeason}
-        />
-        <Button
-          onClick={()=>nextSeason()}
-        >
-          <ArrowRight />
-        </Button>
+    <main className="pb-[100px] p-4 min-h-screen">
+      <div className="max-w-[1200px] mx-auto mb-6 w-full">
+        <div className='text-lg mb-2'>Continue Watch</div>
+        <div className='grid gap-x-8 auto-cols-[10.5rem] grid-flow-col overflow-x-auto w-full'>
+          {animeHistories.map((oneAnimeEpisodeData) => (
+            <div className='w-full h-[240px]' key={oneAnimeEpisodeData.pathname}>
+              <AnimeHistoryCard
+                oneAnimeEpisodeData={oneAnimeEpisodeData}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-
-      <div className="flex flex-col mb-6">
-        {animePerSeasons.map((oneSeason) => (
-          <div className="flex flex-col gap-4" key={`season-${oneSeason?.release_year}-${oneSeason?.season_name}`}>
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle>
-                  {oneSeason?.release_year} - {oneSeason?.season_name}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-              {oneSeason.animes && oneSeason.animes.map((oneAnimeData) => (
-                <AnimeSeasonCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
-              ))}
+      {showChangeSourceModal &&
+        <div className='fixed bg-black bg-opacity-60 backdrop-blur h-screen w-full left-0 top-0 z-50'>
+          <div className='w-full h-screen absolute left-0 top-0 z-0' onClick={()=>setShowChangeSourceModal(false)}></div>
+          <div className='relative mt-24 mx-auto max-w-md oveflow-hidden rounded-xl z-30'>
+            <div className="relative bg-gray-800 rounded-t-xl shadow z-10 overflow-hidden mx-4 p-4">
+              Change Source
+            </div>
+            <div className="relative bg-gray-600 rounded-b-xl shadow z-10 overflow-hidden mx-4 p-4 flex flex-col text-center">
+              <Link
+                className='w-full p-4 bg-blue-300 hover:bg-blue-400 rounded-xl text-black'
+                href="/animes/animension"
+                onClick={()=>{
+                  localStorage.setItem("ANIMEHUB:ACTIVE_SOURCE", "animension")
+                  setActiveSource("animension")
+                }}
+              >
+                Animension
+              </Link>
+              <Link
+                className='w-full p-4 bg-blue-300 hover:bg-blue-400 rounded-xl mt-2 text-black'
+                href="/animes/otakudesu"
+                onClick={()=>{
+                  localStorage.setItem("ANIMEHUB:ACTIVE_SOURCE", "otakudesu")
+                  setActiveSource("otakudesu")
+                }}
+              >
+                Otakudesu
+              </Link>
+              <Link
+                className='w-full p-4 bg-blue-300 hover:bg-blue-400 rounded-xl mt-2 text-black'
+                href="/animes/gogo_anime"
+                onClick={()=>{
+                  localStorage.setItem("ANIMEHUB:ACTIVE_SOURCE", "gogo_anime")
+                  setActiveSource("gogo_anime")
+                }}
+              >
+                Gogo Anime
+              </Link>
             </div>
           </div>
-        ))}
+        </div>
+      }
+      <div className="flex flex-col mb-6 max-w-[1200px] mx-auto">
+        <div className='mb-6 flex justify-between items-center bg-gray-800 rounded-xl p-2'>
+          {/* <div className='text-2xl'>{params.anime_source}</div> */}
+          <div>
+            <button
+              className='bg-gray-900 hover:bg-gray-700 text-white p-2 rounded-xl text-sm'
+              onClick={()=>setShowChangeSourceModal(true)}
+            >Change Source</button>
+          </div>
+        </div>
+
+        <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-x-8 gap-y-8'>
+          {animes.map((oneAnimeData) => (
+            <AnimeSourceCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
+          ))}
+        </div>
       </div>
-    </div>
+    </main>
   )
+
+  function filterDuplicateObjects(array) {
+    // Create a Map to store unique objects based on their 'id' property
+    const uniqueObjects = new Map();
+    var preservedArr = []
+
+    // Iterate through the array in reverse order to prioritize the most recent objects
+    for (let i = 0; i <= array.length - 1; i++) {
+      const object = array[i];
+      const id = object.anime_id;
+
+      // If the object's 'id' is not already in the Map, add it
+      if (!uniqueObjects.has(id)) {
+        uniqueObjects.set(id, object)
+        preservedArr.push(object)
+      }
+    }
+
+    // Return an array of the unique objects from the Map
+    return preservedArr
+  }
 }
