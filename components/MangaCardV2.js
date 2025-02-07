@@ -223,11 +223,11 @@ export function MangaCardModal(props) {
 
   return(
     <div>
-      <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => HandleBookmark()}>
+      {!props.disableBookmarkIcon && <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => HandleBookmark()}>
         <button className="drop-shadow-sm bg-white bg-opacity-50 backdrop-blur rounded-full p-1">
           <span className={`${followed ? "text-[#ec294b]": ""}`}><BookmarkIcon strokeWidth={3} size={20} /></span>
         </button>
-      </div>
+      </div>}
       {
         show &&
         <div className='z-10'>

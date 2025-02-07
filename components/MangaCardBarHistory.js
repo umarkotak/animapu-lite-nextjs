@@ -25,7 +25,7 @@ export default function MangaCardBarHistory(props) {
       className={`flex-none w-[220px] h-[100px] cursor-pointer hover:border hover:border-primary`}
       key={`manga-card-bar-history-${props.manga.source}-${props.manga.source_id}`}
     >
-      <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
+      <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} disableBookmarkIcon={true} />
 
       <div
         className="flex flex-row gap-2 h-full"
