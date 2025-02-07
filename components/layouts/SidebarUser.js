@@ -69,7 +69,7 @@ export function SidebarUser() {
   }, [])
 
   useEffect(() => {
-    if (pathName.startsWith("/admin")) {
+    if (pathName && pathName.startsWith("/admin")) {
       if (!ADM_EMS.includes(localStorage.getItem("ANIMAPU_LITE:USER:EMAIL"))) {
         router.push("/")
       }

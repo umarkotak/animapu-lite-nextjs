@@ -158,9 +158,12 @@ function SidebarMain({ children }) {
 
   React.useEffect(() => {
     var tempBreadcrumb = pathName
-    setBreadcrumb(tempBreadcrumb.split("/")[1])
 
-    if (pathName.includes("/watch/")) {
+    if (tempBreadcrumb) { 
+      setBreadcrumb(tempBreadcrumb.split("/")[1])
+    }
+
+    if (pathName && pathName.includes("/watch/")) {
       setOpen(false)
       return
     }
@@ -205,7 +208,7 @@ function SidebarMain({ children }) {
         className="p-2 w-full"
         {...handlers}
       >
-        <div className={`mx-auto w-full ${pathName.includes("/watch/") ? "" : "max-w-[768px]"}`}>
+        <div className={`mx-auto w-full ${pathName && pathName.includes("/watch/") ? "" : "max-w-[768px]"}`}>
           {children}
         </div>
       </div>
