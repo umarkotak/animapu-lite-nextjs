@@ -18,6 +18,7 @@ import AdsCard from '@/components/AdsCard'
 var tempChapters = []
 var onApiCall = false
 var tempLoadedImageUrls = {}
+var tempFailedImageUrls = {}
 export default function ReadManga(props) {
   let router = useRouter()
   const query = router.query
@@ -28,6 +29,7 @@ export default function ReadManga(props) {
   const [onApiCallSt, setOnApiCallSt] = useState(onApiCall)
   const [showChaptersModal, setShowChaptersModal] = useState(false)
   const [loadedImageUrls, setLoadedImageUrls] = useState({})
+  const [failedImageUrls, setFailedImageUrls] = useState({})
 
   useEffect(() => {
     tempChapters = []
@@ -110,16 +112,21 @@ export default function ReadManga(props) {
             };
             image.onerror = () => {
               failCount = failCount + 1
-              reject()
+              resolve()
             };
           });
 
           setLoadedImageUrls({...tempLoadedImageUrls})
         }
       }
-      console.warn(tempLoadedImageUrls)
+
+      chapterData.chapter_images.forEach((imageObj) => {
+        tempFailedImageUrls[imageObj.image_urls.join(";")] = true
+      })
+      setFailedImageUrls({...tempFailedImageUrls})
+
     } catch(e) {
-      console.warn("ERR", e)
+      toast.error(`error: ${e}`)
     }
   }
 
@@ -262,13 +269,10 @@ export default function ReadManga(props) {
 
               <div className='flex flex-col items-center gap-1 w-full max-w-[800px]'>
                 {oneChapter.chapter_images.map((imageObj, idx) => (
-                  <div
-                    id={`${oneChapter.id}---${idx}`}
-                    key={`${oneChapter.id}-${idx}`}
-                    // onLoad={()=>anyChapterImageLoaded(oneChapter, idx, `${oneChapter.id}---${idx}`)}
-                    className='flex w-full justify-center'
-                  >
-                    { loadedImageUrls[imageObj.image_urls.join(";")] && <Img
+                  <>
+                    {
+                      loadedImageUrls[imageObj.image_urls.join(";")]
+                      ? <Img
                         loading='lazy'
                         className="w-full"
                         src={imageObj.image_urls}
@@ -278,16 +282,18 @@ export default function ReadManga(props) {
                         loader={
                           <Skeleton className="my-2 h-6 w-6 rounded-full" />
                         }
-                      /> }
-                  </div>
+                      />
+                      : failedImageUrls[imageObj.image_urls.join(";")]
+                      ? null
+                      : <div>
+                        IMAGE: {imageObj.image_urls.join(";")}
+                        <Skeleton className="my-2 h-6 w-6 rounded-full" />
+                      </div>
+                    }
+                  </>
                 ))}
               </div>
-              <div
-                id={`${oneChapter.id}-bottom`}
-              ><hr/></div>
-              <div
-                className='h-[150px] bg-gradient-to-b from-primary to-transparent mb-40'
-              ></div>
+              <div id={`${oneChapter.id}-bottom`} className='h-[150px] bg-gradient-to-b from-primary to-transparent mb-40'></div>
             </div>
           ))}
           {onApiCallSt && <Button className="w-full my-4 text-xl">Please wait, loading next chapter...</Button>}
