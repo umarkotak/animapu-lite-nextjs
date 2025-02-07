@@ -58,8 +58,6 @@ export default function Latest({content_only}) {
       mangasData = injectObjectEveryNthElement(mangasData, {
         is_ads: true
       }, 10)
-      // console.warn("MANGAS DATA", mangasData)
-      // console.log("MANGAS DATA", mangasData)
 
       router.push({
         pathname: window.location.pathname,
@@ -109,27 +107,6 @@ export default function Latest({content_only}) {
         return acc;
     }, []);
   }
-
-  // useEffect(() => {
-  //   if (targetPage === 1 || page === 1) {
-  //     return
-  //   }
-  //   if (page === 1 && mangas.length <= 2) {
-  //     if (typeof window !== "undefined") { window.scrollTo(0, 0) }
-  //   }
-  //   if (page < targetPage) {
-  //     GetLatestManga(true)
-  //   }
-  //   if (typeof window !== "undefined" && query.selected && query.selected !== "") {
-  //     try {
-  //       const section = document.querySelector(`#${query.selected}`)
-  //       if (section) {
-  //         query.selected = ""
-  //         section.scrollIntoView( { behavior: "smooth", block: "start" } )
-  //       }
-  //     } catch(e) {}
-  //   }
-  // }, [mangas])
 
   const handleScroll = () => {
     var position = window.pageYOffset

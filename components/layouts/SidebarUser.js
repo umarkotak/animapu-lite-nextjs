@@ -122,9 +122,9 @@ export function SidebarUser() {
       }
       <Link href="/setting">
         <SidebarMenuItem>
-          <SidebarMenuButton asChild>
-              <Settings />
-              <span>Setting</span>
+          <SidebarMenuButton>
+            <Settings />
+            <span>Setting</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </Link>

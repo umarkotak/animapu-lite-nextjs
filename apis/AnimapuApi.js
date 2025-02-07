@@ -172,6 +172,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetAnimesBySeason(params) {
+    var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/season/${params.year}/${params.season}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async PostAddTokopediaAffiliateLink(params) {
     var uri = `${this.AnimapuApiHost}/affiliate_links/tokopedia/add`
     const response = await fetch(uri, {

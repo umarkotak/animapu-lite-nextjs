@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Book, BookMarked, Bot, Calendar, Coffee, GraduationCap, History, Home, HomeIcon, Inbox, Joystick, Pencil, Play, Search, Settings, Slack, SlackIcon, UserCheck } from "lucide-react"
+import { Book, BookMarked, Bot, Calendar, Coffee, GraduationCap, History, Home, HomeIcon, Inbox, Joystick, Pencil, Play, Search, Settings, Slack, SlackIcon, Sun, UserCheck } from "lucide-react"
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -38,7 +38,7 @@ const mangaItems = [
 ]
 
 const animeItems = [
-  // { title: "Latest", url: "/anime/latest", icon: Play },
+  { title: "Season", url: "/anime/season", icon: Sun },
   // { title: "Search", url: "/anime/search", icon: Search },
   // { title: "Library", url: "/anime/library", icon: BookMarked },
   // { title: "History", url: "/anime/history", icon: History },
