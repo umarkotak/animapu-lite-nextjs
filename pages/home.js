@@ -8,10 +8,11 @@ import Latest from "./latest"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Megaphone } from "lucide-react"
 
 const CarouselData = [
-  {image_url: "/images/animehub_cover_2.png", target_url: "https://animehub-lite.vercel.app", text: "watch anime"},
-  {image_url: "/images/animehub_cover_3.png", target_url: "https://animehub-lite.vercel.app", text: "nonton anime"},
+  {image_url: "/images/animehub_cover_2.png", target_url: "/anime/latest", text: "watch anime"},
+  {image_url: "/images/animehub_cover_3.png", target_url: "/anime/latest", text: "nonton anime"},
 ]
 
 export default function Home() {
@@ -85,6 +86,20 @@ export default function Home() {
           </div>
         </CardContent>
       </Card>
+
+      <Card className="mb-4">
+        <CardHeader className="px-4 pt-4 pb-0">
+          <CardTitle className="flex justify-start items-center gap-2">
+            <Megaphone />
+            <span>Pengumuman</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          fitur nonton anime sudah dapat digunakan kembali!
+        </CardContent>
+      </Card>
+
+
 
       <Latest content_only={true} />
     </>

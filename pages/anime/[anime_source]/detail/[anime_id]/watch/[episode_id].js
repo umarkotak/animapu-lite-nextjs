@@ -14,6 +14,7 @@ import animapuApi from '@/apis/AnimapuApi'
 // import AnimeCardRelationV3 from '../AnimeCardRelationV3'
 import * as Cronitor from "@cronitorio/cronitor-rum"
 import Utils from '@/models/Utils'
+import { Button } from '@/components/ui/button'
 
 var mobileModeLimit = 470
 var smallWebLimit = 1015
@@ -371,12 +372,9 @@ export default function WatchAnime() {
             </div>
           </div>
           <div className={`flex justify-between mt-4 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
-            <div className='flex'>
-              <Link
-                href={episodeStream.original_url ? `${episodeStream.original_url}` : `${anime.original_link}`}
-                className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center'
-              >
-                Go to source
+            <div className='flex justify-start gap-1'>
+              <Link href={episodeStream.original_url ? `${episodeStream.original_url}` : `${anime.original_link}`}>
+                <Button size="sm">Go to source</Button>
               </Link>
               {/* <button
                 className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center ml-2'
@@ -385,19 +383,9 @@ export default function WatchAnime() {
                 Full Screen
               </button> */}
             </div>
-            <div className='flex justify-end'>
-              <Link
-                className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center'
-                href={previousLink}
-              >
-                <i className="fa-solid fa-circle-arrow-left"></i> Prev
-              </Link>
-              <Link
-                className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 ml-2'
-                href={nextLink}
-              >
-                <i className="fa-solid fa-circle-arrow-right"></i> Next
-              </Link>
+            <div className='flex justify-end gap-1'>
+              <Link href={previousLink}><Button size="sm">Prev</Button></Link>
+              <Link href={nextLink}><Button size="sm">Next</Button></Link>
             </div>
           </div>
           <div className={`flex justify-between mt-2 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
@@ -445,24 +433,23 @@ export default function WatchAnime() {
             <div>Server:</div>
 
             {episodeStream?.iframe_urls && Object.keys(episodeStream?.iframe_urls).map((k) => (
-              <button
-                className={`
-                  px-2 py-0.5 hover:bg-gray-700 rounded-full text-sm
-                  ${episodeStream.iframe_url === episodeStream?.iframe_urls[k] ? "bg-blue-800" : "bg-gray-800"}
-                `}
+              <Button
                 onClick={(e)=>{setEpisodeStream({...episodeStream, iframe_url: episodeStream?.iframe_urls[k]})}}
-              >{k}</button>
+                variant={`${episodeStream.iframe_url === episodeStream?.iframe_urls[k] ? "default" : "outline"}`}
+              >{k}</Button>
             ))}
 
             {episodeStream?.stream_options && episodeStream?.stream_options.length > 0 && episodeStream?.stream_options.map((stream_opt) => (
-              <button
-                className={`
-                  px-2 py-0.5 hover:bg-gray-700 rounded-full text-sm
-                  ${(episodeStream.resolution === stream_opt.resolution && episodeStream.stream_idx === stream_opt.index) || stream_opt.used ? "bg-blue-800" : "bg-gray-800"}`}
-                onClick={()=>{changeServer(stream_opt.index, stream_opt.name, "360p")}}
+              <Button
+                // className={`
+                //   px-2 py-0.5 hover:bg-gray-700 rounded-full text-sm
+                //   ${(episodeStream.resolution === stream_opt.resolution && episodeStream.stream_idx === stream_opt.index) || stream_opt.used ? "bg-blue-800" : "bg-gray-800"}`}
+                onClick={()=>{changeServer(stream_opt.index, stream_opt.name, stream_opt.resolution)}}
+                size="xs"
+                variant={`${(episodeStream.resolution === stream_opt.resolution && episodeStream.stream_idx === stream_opt.index) || stream_opt.used ? "default" : "outline"}`}
               >
                 {stream_opt.resolution} {stream_opt.name}
-              </button>
+              </Button>
             ))}
           </div>
           <div className='grid grid-cols-1 xl:grid-cols-2'>

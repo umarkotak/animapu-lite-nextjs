@@ -128,7 +128,7 @@ export default function MangaDetail(props) {
   }
 
   return (
-    <div className={`${darkMode ? "dark bg-stone-900" : "bg-[#d6e0ef]"} min-h-screen pb-60`}>
+    <div className='flex flex-col gap-4'>
       <Head>
         <meta itemProp="description" content={`${manga.title}`} />
         <meta itemProp="image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
@@ -140,20 +140,10 @@ export default function MangaDetail(props) {
         <meta name="twitter:image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
       </Head>
 
-      <div className={`h-[200px] z-0 ${manga.title ? "" : "animate-pulse"}`} style={{
-        backgroundImage: `url(${manga?.cover_image[0]?.image_urls[0] || "#"})`,
-        backgroundColor: "#d6e0ef",
-        backgroundPosition: "50% 35%",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        marginTop: "-60px"
-      }}>
-        <div className="backdrop-blur-md h-full"></div>
-      </div>
       <div className="bg-[#fafafa]">
         <div className="container mx-auto py-4 px-[50px] max-w-[768px]">
           <div className="backdrop-blur-sm grid grid-cols-1 sm:grid-cols-3">
-            <div className="h-full z-5 p-2 mt-[-125px]">
+            <div className="h-full z-5 p-2">
               <img
                 className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`}
                 src={manga?.cover_image[0]?.image_urls[0] || "#"}
@@ -231,8 +221,6 @@ export default function MangaDetail(props) {
           </div>
         </div>
       </div>
-
-      <BottomMenuBar />
     </div>
   )
 }
