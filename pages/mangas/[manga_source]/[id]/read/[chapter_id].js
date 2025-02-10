@@ -14,6 +14,7 @@ import { ChevronDownIcon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import AdsCard from '@/components/AdsCard'
+import { LoadingSpinner } from '@/components/ui/icon'
 
 var tempChapters = []
 var onApiCall = false
@@ -280,14 +281,13 @@ export default function ReadManga(props) {
                         onError={()=>{}}
                         decode={false}
                         loader={
-                          <Skeleton className="my-2 h-6 w-6 rounded-full" />
+                          <LoadingSpinner />
                         }
                       />
                       : failedImageUrls[imageObj.image_urls.join(";")]
                       ? null
                       : <div>
-                        IMAGE: {imageObj.image_urls.join(";")}
-                        <Skeleton className="my-2 h-6 w-6 rounded-full" />
+                        <LoadingSpinner />
                       </div>
                     }
                   </>
