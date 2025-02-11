@@ -73,9 +73,6 @@ export default function History() {
               <h1 className='text-xl'>Library</h1>
             </div>
             <div>
-              <Link href="/library_legacy">
-                <Button>Old Library</Button>
-              </Link>
             </div>
           </CardTitle>
         </CardHeader>

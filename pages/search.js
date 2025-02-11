@@ -108,9 +108,14 @@ export default function Home() {
               <h1 className='text-xl'>Search</h1>
             </div>
             <div>
-              <Link href="/search_legacy">
-                <Button>Old Search</Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="global-search"
+                  checked={searchMode==="global"}
+                  onClick={()=>{searchMode==="global" ? setSearchMode("single") : setSearchMode("global")}}
+                />
+                <Label htmlFor="global-search">Global Search</Label>
+              </div>
             </div>
           </CardTitle>
         </CardHeader>
@@ -123,14 +128,6 @@ export default function Home() {
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => handleKeyDown(e)}
             />
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="global-search"
-                checked={searchMode==="global"}
-                onClick={()=>{searchMode==="global" ? setSearchMode("single") : setSearchMode("global")}}
-              />
-              <Label htmlFor="global-search">Global Search</Label>
-            </div>
             <Button onClick={()=>SearchManga()}>
               <Search />
               Search
