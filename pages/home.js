@@ -9,6 +9,7 @@ import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Megaphone } from "lucide-react"
+import { useSwipeable } from "react-swipeable"
 
 const CarouselData = [
   {image_url: "/images/animehub_cover_2.png", target_url: "/anime/latest", text: "watch anime"},
@@ -79,7 +80,7 @@ export default function Home() {
         <CardContent className="p-4">
           <div className="flex flex-row gap-4 overflow-auto">
             {mangaHistories.map((manga) => (
-              <div className="flex-none">
+              <div className="flex-none" key={"continue-"+manga.source+manga.source_id}>
                 <MangaCardBarHistory manga={manga} key={`${manga.source}-${manga.source_id}`} />
               </div>
             ))}

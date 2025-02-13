@@ -50,7 +50,7 @@ export default function AffiliateLink() {
         <CardContent className="p-4">
           <div className="flex flex-col gap-6">
             {usersMangaActivity.map((oneUsersMangaActivity) => (
-              <Card className="border-none">
+              <Card className="border-none" key={oneUsersMangaActivity.visitor_id}>
                 <CardHeader className="py-4 px-0">
                   <CardTitle>{oneUsersMangaActivity.email !== "" ? oneUsersMangaActivity.email : "Guest"}</CardTitle>
                   <CardDescription className="break-all">visitor id: {oneUsersMangaActivity.visitor_id}</CardDescription>
@@ -58,7 +58,7 @@ export default function AffiliateLink() {
                 <CardContent className="p-0">
                   <div className="flex flex-row gap-4 overflow-auto">
                     {oneUsersMangaActivity.manga_histories.map((manga) => (
-                      <div className="flex-none">
+                      <div className="flex-none" key={oneUsersMangaActivity.visitor_id+manga.source+manga.source_id}>
                         <MangaCardBarHistory manga={manga} key={`${manga.source}-${manga.source_id}`} show_last_access={true} />
                       </div>
                     ))}
