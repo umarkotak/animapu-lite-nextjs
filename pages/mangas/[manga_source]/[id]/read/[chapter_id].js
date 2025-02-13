@@ -10,11 +10,13 @@ import { toast } from 'react-toastify'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ChevronDownIcon, XIcon } from 'lucide-react'
+import { Bookmark, ChevronDownIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import AdsCard from '@/components/AdsCard'
 import { LoadingSpinner } from '@/components/ui/icon'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
 
 var tempChapters = []
 var onApiCall = false
@@ -31,6 +33,7 @@ export default function ReadManga(props) {
   const [showChaptersModal, setShowChaptersModal] = useState(false)
   const [loadedImageUrls, setLoadedImageUrls] = useState({})
   const [failedImageUrls, setFailedImageUrls] = useState({})
+  const [chapterFilter, setChapterFilter] = useState("")
 
   useEffect(() => {
     tempChapters = []
@@ -206,24 +209,30 @@ export default function ReadManga(props) {
       </Head>
 
       <div className="flex flex-col gap-4">
-        <Card className="border-none">
-          <CardHeader className="p-0 pb-2">
-            <CardTitle className='text-2xl tracking-wide'>[{manga.source}] {manga.title}</CardTitle>
+        <Card className="border-none bg-primary">
+          <CardHeader>
+            <CardTitle className='text-3xl tracking-wide'>{manga.title}</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 flex justify-start gap-2">
-            <Button size="sm" onClick={()=>HandleBookmark()}>bookmark</Button>
-            <Button size="sm" onClick={()=>ShareUrlText()}>share</Button>
+          <CardContent>
+            source: {manga.source}
           </CardContent>
         </Card>
 
         <Drawer open={showChaptersModal} onOpenChange={setShowChaptersModal}>
           <DrawerContent>
-            <div className='overflow-auto max-h-[450px] mx-auto w-full max-w-md'>
+            <div className='overflow-auto h-[450px] mx-auto w-full max-w-md'>
               <DrawerHeader className="text-left">
                 <DrawerTitle>Select Chapters</DrawerTitle>
               </DrawerHeader>
+              <div className='p-4'>
+                <Input
+                  placeholder="search chapter"
+                  value={chapterFilter}
+                  onChange={(e) => {setChapterFilter(e.target.value)}}
+                />
+              </div>
               <div className='flex flex-col gap-2 p-4'>
-                {manga.chapters.map((mangaChapter) => (
+                {manga.chapters.filter((mangaChapter) => mangaChapter.title.includes(chapterFilter)).map((mangaChapter) => (
                   <Link
                     href={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
                     onClick={()=>{setShowChaptersModal(false)}}
@@ -258,12 +267,40 @@ export default function ReadManga(props) {
                     <ChevronDownIcon size={14} />
                   </Button>
                   <div className='flex items-center gap-1'>
-                    <a href={oneChapter.source_link}>
-                      <Button size="sm" variant="outline">read on source</Button>
-                    </a>
                     <Button size="sm" variant="outline">
                       Chapter - {oneChapter.number}
                     </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm" variant="outline"><Settings2 /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Menu</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          {oneChapter.source_link !== ""
+                            ? <a href={oneChapter.source_link !== "" ? oneChapter.source_link : "#"}>
+                              <DropdownMenuItem>
+                                read on original source
+                                <DropdownMenuShortcut><LinkIcon size={12} /></DropdownMenuShortcut>
+                              </DropdownMenuItem>
+                            </a>
+                            : <DropdownMenuItem onClick={() => {toast.error("link unavailable") }}>
+                              read on original source
+                              <DropdownMenuShortcut><LinkIcon size={12} /></DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                          }
+                          <DropdownMenuItem onClick={() => {ShareUrlText()}}>
+                            share
+                            <DropdownMenuShortcut><Share2Icon size={12} /></DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {HandleBookmark()}}>
+                            bookmark
+                            <DropdownMenuShortcut><Bookmark size={12} /></DropdownMenuShortcut>
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </CardContent>
               </Card>

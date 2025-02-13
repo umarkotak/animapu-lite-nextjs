@@ -51,7 +51,7 @@ export default function Home() {
         >
           <CarouselContent>
             {CarouselData.map((oneCarouselData, idx) => (
-              <CarouselItem key={idx}>
+              <CarouselItem key={"carousel"+idx+oneCarouselData.target_url}>
                 <a href={oneCarouselData.target_url}>
                   <CardContent className="p-0 relative">
                     <img src={oneCarouselData.image_url} className="h-[100px] md:h-[180px] w-full object-cover rounded-xl" />
@@ -98,8 +98,6 @@ export default function Home() {
           fitur nonton anime sudah dapat digunakan kembali!
         </CardContent>
       </Card>
-
-
 
       <Latest content_only={true} />
     </>
