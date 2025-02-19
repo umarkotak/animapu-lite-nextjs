@@ -37,6 +37,19 @@ class AnimapuApi {
     return response
   }
 
+  async DownloadMangaChapterPdf(params) {
+    var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}/download_pdf`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  DownloadMangaChapterPdfUri(params) {
+    return `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}/manga_chapter.pdf`
+  }
+
   async SearchManga(params) {
     var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/search?title=${params.title}`
     const response = await fetch(uri, {

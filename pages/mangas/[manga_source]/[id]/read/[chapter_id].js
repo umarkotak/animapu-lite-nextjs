@@ -4,13 +4,15 @@ import { useRouter } from "next/router"
 import { Img } from 'react-image'
 import Link from 'next/link'
 import * as Cronitor from "@cronitorio/cronitor-rum";
+import { jsPDF } from "jspdf";
+import { saveAs } from 'file-saver';
 
 import animapuApi from "../../../../../apis/AnimapuApi"
 import { toast } from 'react-toastify'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Bookmark, ChevronDownIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
+import { Bookmark, ChevronDownIcon, DownloadIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import AdsCard from '@/components/AdsCard'
@@ -191,6 +193,40 @@ export default function ReadManga(props) {
     toast.info("Link berhasil dicopy!")
   }
 
+  async function HandleDownloadChapter(oneChapter) {
+    DownloadMangaChapterPdf(oneChapter)
+  }
+
+  async function DownloadMangaChapterPdf(oneChapter) {
+    try {
+      const response = await animapuApi.DownloadMangaChapterPdf({
+        manga_source: oneChapter.source,
+        manga_id: oneChapter.source_id,
+        chapter_id: oneChapter.id,
+      })
+      if (response.status == 200) {
+        toast.success(`download chapter ${oneChapter.number} success`)
+        return
+      }
+
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  function DownloadMangaChapterPdfUri(oneChapter) {
+    var pdfUrl = animapuApi.DownloadMangaChapterPdfUri({
+      manga_source: oneChapter.source,
+      manga_id: oneChapter.source_id,
+      chapter_id: oneChapter.id,
+    })
+
+    // saveAs(pdfUrl, `${manga.title} - chapter ${oneChapter.number}`);
+
+    // toast.info("downloading manga")
+    return pdfUrl
+  }
+
   return (
     <>
       <Head>
@@ -263,13 +299,10 @@ export default function ReadManga(props) {
               <Card className="sticky top-12 border-none rounded-none">
                 <CardContent className="p-0 flex justify-between gap-1">
                   <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>
-                    Select Chapter
+                    Chapter - {oneChapter.number}
                     <ChevronDownIcon size={14} />
                   </Button>
                   <div className='flex items-center gap-1'>
-                    <Button size="sm" variant="outline">
-                      Chapter - {oneChapter.number}
-                    </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="sm" variant="outline"><Settings2 /></Button>
@@ -298,6 +331,17 @@ export default function ReadManga(props) {
                             bookmark
                             <DropdownMenuShortcut><Bookmark size={12} /></DropdownMenuShortcut>
                           </DropdownMenuItem>
+                          {/* <DropdownMenuItem onClick={() => {DownloadMangaChapterPdfUri(oneChapter)}}>
+                            download as pdf (beta)
+                            <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
+                          </DropdownMenuItem> */}
+                          <a
+                            href={DownloadMangaChapterPdfUri(oneChapter)}
+                            onClick={()=>{toast.info("we are preparing your file, just wait...")}}
+                          ><DropdownMenuItem>
+                            download as pdf
+                            <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
+                          </DropdownMenuItem></a>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -307,27 +351,26 @@ export default function ReadManga(props) {
 
               <div className='flex flex-col items-center gap-1 w-full max-w-[800px]'>
                 {oneChapter.chapter_images.map((imageObj, idx) => (
-                  <>
-                    {
-                      loadedImageUrls[imageObj.image_urls.join(";")]
-                      ? <Img
-                        loading='lazy'
-                        className="w-full"
-                        src={imageObj.image_urls}
-                        // onLoad={()=>{setSuccessRender(1)}}
-                        onError={()=>{}}
-                        decode={false}
-                        loader={
-                          <LoadingSpinner />
-                        }
-                      />
-                      : failedImageUrls[imageObj.image_urls.join(";")]
-                      ? null
-                      : <div>
-                        <LoadingSpinner />
-                      </div>
+                  loadedImageUrls[imageObj.image_urls.join(";")]
+                  ? <Img
+                    key={`rendered-image-${oneChapter.id}-${idx}`}
+                    loading='lazy'
+                    className="w-full"
+                    src={imageObj.image_urls}
+                    // onLoad={()=>{setSuccessRender(1)}}
+                    onError={()=>{}}
+                    decode={false}
+                    loader={
+                      <LoadingSpinner />
                     }
-                  </>
+                  />
+                  : failedImageUrls[imageObj.image_urls.join(";")]
+                  ? null
+                  : <div
+                    key={`loading-image-${oneChapter.id}-${idx}`}
+                  >
+                    <LoadingSpinner />
+                  </div>
                 ))}
               </div>
               <div id={`${oneChapter.id}-bottom`} className='h-[150px] bg-gradient-to-b from-primary to-transparent mb-40'></div>
@@ -361,4 +404,87 @@ export async function getServerSideProps(context) {
   }
 
   return { props: { manga: manga } }
+}
+
+async function imagesToPdf(imageUrls, pdfFileName = 'images.pdf') {
+  if (!Array.isArray(imageUrls) || imageUrls.length === 0) {
+    console.error('Invalid image URLs array.');
+    return;
+  }
+
+  try {
+    const pdf = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: 'a4',
+      putOnlyUsedFonts: true
+     });
+
+    let y = 0;
+    const margin = 10; // Margin in PDF units (default is points)
+
+    for (let j = 0; j < imageUrls.length; j++) {
+      var imageUrl = imageUrls[j]
+
+      try {
+        const img = new Image();
+        img.setAttribute('crossorigin', 'anonymous')
+        // img.crossOrigin = "anonymous"
+
+        await new Promise((resolve, reject) => {
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.drawImage(img, 0, 0);
+
+            const dataUrl = canvas.toDataURL('image/png');
+
+            console.warn("DATA", new Date, dataUrl)
+            resolve()
+          };
+
+          img.onerror = () => {
+            resolve()
+          };
+
+          img.src = imageUrl;
+        });
+
+      } catch (error) {
+        console.warn(`Failed to load image: ${imageUrl}. Skipping.`, error);
+      }
+    }
+
+    // pdf.save(pdfFileName);
+    console.log(`PDF saved as ${pdfFileName}`);
+
+  } catch (error) {
+    console.error('Error creating PDF:', error);
+  }
+}
+
+async function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load image from ${url}`));
+    img.crossOrigin = "anonymous"; //Crucial for cross-origin images.
+    img.src = url;
+  });
+}
+
+function convertImageToBase64(url, callback) {
+  const img = new Image();
+  // img.crossOrigin = "Anonymous"; // This is required if the image is from a different origin
+  img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.height = img.naturalHeight;
+      canvas.width = img.naturalWidth;
+      ctx.drawImage(img, 0, 0);
+      const dataUrl = canvas.toDataURL('image/png');
+      callback(dataUrl);
+  };
+  img.src = url;
 }

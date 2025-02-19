@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/router"
-import { BookIcon, BookmarkIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
+import { BookIcon, BookmarkIcon, DownloadIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Link from 'next/link'
 
 import animapuApi from "../apis/AnimapuApi"
 import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
+import { Button } from "./ui/button"
+import { Badge } from "./ui/badge"
 
 export default function MangaCardV2(props) {
   const [showModal, setShowModal] = useState(false)
@@ -233,7 +235,7 @@ export function MangaCardModal(props) {
         <div className='z-10'>
           <div className="fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm" onClick={()=>setShow(!show)}></div>
           <div className="fixed mx-auto inset-x-0 top-[40px] p-4 w-full max-w-md z-20">
-            <div className="relative bg-white rounded-xl shadow dark:bg-gray-700 z-10 overflow-hidden">
+            <div className="relative bg-white rounded-xl shadow dark:bg-gray-700 z-10 overflow-hidden border border-primary">
               <div className={`h-[100px] z-0 ${manga.title ? "" : "animate-pulse"} rounded-xl`} style={{
                 backgroundImage: `url(${(manga?.cover_image && manga?.cover_image[0]?.image_urls[0]) || "/images/default-book.png"})`,
                 backgroundColor: "#d6e0ef",
@@ -243,22 +245,23 @@ export function MangaCardModal(props) {
               }}>
                 <div className="backdrop-blur-md h-full"></div>
               </div>
-              <button
-                type="button"
-                className="absolute z-10 top-3 right-2.5 bg-[#ec294b] hover:bg-[#B11F38] text-white rounded-full text-xs py-1.5 px-2 inline-flex"
-                onClick={()=>setShow(!show)}
-              >
-                <XIcon size={14} />
-              </button>
-              <button
-                className="absolute z-10 top-3 right-[46px] text-xs text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full flex items-center gap-1"
-                onClick={(e)=>{
-                  navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
-                  toast.info("Link berhasil dicopy!")
-                }}
-              ><Share2Icon size={14} /> Share</button>
+              <div className="absolute z-10 top-3 right-2.5 flex flex-row gap-2 items-center">
+                <Button
+                  size="sm"
+                  onClick={(e)=>{
+                    navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                    toast.info("Link berhasil dicopy!")
+                  }}
+                ><Share2Icon size={14} /> Share</Button>
+                <Button
+                  size="sm"
+                  onClick={()=>setShow(!show)}
+                >
+                  <XIcon size={14} />
+                </Button>
+              </div>
 
-              <div className="bg-[#fafafa]">
+              <div className="bg-accent">
                 <div className="container mx-auto py-4 px-[20px] max-w-[768px]">
                   <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
                     <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
@@ -307,15 +310,15 @@ export function MangaCardModal(props) {
                     </div>
                     <div className="col-span-3 p-2">
                       <div className='max-h-[100px] overflow-auto mt-[-10px]'>
-                        <span className='px-2 text-xs bg-gray-500 mb-1 text-white rounded-full'>{manga.source}</span>
-                        <h1 className="text-[#5c728a] text-md">
+                        <Badge>{manga.source}</Badge>
+                        <h1 className="text-md">
                           { manga.title ? manga.title : <div className="h-3 bg-gray-600 rounded animate-pulse w-1/2"></div> }
                         </h1>
                       </div>
                       <hr/>
                       {
                         manga.description ?
-                        <p className="text-xs text-[#7a858f] text-justify max-h-32 overflow-hidden overflow-y-scroll  mt-1">
+                        <p className="text-xs text-justify max-h-32 overflow-hidden overflow-y-scroll  mt-1">
                           {manga.description}
                         </p>
                         :
@@ -326,17 +329,28 @@ export function MangaCardModal(props) {
                 </div>
               </div>
               <div>
-                <div className="container mx-auto py-4 px-[20px] max-w-[768px] bg-gray-700 rounded-b-xl">
+                <div className="container mx-auto py-4 px-[20px] max-w-[768px] bg-background rounded-b-xl">
                   <div className="grid grid-cols-1">
-                    <div className="p-2 max-h-48 overflow-hidden overflow-y-scroll">
+                    <div className="p-2 flex flex-col gap-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
-                        <div className="" key={chapter.title}>
-                          <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}
-                            className="bg-white hover:bg-gray-300 rounded-full mb-2 py-1 px-2 text-[#5c728a] text-center block w-full"
+                        <div className="flex flex-row items-center gap-2" key={chapter.title}>
+                          <div className="w-full">
+                            <Link
+                              href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}`}
+                            >
+                              <Button size="sm" className="w-full">{chapter.title}</Button>
+                            </Link>
+                          </div>
+                          <a
+                            href={animapuApi.DownloadMangaChapterPdfUri({
+                              manga_source: manga.source,
+                              manga_id: manga.source_id,
+                              chapter_id: chapter.id,
+                            })}
+                            onClick={()=>{toast.info("we are preparing your file, just wait...")}}
                           >
-                            {chapter.title}
-                          </Link>
+                            <Button size="sm" className="w-full"><DownloadIcon />download</Button>
+                          </a>
                         </div>
                       ))}
                     </div>
