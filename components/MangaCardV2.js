@@ -334,13 +334,6 @@ export function MangaCardModal(props) {
                     <div className="p-2 flex flex-col gap-2 max-h-48 overflow-hidden overflow-y-scroll">
                       {manga.chapters.map((chapter, idx) => (
                         <div className="flex flex-row items-center gap-2" key={chapter.title}>
-                          <div className="w-full">
-                            <Link
-                              href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}`}
-                            >
-                              <Button size="sm" className="w-full">{chapter.title}</Button>
-                            </Link>
-                          </div>
                           <a
                             href={animapuApi.DownloadMangaChapterPdfUri({
                               manga_source: manga.source,
@@ -349,8 +342,15 @@ export function MangaCardModal(props) {
                             })}
                             onClick={()=>{toast.info("we are preparing your file, just wait...")}}
                           >
-                            <Button size="sm" className="w-full"><DownloadIcon />download</Button>
+                            <Button size="sm" className="w-full"><DownloadIcon /></Button>
                           </a>
+                          <div className="w-full">
+                            <Link
+                              href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}`}
+                            >
+                              <Button size="sm" className="w-full">{chapter.title}</Button>
+                            </Link>
+                          </div>
                         </div>
                       ))}
                     </div>
