@@ -155,23 +155,33 @@ function SidebarMain({ children }) {
     toggleSidebar,
   } = useSidebar()
   const [breadcrumb, setBreadcrumb] = React.useState("")
+  const [containerClass, setContainerClass] = React.useState("p-2 w-full")
 
   React.useEffect(() => {
     var tempBreadcrumb = pathName
+    setContainerClass("p-2 w-full")
 
-    if (tempBreadcrumb) { 
+    if (tempBreadcrumb) {
       setBreadcrumb(tempBreadcrumb.split("/")[1])
     }
 
     if (pathName && pathName.includes("/watch/")) {
       setOpen(false)
+
+      if (isMobile) {
+        setContainerClass("p-0 w-full")
+      }
+
       return
     }
 
     setOpen(true)
   }, [pathName])
 
-  var swipeConfig = {}
+  var swipeConfig = {
+    delta: { right: 20 },
+    swipeDuration: 250,
+  }
   const handlers = useSwipeable({
     // onSwiped: (eventData) => console.log("User Swiped!", eventData),
     onSwipedRight: () => {
@@ -205,7 +215,7 @@ function SidebarMain({ children }) {
       </header>
 
       <div
-        className="p-2 w-full"
+        className={containerClass}
         {...handlers}
       >
         <div className={`mx-auto w-full ${pathName && pathName.includes("/watch/") ? "" : "max-w-[768px]"}`}>
