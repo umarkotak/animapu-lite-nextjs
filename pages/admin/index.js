@@ -20,6 +20,7 @@ export default function AdminIndex() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <Link href="/admin/affiliate_link"><Button className="w-full">Affiliate Link Management</Button></Link>
             <Link href="/admin/user_activity"><Button className="w-full">User Activity</Button></Link>
+            <Link href="/admin/voice_recorder"><Button className="w-full">Voice Recorder</Button></Link>
           </div>
         </CardContent>
       </Card>

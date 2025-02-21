@@ -19,7 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 
-export default function AffiliateLink() {
+export default function UserActivity() {
   const [usersMangaActivity, setUsersMangaActivity] = useState([])
   const [tokopediaAffiliateLinkParams, setTokopediaAffiliateLinkParams] = useState({})
 
