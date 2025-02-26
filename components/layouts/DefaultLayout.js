@@ -165,7 +165,7 @@ function SidebarMain({ children }) {
       setBreadcrumb(tempBreadcrumb.split("/")[1])
     }
 
-    if (pathName && pathName.includes("/watch/")) {
+    if (pathName && (pathName.includes("/watch/") || pathName.includes("/read/"))) {
       setOpen(false)
 
       if (isMobile) {
@@ -176,7 +176,7 @@ function SidebarMain({ children }) {
     }
 
     setOpen(true)
-  }, [pathName])
+  }, [pathName, isMobile])
 
   var swipeConfig = {
     delta: { right: 20 },
@@ -199,7 +199,7 @@ function SidebarMain({ children }) {
           <SidebarTrigger className="-ml-1" />
           <Breadcrumb>
             <BreadcrumbList><BreadcrumbItem>
-              <BreadcrumbLink href="#">{breadcrumb}</BreadcrumbLink>
+              <BreadcrumbLink href="/home">{breadcrumb}</BreadcrumbLink>
             </BreadcrumbItem></BreadcrumbList>
           </Breadcrumb>
         </div>

@@ -15,6 +15,9 @@ import animapuApi from '@/apis/AnimapuApi'
 import * as Cronitor from "@cronitorio/cronitor-rum"
 import Utils from '@/models/Utils'
 import { Button } from '@/components/ui/button'
+import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import { ChevronDownIcon } from 'lucide-react'
+import { Input } from '@/components/ui/input'
 
 var mobileModeLimit = 470
 var smallWebLimit = 1015
@@ -41,6 +44,7 @@ export default function WatchAnime() {
   const [streamState, setStreamState] = useState("")
   const [showPlayer, setShowPlayer] = useState(false)
   const [loadingStream, setLoadingStream] = useState(false)
+  const [showServersModal, setShowServersModal] = useState(false)
 
   // WINDOW SIZE
   const [mobileMode, setMobileMode] = useState(true)
@@ -93,11 +97,35 @@ export default function WatchAnime() {
 
   useEffect(() => {
     if (window) { window.scrollTo(0, 0) }
+
     if (!params) { return }
+
     GetAnimeDetail(params.anime_id)
+
     GetEpisodeStream()
+
     setShowPlayer(true)
-  }, [searchParams])
+
+    episodes && episodes.length > 0 && episodes.map((ep, idx) => {
+      if (`${ep.id}` === `${params.episode_id}`) {
+        setEpisode(ep)
+
+        var trackData = `W_${removeSpecialCharacters(`${anime.title}`.substring(0,20))}_${removeSpecialCharacters(ep.number)}`
+        console.log("TRACKING", trackData)
+        Cronitor.track(trackData)
+      }
+
+      if (params.episode_id === ep.id) {
+        if (episodes[idx-1]) {
+          setPreviousLink(`/anime/${anime.source}/detail/${anime.id}/watch/${episodes[idx-1].id}`)
+        } else { setPreviousLink(`#`) }
+        if (episodes[idx+1]) {
+          setNextLink(`/anime/${anime.source}/detail/${anime.id}/watch/${episodes[idx+1].id}`)
+        } else { setNextLink(`#`) }
+      }
+    })
+
+  }, [searchParams, params])
 
   var calling = false
   async function GetAnimeDetail(id) {
@@ -136,16 +164,16 @@ export default function WatchAnime() {
       tmpAnime.episodes.forEach((oneEpisode, idx) => {
         if (params.episode_id === oneEpisode.id) {
           if (tmpAnime.episodes[idx-1]) {
-            setPreviousLink(`/animes/${params.anime_source}/detail/${tmpAnime.id}/watch/${tmpAnime.episodes[idx-1].id}`)
+            setPreviousLink(`/anime/${params.anime_source}/detail/${tmpAnime.id}/watch/${tmpAnime.episodes[idx-1].id}`)
           } else { setPreviousLink(`#`) }
           if (tmpAnime.episodes[idx+1]) {
-            setNextLink(`/animes/${params.anime_source}/detail/${tmpAnime.id}/watch/${tmpAnime.episodes[idx+1].id}`)
+            setNextLink(`/anime/${params.anime_source}/detail/${tmpAnime.id}/watch/${tmpAnime.episodes[idx+1].id}`)
           } else { setNextLink(`#`) }
         }
       })
 
     } catch (e) {
-      alert(e.message)
+      alert(`GetAnimeDetail ${e.message}`)
     }
 
     calling = false
@@ -167,7 +195,7 @@ export default function WatchAnime() {
       setEpisodes(body.data.episodes)
 
     } catch (e) {
-      alert(e.message)
+      alert(`GetOnlyAnimeDetail ${e.message}`)
     }
   }
 
@@ -191,7 +219,7 @@ export default function WatchAnime() {
       setEpisodeStream(body.data)
 
     } catch (e) {
-      alert(e.message)
+      alert(`GetEpisodeStream ${e.message}`)
     }
     setLoadingStream(false)
   }
@@ -209,53 +237,6 @@ export default function WatchAnime() {
   function changeEpisodeByAnimeID(animeID) {
     GetOnlyAnimeDetail(animeID)
   }
-
-  // HISTORY
-  // useEffect(() => {
-  //   if (!localStorage) { return }
-  //   if (!episode.id || episode.id === "" || episode.id === "undefined") { return }
-  //   if (!anime.id || anime.id === "") { return }
-
-  //   var keyHistoryList = "ANIMEHUB-LITE:HISTORY_LIST:V2"
-
-  //   if (!localStorage.getItem(keyHistoryList)) {
-  //     localStorage.setItem(keyHistoryList, JSON.stringify([]))
-  //   }
-
-  //   var historyList = JSON.parse(localStorage.getItem(keyHistoryList))
-
-  //   var tmpEpisode = {...episode}
-  //   tmpEpisode.title = anime.title
-  //   tmpEpisode.cover_url = anime.cover_urls[0]
-  //   tmpEpisode.cover_urls = anime.cover_urls
-  //   tmpEpisode.pathname = window.location.pathname
-  //   tmpEpisode.last_read_at = Utils.GetTodayDate()
-  //   tmpEpisode.log_anime_id = anime.id
-
-  //   if (historyList.length === 0) {
-  //     historyList.unshift(tmpEpisode)
-  //   } else if (historyList[0].id !== episode.id) {
-  //     historyList.unshift(tmpEpisode)
-  //   } else {
-  //     // Do nothing
-  //   }
-
-  //   localStorage.setItem(keyHistoryList, JSON.stringify(historyList.slice(0, 100)))
-
-  //   var keyHistoryDetailEp = `ANIMEHUB-LITE:HISTORY_DETAIL:EP:V2:${anime.id}:${tmpEpisode.id}`
-  //   localStorage.setItem(keyHistoryDetailEp, JSON.stringify(tmpEpisode))
-
-  //   var keyHistoryDetailAnime = `ANIMEHUB-LITE:HISTORY_DETAIL:ANIME:V2:${anime.id}`
-  //   localStorage.setItem(keyHistoryDetailAnime, JSON.stringify({
-  //     title: anime.title,
-  //     cover_url: anime.cover_urls[0],
-  //     pathname: window.location.pathname,
-  //     episode_number: tmpEpisode.number,
-  //     last_read_at: Utils.GetTodayDate(),
-  //     log_anime_id: anime.id,
-  //   }))
-
-  // }, [episode])
 
   const onChangeBitrate = (event) => {
     try {
@@ -331,13 +312,48 @@ export default function WatchAnime() {
         </div>
       </div> : null}
 
+      <Drawer open={showServersModal} onOpenChange={setShowServersModal}>
+        <DrawerContent>
+          <div className='overflow-auto h-[450px] mx-auto w-full max-w-md'>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Select Servers</DrawerTitle>
+            </DrawerHeader>
+            <div className='flex flex-col gap-2 p-4'>
+              {episodeStream?.stream_options && episodeStream?.stream_options.length > 0 && episodeStream?.stream_options.map((stream_opt) => (
+                <Button
+                  onClick={()=>{changeServer(stream_opt.index, stream_opt.name, stream_opt.resolution)}}
+                  size="sm"
+                  variant={`${(episodeStream.resolution === stream_opt.resolution && episodeStream.stream_idx === stream_opt.index) || stream_opt.used ? "default" : "outline"}`}
+                >
+                  {stream_opt.resolution} {stream_opt.name}
+                </Button>
+              ))}
+              {episodeStream?.iframe_urls && Object.keys(episodeStream?.iframe_urls).map((k) => (
+                <Button
+                  onClick={(e)=>{setEpisodeStream({...episodeStream, iframe_url: episodeStream?.iframe_urls[k]})}}
+                  size="sm"
+                  variant={`${episodeStream.iframe_url === episodeStream?.iframe_urls[k] ? "default" : "outline"}`}
+                >
+                  {k}
+                </Button>
+              ))}
+            </div>
+            <DrawerFooter className="pt-2">
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
       <div className={pageModeClass(mobileMode, smallWebMode)}>
         {/* Main content */}
         <div className='w-full mr-4 mb-4'>
           {/* VIDEO PLAYER */}
           <div ref={videoPlayerDivRef} id="video-content" className={videoContainerClass(mobileMode, smallWebMode)}>
             <div className='relative shadow-2xl shadow-gray-900'>
-              <div className={`w-full h-full bg-black rounded-xl ${mobileMode ? "" : "overflow-hidden"}`}>
+              <div className={`w-full h-full bg-black ${mobileMode ? "" : "overflow-hidden"}`}>
                 {showPlayer ? <>
                   <div style={{height: videoPlayerHeight}} className={`${(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") ? "block" : "hidden"}`}>
                     <ReactPlayer
@@ -350,7 +366,7 @@ export default function WatchAnime() {
                       onReady={()=>onReactPlayerReady()}
                     />
                   </div>
-                  <div style={{height: videoPlayerHeight}} className={`rounded-xl overflow-hidden ${(episodeStream.stream_type === "iframe") ? "block" : "hidden"}`}>
+                  <div style={{height: videoPlayerHeight}} className={`overflow-hidden ${(episodeStream.stream_type === "iframe") ? "block" : "hidden"}`}>
                     {/* <div>Iframe URL: {episodeStream.stream_type} | {episodeStream.iframe_url}</div> */}
                     <iframe
                       className='h-full w-full'
@@ -372,9 +388,9 @@ export default function WatchAnime() {
             </div>
           </div>
           <div className={`flex justify-between mt-4 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
-            <div className='flex justify-start gap-1'>
+            <div className='flex justify-start gap-2'>
               <Link href={episodeStream.original_url ? `${episodeStream.original_url}` : `${anime.original_link}`}>
-                <Button size="sm">Go to source</Button>
+                <Button size="xs">Watch on source</Button>
               </Link>
               {/* <button
                 className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center ml-2'
@@ -382,20 +398,19 @@ export default function WatchAnime() {
               >
                 Full Screen
               </button> */}
+              <Button size="xs" onClick={()=>setShowServersModal(!showServersModal)}>
+                Select server
+                <ChevronDownIcon size={14} />
+              </Button>
             </div>
-            <div className='flex justify-end gap-1'>
-              <Link href={previousLink}><Button size="sm">Prev</Button></Link>
-              <Link href={nextLink}><Button size="sm">Next</Button></Link>
+            <div className='flex justify-end gap-2'>
+              <Link href={previousLink}><Button size="xs">Prev</Button></Link>
+              <Link href={nextLink}><Button size="xs">Next</Button></Link>
             </div>
           </div>
           <div className={`flex justify-between mt-2 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
             <div>
               <div className={`flex items-center ${episodeStream.stream_type === "hls" ? "block" : "hidden"}`}>
-                {/* <button
-                  className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center'
-                >
-                  <i className="fa-solid fa-bookmark"></i> Bookmark
-                </button> */}
                 <span className='mr-2'>Res:</span>
                 <select onChange={onChangeBitrate} className='text-black p-1 border rounded-xl'>
                   {hlsLevels.map(
@@ -429,93 +444,13 @@ export default function WatchAnime() {
               </div>
             </div>
           </div>
-          <div className={`flex flex-wrap w-full gap-2 ${mobileMode ? "px-2" : ""}`}>
-            <div>Server:</div>
-
-            {episodeStream?.iframe_urls && Object.keys(episodeStream?.iframe_urls).map((k) => (
-              <Button
-                onClick={(e)=>{setEpisodeStream({...episodeStream, iframe_url: episodeStream?.iframe_urls[k]})}}
-                variant={`${episodeStream.iframe_url === episodeStream?.iframe_urls[k] ? "default" : "outline"}`}
-              >{k}</Button>
-            ))}
-
-            {episodeStream?.stream_options && episodeStream?.stream_options.length > 0 && episodeStream?.stream_options.map((stream_opt) => (
-              <Button
-                // className={`
-                //   px-2 py-0.5 hover:bg-gray-700 rounded-full text-sm
-                //   ${(episodeStream.resolution === stream_opt.resolution && episodeStream.stream_idx === stream_opt.index) || stream_opt.used ? "bg-blue-800" : "bg-gray-800"}`}
-                onClick={()=>{changeServer(stream_opt.index, stream_opt.name, stream_opt.resolution)}}
-                size="xs"
-                variant={`${(episodeStream.resolution === stream_opt.resolution && episodeStream.stream_idx === stream_opt.index) || stream_opt.used ? "default" : "outline"}`}
-              >
-                {stream_opt.resolution} {stream_opt.name}
-              </Button>
-            ))}
-          </div>
-          <div className='grid grid-cols-1 xl:grid-cols-2'>
-            <div className={`flex flex-col mt-4 gap-2 ${mobileMode ? "px-2" : ""}`}>
-              <div className={`flex flex-col gap-2 w-full text-left bg-gray-800 rounded-xl p-3 text-xs`}>
-                <div className='flex flex-wrap'>
-                  Release: {anime.release_year + " " +anime.release_season}
-                </div>
-                <div className='flex flex-wrap'>
-                  {anime.genres && anime.genres.map((oneGenre)=>(
-                    <div className='flex-none p-1 rounded-xl bg-gray-600 mr-1 mb-1' key={oneGenre}>{oneGenre}</div>
-                  ))}
-                </div>
-                <div className='mt-1 max-h-20 overflow-auto text-justify '>
-                  {anime.description}
-                </div>
-              </div>
-            </div>
-
-            <div className={`p-3 bg-gray-800 mt-4 rounded-xl text-xs ${mobileMode ? "mx-2" : "xl:ml-2"}`}>
-              <div>Watch Log:</div>
-              <div className='flex flex-col pt-2'>
-                {watchLogs.map((oneWatchLog =>(
-                  <Link href={oneWatchLog.pathname} key={oneWatchLog.pathname}>
-                    <div className='flex items-center justify-between bg-gray-500 hover:bg-gray-600 px-1 py-0.5 rounded mb-2'>
-                      <div>
-                        <span>Episode {oneWatchLog.number}</span>
-                        <span className='text-xs'> - {oneWatchLog.last_read_at}</span>
-                      </div>
-
-                      <div className='py-1 px-2 rounded-lg'>
-                        <i className='fa-solid fa-play'></i>
-                      </div>
-                    </div>
-                  </Link>
-                )))}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Side content */}
         <div id="suggestion-content" className={`${mobileMode || smallWebMode ? "" : "min-w-[402px] max-w-[402px]"}`}>
-          {/* {anime.relations && anime.relations.length > 0 && <>
-            <div className={`mb-0 pb-2 pr-4 ${mobileMode || smallWebMode ? "mx-2" : ""}`}>Relations</div>
-            <div className={`mb-2 flex overflow-x-auto w-full pb-2 pr-4 ${mobileMode || smallWebMode ? "mx-2" : ""}`}>
-              <div
-                className={`w-32 ${episodeActiveAnime.id === anime.id ? "border-solid border-2 border-sky-500 rounded-xl" : null}`}
-                onClick={()=>{changeEpisodeByAnimeID(anime.id)}}
-              >
-                <AnimeCardRelationV3 id={anime.id} relation={anime} />
-              </div>
-              {anime.relations.map((oneRelation) => (
-                <div
-                  className={`w-32 ml-3 ${episodeActiveAnime.id === oneRelation.id ? "border-solid border-2 border-sky-500 rounded-xl" : null}`}
-                  onClick={()=>{changeEpisodeByAnimeID(oneRelation.id)}}
-                  key={"relation-"+oneRelation.id}>
-                  <AnimeCardRelationV3 relation={oneRelation} key={oneRelation.id} />
-                </div>
-              ))}
-            </div>
-          </>} */}
-
           <div className={`mb-2 pb-2 ${mobileMode || smallWebMode ? "mx-2" : ""}`}>
-            <input
-              type="text" placeholder="Search episode" className='w-full rounded-xl p-2 text-black'
+            <Input
+              type="text" placeholder="Search episode"
               onChange={(e) => setSearchEpisode(e.target.value)}
             />
           </div>
@@ -525,14 +460,14 @@ export default function WatchAnime() {
               <Link
                 key={`${oneEpisode.source}-${oneEpisode.anime_id}-${oneEpisode.id}`}
                 className={
-                  `mb-3 flex rounded-xl p-2 hover:bg-gray-700
+                  `mb-3 flex p-2 hover:bg-gray-700
                   ${params.episode_id === oneEpisode.id ? "bg-gray-800" : "bg-gray-950"}
                   ${mobileMode || smallWebMode ? "mx-2" : "min-w-[402px] max-w-[402px]"}`
                 }
-                href={`/animes/${params.anime_source}/detail/${oneEpisode.anime_id}/watch/${oneEpisode.id}`}
+                href={`/anime/${params.anime_source}/detail/${oneEpisode.anime_id}/watch/${oneEpisode.id}`}
               >
                 <div className='min-w-[168px] max-w-[168px] h-[94px]'>
-                  <div className='relative overflow-clip rounded-xl'>
+                  <div className='relative overflow-clip'>
                     <Img
                       className={`shadow-md w-[168px] h-[94px]
                       hover:scale-110 transition duration-500 cursor-pointer overflow-clip object-none`}

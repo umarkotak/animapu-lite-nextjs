@@ -13,6 +13,8 @@ import animapuApi from '@/apis/AnimapuApi'
 import ChangeAnimeSourceModalOnly from '@/components/ChangeAnimeSourceModalOnly'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import AnimeCard from '@/components/AnimeCard'
+import AdsCard from '@/components/AdsCard'
 
 var page = 1
 var onApiCall = false
@@ -22,7 +24,10 @@ export default function AnimeSourceHome() {
   const router = useRouter()
 
   const [activeSource, setActiveSource] = useState("")
-  const [animes, setAnimes] = useState([])
+  const [animes, setAnimes] = useState([
+    {source: "shimmer-1", id: "1", shimmer: true},
+    {source: "shimmer-2", id: "2", shimmer: true},
+  ])
   const [showModal, setShowModal] = useState(false)
 
   var endReached = false
@@ -112,8 +117,10 @@ export default function AnimeSourceHome() {
       </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
+        <AdsCard />
         {animes.map((oneAnimeData) => (
-          <AnimeSourceCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
+          // <AnimeSourceCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
+          <AnimeCard anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />
         ))}
       </div>
     </div>
