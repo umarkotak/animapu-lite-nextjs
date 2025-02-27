@@ -27,7 +27,7 @@ export default function AnimeCardBar(props) {
       key={`${props.anime.source}-${props.anime.id}`}
       id={`${props.anime.source}-${props.anime.id}`}
     >
-      <AnimeCardModal anime={props.anime} showModal={showModal} setShowModal={setShowModal} />
+      <AnimeCardModal anime={props.anime} showModal={showModal} setShowModal={setShowModal} disableBookmarkIcon={true} />
 
       <div
         className="flex flex-row gap-2 h-full"
