@@ -315,7 +315,8 @@ export function AnimeCardModal(props) {
                         <div className="flex flex-row items-center gap-2" key={episode.id}>
                           <div className="w-full">
                             <Link href={`/anime/${anime.source}/detail/${anime.id}/watch/${episode.id}`}>
-                              <Button size="sm" className="w-full">{episode.title}</Button>
+                              {/* <Button size="sm" className="w-full">{episode.title}</Button> */}
+                              <Button size="sm" className="w-full">Episode {episode.number}</Button>
                             </Link>
                           </div>
                         </div>

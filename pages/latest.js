@@ -127,7 +127,7 @@ export default function Latest({content_only}) {
   if (content_only) {
     return(
       <div className="flex flex-col gap-4">
-        <Card>
+        {/* <Card>
           <CardHeader className="p-4">
             <CardTitle className="flex justify-between items-center">
               <div>
@@ -139,7 +139,7 @@ export default function Latest({content_only}) {
               </div>
             </CardTitle>
           </CardHeader>
-        </Card>
+        </Card> */}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
           <AdsCard />

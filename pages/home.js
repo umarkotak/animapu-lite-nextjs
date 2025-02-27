@@ -10,9 +10,10 @@ import Link from "next/link"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Megaphone } from "lucide-react"
 import { useSwipeable } from "react-swipeable"
+import AnimeSourceHome from "./anime/latest"
 
 const CarouselData = [
-  {image_url: "/images/animehub_cover_2.png", target_url: "/anime/latest", text: "watch anime"},
+  {image_url: "/images/animehub_cover_2.png", target_url: "https://trakteer.id/marumaru", text: "support animapu disini ^^"},
   {image_url: "/images/animehub_cover_3.png", target_url: "/anime/latest", text: "nonton anime"},
 ]
 
@@ -90,14 +91,23 @@ export default function Home() {
 
       <Card className="mb-4">
         <CardHeader className="px-4 pt-4 pb-0">
-          <CardTitle className="flex justify-start items-center gap-2">
-            <Megaphone />
-            <span>Pengumuman</span>
+          <CardTitle className="flex justify-between items-center">
+            <span>Watch Anime</span>
+            <Link href="/anime/latest"><Button size="sm">See All</Button></Link>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4">
-          fitur nonton anime sudah dapat digunakan kembali!
+          <AnimeSourceHome discoveryBar={true} />
         </CardContent>
+      </Card>
+
+      <Card className="mb-4">
+        <CardHeader className="p-4">
+          <CardTitle className="flex justify-between items-center gap-2">
+            Read Manga
+            <Link href="/latest"><Button size="sm">See All</Button></Link>
+          </CardTitle>
+        </CardHeader>
       </Card>
 
       <Latest content_only={true} />

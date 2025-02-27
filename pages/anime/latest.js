@@ -15,10 +15,11 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import AnimeCard from '@/components/AnimeCard'
 import AdsCard from '@/components/AdsCard'
+import AnimeCardBar from '@/components/AnimeCardBar'
 
 var page = 1
 var onApiCall = false
-export default function AnimeSourceHome() {
+export default function AnimeSourceHome({discoveryBar}) {
   const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -99,6 +100,17 @@ export default function AnimeSourceHome() {
   useEffect(() => {
     GetLatestAnime(true)
   }, [triggerNextPage])
+
+  if (discoveryBar) {
+    return (
+      <div className="flex flex-row gap-4 flex-nowrap overflow-auto">
+        {animes.map((oneAnimeData) => (
+          // <AnimeSourceCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
+          <AnimeCardBar anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-4">
