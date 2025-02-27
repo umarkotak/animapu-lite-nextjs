@@ -8,7 +8,7 @@ import Latest from "./latest"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { Megaphone } from "lucide-react"
+import { BookIcon, Clapperboard, HistoryIcon, Megaphone, MoveRightIcon } from "lucide-react"
 import { useSwipeable } from "react-swipeable"
 import AnimeSourceHome from "./anime/latest"
 
@@ -74,7 +74,7 @@ export default function Home() {
       <Card className="mb-4">
         <CardHeader className="px-4 pt-4 pb-0">
           <CardTitle className="flex justify-between items-center">
-            <span>Continue Read</span>
+            <span className="flex items-center gap-2"><HistoryIcon /> Continue Read</span>
             <Link href="/history"><Button size="sm">See All</Button></Link>
           </CardTitle>
         </CardHeader>
@@ -92,7 +92,7 @@ export default function Home() {
       <Card className="mb-4">
         <CardHeader className="px-4 pt-4 pb-0">
           <CardTitle className="flex justify-between items-center">
-            <span>Watch Anime</span>
+            <span className="flex items-center gap-2"><Clapperboard /> Watch Anime</span>
             <Link href="/anime/latest"><Button size="sm">See All</Button></Link>
           </CardTitle>
         </CardHeader>
@@ -104,7 +104,7 @@ export default function Home() {
       <Card className="mb-4">
         <CardHeader className="p-4">
           <CardTitle className="flex justify-between items-center gap-2">
-            Read Manga
+            <span className="flex items-center gap-2"><BookIcon /> Read Manga</span>
             <Link href="/latest"><Button size="sm">See All</Button></Link>
           </CardTitle>
         </CardHeader>
