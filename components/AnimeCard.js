@@ -197,14 +197,6 @@ export function AnimeCardModal(props) {
 
   useEffect(() => {
     if (show) {
-      router.push({
-        pathname: window.location.pathname,
-        query: {
-          ...query,
-          back_page: query.page,
-          selected: `${props.anime.source}-${props.anime.id}`,
-        },
-      }, undefined, { shallow: true })
       return
     }
 
