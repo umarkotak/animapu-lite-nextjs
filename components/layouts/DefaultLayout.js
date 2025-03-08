@@ -42,7 +42,7 @@ const animeItems = [
   { title: "Season", url: "/anime/season", icon: Sun },
   // { title: "Search", url: "/anime/search", icon: Search },
   // { title: "Library", url: "/anime/library", icon: BookMarked },
-  // { title: "History", url: "/anime/history", icon: History },
+  { title: "History", url: "/anime/history", icon: History },
 ]
 
 export function DefaultLayout({ children }) {

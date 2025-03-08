@@ -17,44 +17,29 @@ import AnimeCard from '@/components/AnimeCard'
 import AdsCard from '@/components/AdsCard'
 import AnimeCardBar from '@/components/AnimeCardBar'
 
-var page = 1
 var onApiCall = false
-export default function AnimeLatest({discoveryBar}) {
+export default function AnimeHistory({discoveryBar}) {
   const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const [activeSource, setActiveSource] = useState("")
   const [animes, setAnimes] = useState([
     {source: "shimmer-1", id: "1", shimmer: true},
     {source: "shimmer-2", id: "2", shimmer: true},
   ])
-  const [showModal, setShowModal] = useState(false)
-
-  var endReached = false
 
   useEffect(() => {
-    setActiveSource(animapuApi.GetActiveAnimeSource())
-    GetLatestAnime(false)
+    GetAnimeHistory()
   }, [params, searchParams])
 
-  async function GetLatestAnime(append) {
+  async function GetAnimeHistory() {
     if (!window) {return}
 
     if (onApiCall) {return}
     onApiCall = true
 
-    if (endReached) {return}
-
-    if (!append) {
-      page = 1
-    }
-
     try {
-      const response = await animapuApi.GetLatestAnime({
-        anime_source: animapuApi.GetActiveAnimeSource(),
-        page: page,
-      })
+      const response = await animapuApi.GetAnimeHistory({})
       const body = await response.json()
       if (response.status !== 200) {
         console.log("error", body)
@@ -63,17 +48,11 @@ export default function AnimeLatest({discoveryBar}) {
       }
 
       if (body.data && body.data.length <= 0) {
-        endReached = true
         onApiCall = false
         return
       }
 
-      if (append) {
-        setAnimes(animes.concat(body.data))
-      } else {
-        setAnimes(body.data)
-      }
-      page = page + 1
+      setAnimes(body.data)
       onApiCall = false
 
     } catch (e) {
@@ -81,25 +60,6 @@ export default function AnimeLatest({discoveryBar}) {
       onApiCall = false
     }
   }
-
-  const [triggerNextPage, setTriggerNextPage] = useState(0)
-  const handleScroll = () => {
-    var position = window.pageYOffset
-    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
-
-    if (maxPosition-position <= 1200) {
-      setTriggerNextPage(position)
-    }
-  }
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
-  useEffect(() => {
-    GetLatestAnime(true)
-  }, [triggerNextPage])
 
   if (discoveryBar) {
     return (
@@ -118,18 +78,15 @@ export default function AnimeLatest({discoveryBar}) {
         <CardHeader className="p-4">
           <CardTitle className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl">{activeSource}</h1>
+              <h1 className='text-xl'>Watch History</h1>
             </div>
             <div>
-              <Button onClick={()=>{setShowModal(true)}}>Ganti Sumber</Button>
-              <ChangeAnimeSourceModalOnly show={showModal} onClose={()=>setShowModal(false)} />
             </div>
           </CardTitle>
         </CardHeader>
       </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-        <AdsCard />
         {animes.map((oneAnimeData) => (
           // <AnimeSourceCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
           <AnimeCard anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />

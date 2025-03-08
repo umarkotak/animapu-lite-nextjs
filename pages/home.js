@@ -8,9 +8,10 @@ import Latest from "./latest"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { BookIcon, Clapperboard, HistoryIcon, Megaphone, MoveRightIcon } from "lucide-react"
+import { BookIcon, Clapperboard, EyeIcon, HistoryIcon, Megaphone, MoveRightIcon } from "lucide-react"
 import { useSwipeable } from "react-swipeable"
 import AnimeSourceHome from "./anime/latest"
+import AnimeHistory from "./anime/history"
 
 const CarouselData = [
   {image_url: "/images/animehub_cover_2.png", target_url: "https://trakteer.id/marumaru", text: "support animapu disini ^^"},
@@ -71,14 +72,14 @@ export default function Home() {
         </Carousel>
       </div>
 
-      <Card className="mb-4">
-        <CardHeader className="px-4 pt-4 pb-0">
+      <Card className="mb-6 border-none">
+        <CardHeader className="p-0 pb-4">
           <CardTitle className="flex justify-between items-center">
             <span className="flex items-center gap-2"><HistoryIcon /> Continue Read</span>
-            <Link href="/history"><Button size="sm">See All</Button></Link>
+            <Link href="/history"><Button size="xs">See All</Button></Link>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4">
+        <CardContent className="p-0">
           <div className="flex flex-row gap-4 overflow-auto">
             {mangaHistories.map((manga) => (
               <div className="flex-none" key={"continue-"+manga.source+manga.source_id}>
@@ -89,26 +90,38 @@ export default function Home() {
         </CardContent>
       </Card>
 
-      <Card className="mb-4">
-        <CardHeader className="px-4 pt-4 pb-0">
+      <Card className="mb-6 border-none">
+        <CardHeader className="p-0 pb-4">
           <CardTitle className="flex justify-between items-center">
-            <span className="flex items-center gap-2"><Clapperboard /> Watch Anime</span>
-            <Link href="/anime/latest"><Button size="sm">See All</Button></Link>
+            <span className="flex items-center gap-2"><EyeIcon /> Continue Watch</span>
+            <Link href="/anime/history"><Button size="xs">See All</Button></Link>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-4">
+        <CardContent className="p-0">
+          <AnimeHistory discoveryBar={true} />
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6 border-none">
+        <CardHeader className="p-0 pb-4">
+          <CardTitle className="flex justify-between items-center">
+            <span className="flex items-center gap-2"><Clapperboard /> Watch Anime</span>
+            <Link href="/anime/latest"><Button size="xs">See All</Button></Link>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
           <AnimeSourceHome discoveryBar={true} />
         </CardContent>
       </Card>
 
-      <Card className="mb-4">
+      {/* <Card className="mb-4">
         <CardHeader className="p-4">
           <CardTitle className="flex justify-between items-center gap-2">
             <span className="flex items-center gap-2"><BookIcon /> Read Manga</span>
-            <Link href="/latest"><Button size="sm">See All</Button></Link>
+            <Link href="/latest"><Button size="xs">See All</Button></Link>
           </CardTitle>
         </CardHeader>
-      </Card>
+      </Card> */}
 
       <Latest content_only={true} />
     </>

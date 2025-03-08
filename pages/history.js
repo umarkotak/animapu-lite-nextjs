@@ -83,7 +83,7 @@ export default function History() {
         <CardHeader className="p-4">
           <CardTitle className="flex justify-between items-center">
             <div>
-              <h1 className='text-xl'>History</h1>
+              <h1 className='text-xl'>Read History</h1>
             </div>
             <div>
             </div>

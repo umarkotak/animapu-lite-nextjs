@@ -8,6 +8,8 @@ import animapuApi from "@/apis/AnimapuApi"
 import ChangeSourceModalOnly from "@/components/ChangeSourceModalOnly"
 import MangaCardV2 from "@/components/MangaCardV2"
 import AdsCard from "@/components/AdsCard"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
 
 var onApiCall = false
 var page = 1
@@ -131,7 +133,7 @@ export default function Latest({content_only}) {
           <CardHeader className="p-4">
             <CardTitle className="flex justify-between items-center">
               <div>
-                <h1 className="text-xl">{activeSource}</h1>
+                <h1 className="text-xl">Read Manga: {activeSource}</h1>
               </div>
               <div>
                 <Button onClick={()=>{setShowModal(true)}}>Ganti Sumber</Button>

@@ -212,6 +212,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetAnimeHistory(params) {
+    var uri = `${this.AnimapuApiHost}/users/animes/histories`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async GetAnimeDetail(params) {
     var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/detail/${params.anime_id}`
     const response = await fetch(uri, {
