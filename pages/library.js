@@ -17,10 +17,13 @@ var dummyMangas = [
 
 export default function History() {
   const [onlineMangas, setOnlineMangas] = useState(dummyMangas)
+  const [activeSort, setActiveSort] = useState("recent_added")
 
   async function GetOnlineMangaLibraries() {
     try {
-      const response = await animapuApi.GetUserMangaLibraries()
+      const response = await animapuApi.GetUserMangaLibraries({
+        sort: activeSort,
+      })
       const body = await response.json()
 
       if (response.status !== 200) {
@@ -41,7 +44,7 @@ export default function History() {
 
   useEffect(() => {
     GetOnlineMangaLibraries()
-  }, [])
+  }, [activeSort])
 
   const [triggerNextPage, setTriggerNextPage] = useState(0)
   const handleScroll = () => {
@@ -78,9 +81,15 @@ export default function History() {
         </CardHeader>
       </Card>
 
+      <div className='flex justify-end items-center gap-2'>
+        <Button size="sm" variant="outline">Sort</Button>
+        <Button size="sm" variant={activeSort === "recent_added" ? "default" : "outline"} onClick={() => setActiveSort("recent_added")}>Recent Added</Button>
+        <Button size="sm" variant={activeSort === "latest_update" ? "default" : "outline"} onClick={() => setActiveSort("latest_update")}>Recent Update</Button>
+      </div>
+
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
         {onlineMangas.map((manga, idx) => (
-          <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} />
+          <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} show_updated_at={true} />
         ))}
       </div>
     </div>

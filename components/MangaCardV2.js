@@ -9,6 +9,7 @@ import QuickMangaModal from "./QuickMangaModal"
 import Manga from "../models/Manga"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
+import utils from "@/models/Utils"
 
 export default function MangaCardV2(props) {
   const [showModal, setShowModal] = useState(false)
@@ -66,6 +67,9 @@ export default function MangaCardV2(props) {
         <div>
           {props.show_hover_source && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
             <small>{props.manga.source}</small>
+          </div>}
+          {props.show_updated_at && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
+            <small>last update: {utils.GetTimeElapsed(props.manga.updated_at)}</small>
           </div>}
           <div
             className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"

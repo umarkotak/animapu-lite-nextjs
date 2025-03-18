@@ -125,8 +125,8 @@ class AnimapuApi {
     return response
   }
 
-  async GetUserMangaLibraries() {
-    var uri = `${this.AnimapuApiHost}/users/mangas/libraries`
+  async GetUserMangaLibraries(params) {
+    var uri = `${this.AnimapuApiHost}/users/mangas/libraries?sort=${params.sort}`
     const response = await fetch(uri, {
       method: 'GET',
       headers: this.GenHeaders(),
