@@ -8,7 +8,7 @@ import Latest from "./latest"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { BookIcon, Clapperboard, EyeIcon, HistoryIcon, Megaphone, MoveRightIcon } from "lucide-react"
+import { BookIcon, BookMarkedIcon, Clapperboard, EyeIcon, HistoryIcon, HomeIcon, Megaphone, MoveRightIcon, SearchIcon } from "lucide-react"
 import { useSwipeable } from "react-swipeable"
 import AnimeSourceHome from "./anime/latest"
 import AnimeHistory from "./anime/history"
@@ -71,6 +71,21 @@ export default function Home() {
           <CarouselNext />
         </Carousel>
       </div>
+
+      <Card className="mb-6 border-none flex items-center gap-2">
+        <Link href={"/library"}>
+          <Button variant="outline" size="lg" className="p-4">
+            <BookMarkedIcon />
+            Manga Library
+          </Button>
+        </Link>
+        <Link href={"/search"}>
+          <Button variant="outline" size="lg" className="p-4">
+            <SearchIcon />
+            Manga Search
+          </Button>
+        </Link>
+      </Card>
 
       <Card className="mb-6 border-none">
         <CardHeader className="p-0 pb-4">
