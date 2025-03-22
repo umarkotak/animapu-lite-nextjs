@@ -12,6 +12,7 @@ import { BookIcon, BookMarkedIcon, Clapperboard, EyeIcon, HistoryIcon, HomeIcon,
 import { useSwipeable } from "react-swipeable"
 import AnimeSourceHome from "./anime/latest"
 import AnimeHistory from "./anime/history"
+import { Separator } from "@/components/ui/separator"
 
 const CarouselData = [
   {image_url: "/images/animehub_cover_2.png", target_url: "https://trakteer.id/marumaru", text: "support animapu disini ^^"},
@@ -71,6 +72,16 @@ export default function Home() {
           <CarouselNext />
         </Carousel>
       </div>
+
+      <Card className="mb-6 border-none gap-2 bg-destructive p-4">
+        <div>
+          Perhatian, animapu akan offline selama kurang lebih 3 minggu karena yang punya server lagi mudik. Terimakasih!
+        </div>
+        <Separator />
+        <div>
+          Notice, animapu will be offline for around 3 weeks due to the server owner is on vacation. Thankyou!
+        </div>
+      </Card>
 
       <Card className="mb-6 border-none flex items-center gap-2">
         <Link href={"/library"}>
