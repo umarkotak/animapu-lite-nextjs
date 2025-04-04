@@ -82,6 +82,7 @@ export function SidebarUser() {
     localStorage.removeItem("ANIMAPU_LITE:USER:EMAIL")
     toast.info("Logout sukses!")
     setUser(defaultUser)
+    window.location.reload()
   }
 
   const [deferredPrompt, setDeferredPrompt] = useState(null);

@@ -21,6 +21,7 @@ const CarouselData = [
 
 export default function Home() {
   const [mangaHistories, setMangaHistories] = useState([])
+  const [user, setUser] = useState({})
 
   async function GetOnlineReadHistories() {
     try {
@@ -43,6 +44,7 @@ export default function Home() {
 
   useEffect(() => {
     GetOnlineReadHistories()
+    setUser(animapuApi.GetUserLogin())
   }, [])
 
   return (
@@ -73,15 +75,12 @@ export default function Home() {
         </Carousel>
       </div>
 
-      <Card className="mb-6 border-none gap-2 bg-destructive p-4">
-        <div>
-          Perhatian, animapu akan offline selama kurang lebih 3 minggu karena yang punya server lagi mudik. Terimakasih!
-        </div>
-        <Separator />
-        <div>
-          Notice, animapu will be offline for around 3 weeks due to the server owner is on vacation. Thankyou!
-        </div>
-      </Card>
+      {(!user.logged_in || user.logged_in === "") && <Card className="mb-6 border-none gap-2 flex justify-between items-center bg-destructive p-2">
+        <div>To use animapu you have to log in first.</div>
+        <Link href="/login">
+          <Button variant="outline" size="sm">Login</Button>
+        </Link>
+      </Card>}
 
       <Card className="mb-6 border-none flex items-center gap-2">
         <Link href={"/library"}>

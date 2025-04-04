@@ -18,11 +18,14 @@ import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { ChevronDownIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 
 var mobileModeLimit = 470
 var smallWebLimit = 1015
 
 export default function WatchAnime() {
+  let router = useRouter()
   const params = useParams()
   const searchParams = useSearchParams()
 
@@ -99,6 +102,11 @@ export default function WatchAnime() {
     if (window) { window.scrollTo(0, 0) }
 
     if (!params) { return }
+
+    if (animapuApi.GetUserLogin().logged_in === "") {
+      toast.error("Please login first to start watching")
+      router.push("/login")
+    }
 
     GetAnimeDetail(params.anime_id)
 
