@@ -77,7 +77,7 @@ export default function AnimeSeason() {
       return
     }
 
-    defaultSeasonIdx = 2
+    var defaultSeasonIdx = 2
     var year = searchParams.get('year') || seasonFilters[defaultSeasonIdx].year
     var season = searchParams.get('season') || seasonFilters[defaultSeasonIdx].season_name
 
