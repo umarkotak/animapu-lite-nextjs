@@ -31,7 +31,7 @@ export default function AnimeSeason() {
     var tmpSeasonFilters = []
 
     // winter, spring, summer, fall
-    var allSeasonContents = generateSeasonData(1999, "fall", 2025, "spring")
+    var allSeasonContents = generateSeasonData(1999, "fall", 2025, "fall")
 
     allSeasonContents.forEach((oneSeasonContent) => {
       tmpSeasonFilters.push({
@@ -77,8 +77,9 @@ export default function AnimeSeason() {
       return
     }
 
-    var year = searchParams.get('year') || seasonFilters[0].year
-    var season = searchParams.get('season') || seasonFilters[0].season_name
+    defaultSeasonIdx = 2
+    var year = searchParams.get('year') || seasonFilters[defaultSeasonIdx].year
+    var season = searchParams.get('season') || seasonFilters[defaultSeasonIdx].season_name
 
     GetAnimesBySeason(year, season, 0)
   }, [seasonFilters, searchParams])
