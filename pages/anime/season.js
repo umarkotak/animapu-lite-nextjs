@@ -30,7 +30,8 @@ export default function AnimeSeason() {
 
     var tmpSeasonFilters = []
 
-    var allSeasonContents = generateSeasonData(1999, "fall", 2025, "winter")
+    // winter, spring, summer, fall
+    var allSeasonContents = generateSeasonData(1999, "fall", 2025, "spring")
 
     allSeasonContents.forEach((oneSeasonContent) => {
       tmpSeasonFilters.push({
@@ -114,7 +115,7 @@ export default function AnimeSeason() {
   }
 
   function handleChange(selectedOption) {
-    router.push(`/animes/${params.anime_source}/season?year=${selectedOption.year}&season=${selectedOption.season_name}`)
+    router.push(`/anime/season?year=${selectedOption.year}&season=${selectedOption.season_name}`)
   }
 
   function SeasonIconGenerator(seasonName) {
