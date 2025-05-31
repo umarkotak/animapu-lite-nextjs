@@ -9,6 +9,7 @@ import {
   Download,
   LogIn,
   LogOut,
+  ServerIcon,
   Settings,
   Sparkles,
 } from "lucide-react"
@@ -121,6 +122,14 @@ export function SidebarUser() {
           </SidebarMenuButton>
         </SidebarMenuItem>
       }
+      <Link href="/server_info">
+        <SidebarMenuItem>
+          <SidebarMenuButton>
+            <ServerIcon />
+            <span>Server Info</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </Link>
       <Link href="/setting">
         <SidebarMenuItem>
           <SidebarMenuButton>

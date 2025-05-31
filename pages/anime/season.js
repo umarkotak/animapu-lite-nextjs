@@ -15,6 +15,13 @@ import AnimeSeasonCard from '@/components/AnimeSeasonCard'
 
 var tempAllMangas = []
 var limit = 16
+var defaultSeasonIdx = 2
+var defaultSelectedSeason = {
+  value: `2025 - spring`,
+  label: `2025 - spring`,
+  season_name: `spring`,
+  year: `2025`,
+}
 
 export default function AnimeSeason() {
   const params = useParams()
@@ -23,7 +30,7 @@ export default function AnimeSeason() {
 
   const [seasonFilters, setSeasonFilters] = useState([])
   const [animePerSeasons, setAnimePerSeasons] = useState([{animes: []}])
-  const [selectedSeason, setSelectedSeason] = useState({})
+  const [selectedSeason, setSelectedSeason] = useState(defaultSelectedSeason)
 
   useEffect(() => {
     if (!window) { return }
@@ -77,7 +84,6 @@ export default function AnimeSeason() {
       return
     }
 
-    var defaultSeasonIdx = 2
     var year = searchParams.get('year') || seasonFilters[defaultSeasonIdx].year
     var season = searchParams.get('season') || seasonFilters[defaultSeasonIdx].season_name
 
