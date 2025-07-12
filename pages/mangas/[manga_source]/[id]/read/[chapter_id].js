@@ -19,6 +19,7 @@ import AdsCard from '@/components/AdsCard'
 import { LoadingSpinner } from '@/components/ui/icon'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+import ScrollProgress from '@/components/ScrollProgress'
 
 var tempChapters = []
 var onApiCall = false
@@ -145,7 +146,8 @@ export default function ReadManga(props) {
     var position = window.pageYOffset
     var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-    if (maxPosition-position <= 1200) {
+    // bigger will be fetch next chapter earlier
+    if (maxPosition-position <= 3600) {
       var targetIdx = 0
 
       if (!tempChapters || tempChapters.length === 0) {
@@ -302,58 +304,68 @@ export default function ReadManga(props) {
               </div>
 
               <Card className="sticky top-12 border-none rounded-none">
-                <CardContent className="p-0 flex justify-between gap-1">
-                  <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>
-                    Chapter - {oneChapter.number}
-                    <ChevronDownIcon size={14} />
-                  </Button>
-                  <div className='flex items-center gap-1'>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button size="sm" variant="outline"><Settings2 /></Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Menu</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                          {oneChapter.source_link !== ""
-                            ? <a href={oneChapter.source_link !== "" ? oneChapter.source_link : "#"}>
-                              <DropdownMenuItem>
+                <CardContent className="p-0 flex flex-col">
+                  <div className='flex justify-between items-center gap-1'>
+                    <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>
+                      {onApiCallSt && <LoadingSpinner />}
+                      Chapter - {oneChapter.number}
+                      <ChevronDownIcon size={14} />
+                    </Button>
+                    <div className='flex items-center gap-1'>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="outline"><Settings2 /></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          <DropdownMenuLabel>Menu</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuGroup>
+                            {oneChapter.source_link !== ""
+                              ? <a href={oneChapter.source_link !== "" ? oneChapter.source_link : "#"}>
+                                <DropdownMenuItem>
+                                  read on original source
+                                  <DropdownMenuShortcut><LinkIcon size={12} /></DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                              </a>
+                              : <DropdownMenuItem onClick={() => {toast.error("link unavailable") }}>
                                 read on original source
                                 <DropdownMenuShortcut><LinkIcon size={12} /></DropdownMenuShortcut>
                               </DropdownMenuItem>
-                            </a>
-                            : <DropdownMenuItem onClick={() => {toast.error("link unavailable") }}>
-                              read on original source
-                              <DropdownMenuShortcut><LinkIcon size={12} /></DropdownMenuShortcut>
+                            }
+                            <DropdownMenuItem onClick={() => {ShareUrlText()}}>
+                              share
+                              <DropdownMenuShortcut><Share2Icon size={12} /></DropdownMenuShortcut>
                             </DropdownMenuItem>
-                          }
-                          <DropdownMenuItem onClick={() => {ShareUrlText()}}>
-                            share
-                            <DropdownMenuShortcut><Share2Icon size={12} /></DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => {HandleBookmark()}}>
-                            bookmark
-                            <DropdownMenuShortcut><Bookmark size={12} /></DropdownMenuShortcut>
-                          </DropdownMenuItem>
-                          {/* <DropdownMenuItem onClick={() => {DownloadMangaChapterPdfUri(oneChapter)}}>
-                            download as pdf (beta)
-                            <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
-                          </DropdownMenuItem> */}
-                          <a
-                            href={DownloadMangaChapterPdfUri(oneChapter)}
-                            onClick={()=>{toast.info("we are preparing your file, just wait...")}}
-                          ><DropdownMenuItem>
-                            download as pdf
-                            <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
-                          </DropdownMenuItem></a>
-                        </DropdownMenuGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                            <DropdownMenuItem onClick={() => {HandleBookmark()}}>
+                              bookmark
+                              <DropdownMenuShortcut><Bookmark size={12} /></DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            {/* <DropdownMenuItem onClick={() => {DownloadMangaChapterPdfUri(oneChapter)}}>
+                              download as pdf (beta)
+                              <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
+                            </DropdownMenuItem> */}
+                            <a
+                              href={DownloadMangaChapterPdfUri(oneChapter)}
+                              onClick={()=>{toast.info("we are preparing your file, just wait...")}}
+                            ><DropdownMenuItem>
+                              download as pdf
+                              <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
+                            </DropdownMenuItem></a>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
+                  <ScrollProgress
+                    topElementId={`${oneChapter.id}-top`}
+                    bottomElementId={`${oneChapter.id}-bottom`}
+                    showPercentage={false}
+                    className=""
+                  />
                 </CardContent>
               </Card>
 
+              <div id={`${oneChapter.id}-top`} className=''></div>
               <div className='flex flex-col items-center gap-1 w-full max-w-[800px]'>
                 {oneChapter.chapter_images.map((imageObj, idx) => (
                   loadedImageUrls[imageObj.image_urls.join(";")]
