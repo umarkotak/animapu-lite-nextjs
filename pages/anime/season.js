@@ -15,7 +15,7 @@ import AnimeSeasonCard from '@/components/AnimeSeasonCard'
 
 var tempAllMangas = []
 var limit = 16
-var defaultSeasonIdx = 2
+var defaultSeasonIdx = 1
 var defaultSelectedSeason = {
   value: `2025 - spring`,
   label: `2025 - spring`,
