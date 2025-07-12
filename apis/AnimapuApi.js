@@ -239,7 +239,7 @@ class AnimapuApi {
     return response
   }
 
-  async GetAnimeSearch(params) {
+  async SearchAnime(params) {
     var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/search?title=${params.title}&search_all=${params.search_all}`
     const response = await fetch(uri, {
       method: 'GET',
