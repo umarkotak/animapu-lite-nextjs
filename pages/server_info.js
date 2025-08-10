@@ -93,7 +93,12 @@ export default function SystemStatusPage() {
 
       <Card className="md:col-span-2">
         <CardContent className="p-4">
-          <h2 className="text-xl font-semibold mb-2">Minecraft Server</h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold mb-2">Minecraft Server</h2>
+            <a className="hover:text-primary" target="_blank" href="https://mcstatus.io/status/java/washington-basketball.gl.joinmc.link">
+              Online Players
+            </a>
+          </div>
           <div className="flex flex-wrap items-center gap-4">
             <p><strong>Host:</strong> {s.minecraft_server_status?.server_host}</p>
             <p className="flex items-center gap-2">
