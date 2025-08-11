@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button"; // Import Button
+import { RefreshCw } from "lucide-react"; // Import a refresh icon
 import animapuApi from "@/apis/AnimapuApi";
 
 const StatCard = ({ title, children, className = "" }) => (
   <Card className={className}>
     <CardContent className="p-4">
-      <h2 className="text-xl font-semibold mb-2">{title}</h2>
+      <h2 className="text-lg font-semibold mb-2">{title}</h2>
       {children}
     </CardContent>
   </Card>
@@ -35,112 +37,128 @@ const timeAgo = (iso) => {
 export default function SystemStatusPage() {
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
+  const [isFetching, setIsFetching] = useState(true); // State to track fetching
 
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const res = await fetch(`${animapuApi.GoHomeServerHost}/go-home-server/system/status`);
-        if (!res.ok) throw new Error("Network response was not ok");
-        const json = await res.json();
-        setStatus(json?.data ?? null);
-      } catch {
-        setError("Failed to fetch system status.");
-      }
-    };
-
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 30000); // Refresh every 30 seconds
-    return () => clearInterval(interval);
+  const fetchStatus = useCallback(async () => {
+    setIsFetching(true); // Indicate fetching has started
+    try {
+      const res = await fetch(`${animapuApi.GoHomeServerHost}/go-home-server/system/status`);
+      if (!res.ok) throw new Error("Network response was not ok");
+      const json = await res.json();
+      setStatus(json?.data ?? null);
+      setError(null); // Clear previous errors on success
+    } catch {
+      setError("Failed to fetch system status.");
+    } finally {
+      setIsFetching(false); // Indicate fetching has finished
+    }
   }, []);
 
-  if (!status && !error) return <p className="p-4">Loading...</p>;
-  if (error) return <p className="p-4 text-red-500">{error}</p>;
+  useEffect(() => {
+    fetchStatus(); // Fetch on initial load
+    const interval = setInterval(fetchStatus, 3000); // Refresh every 3 seconds
+    return () => clearInterval(interval); // Cleanup on component unmount
+  }, [fetchStatus]);
+
+  if (!status && isFetching) return <p className="p-4">Loading system status...</p>;
+  if (error && !status) return <p className="p-4 text-red-500">{error}</p>;
 
   const s = status;
-  const mc = s.minecraft_server_status;
+  const mc = s?.minecraft_server_status;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-      <StatCard title="CPU Usage">
-        <p className="text-2xl font-bold">{s.cpu_usage_percent?.toFixed(1)}%</p>
-        <Progress value={s.cpu_usage_percent} className="mt-2" />
-      </StatCard>
-
-      <StatCard title="Memory Usage">
-        <p className="text-2xl font-bold">{s.memory_used_percent?.toFixed(1)}%</p>
-        <p className="text-sm text-muted-foreground">
-          {s.memory_used_mb}MB / {s.memory_total_mb}MB
-        </p>
-        <Progress value={s.memory_used_percent} className="mt-2" />
-      </StatCard>
-
-      <StatCard title="Disk Usage">
-        <p className="text-2xl font-bold">{s.disk_used_percent?.toFixed(1)}%</p>
-        <p className="text-sm text-muted-foreground">
-          {s.disk_used_gb}GB / {s.disk_total_gb}GB
-        </p>
-        <Progress value={s.disk_used_percent} className="mt-2" />
-      </StatCard>
-
-      <StatCard title="System & Load">
-        <p><strong>Uptime:</strong> {s.uptime}</p>
-        <p><strong>Platform:</strong> {s.platform} {s.platform_version}</p>
-        <div className="text-sm mt-2">
-          <p><strong>Load (1m):</strong> {s.load_average1m?.toFixed(2)}</p>
-          <p><strong>Load (5m):</strong> {s.load_average5m?.toFixed(2)}</p>
-          <p><strong>Load (15m):</strong> {s.load_average15m?.toFixed(2)}</p>
+    <div className="p-4">
+      {/* Header with Refresh Button and Indicator */}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">System Status</h1>
+        <div className="flex items-center gap-2">
+          {isFetching && !error && <p className="text-sm text-muted-foreground">Updating...</p>}
+          {error && <p className="text-sm text-red-500">Update failed!</p>}
+          <Button onClick={fetchStatus} disabled={isFetching} variant="outline" size="sm">
+            <RefreshCw className={`mr-2 h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
         </div>
-      </StatCard>
+      </div>
 
-      <Card className="lg:col-span-4 md:col-span-2">
-        <CardContent className="p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-            <h2 className="text-xl font-semibold">
-              Minecraft Server: <span className="text-primary">{mc?.motd || "N/A"}</span>
-            </h2>
-            <div className="flex items-center gap-2 text-sm font-mono p-1 bg-secondary rounded">
-              {mc?.server_host}
-            </div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="CPU Usage">
+          <p className="text-2xl font-bold">{s?.cpu_usage_percent?.toFixed(1) ?? "N/A"}%</p>
+          <Progress value={s?.cpu_usage_percent ?? 0} className="mt-2" />
+        </StatCard>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Status & Version */}
-            <div>
-              <h3 className="font-semibold text-muted-foreground mb-2">Status</h3>
-              <div className="flex items-center gap-2 mb-2">
-                <span
-                  className={`inline-block h-3 w-3 rounded-full ${
-                    mc?.online ? "bg-green-500 animate-pulse" : "bg-red-500"
-                  }`}
-                />
-                <span className="font-bold">{mc?.online ? "Online" : "Offline"}</span>
+        <StatCard title="Memory Usage">
+          <p className="text-2xl font-bold">{s?.memory_used_percent?.toFixed(1) ?? "N/A"}%</p>
+          <p className="text-sm text-muted-foreground">
+            {s?.memory_used_mb ?? "?"}MB / {s?.memory_total_mb ?? "?"}MB
+          </p>
+          <Progress value={s?.memory_used_percent ?? 0} className="mt-2" />
+        </StatCard>
+
+        <StatCard title="Disk Usage">
+          <p className="text-2xl font-bold">{s?.disk_used_percent?.toFixed(1) ?? "N/A"}%</p>
+          <p className="text-sm text-muted-foreground">
+            {s?.disk_used_gb ?? "?"}GB / {s?.disk_total_gb ?? "?"}GB
+          </p>
+          <Progress value={s?.disk_used_percent ?? 0} className="mt-2" />
+        </StatCard>
+
+        <StatCard title="System & Load">
+          <p className="text-sm"><strong>Uptime:</strong> {s?.uptime ?? "-"}</p>
+          <p className="text-sm"><strong>Platform:</strong> {s?.platform ?? "-"} {s?.platform_version ?? ""}</p>
+          <p className="text-sm"><strong>Network:</strong> {s?.network_name ?? "-"}</p>
+        </StatCard>
+
+        {mc && (
+          <Card className="lg:col-span-4 md:col-span-2">
+            <CardContent className="p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                <h2 className="text-xl font-semibold">
+                  Minecraft Server: <span className="text-primary">{mc?.motd || "N/A"}</span>
+                </h2>
+                <div className="flex items-center gap-2 text-sm font-mono p-1 bg-secondary rounded">
+                  {mc?.server_host}
+                </div>
               </div>
-              <p className="text-sm">
-                <strong>Version:</strong> {mc?.version || "-"}
-              </p>
-              <p className="text-sm">
-                <strong>Last Ping:</strong> {timeAgo(mc?.last_ping_at)}
-              </p>
-            </div>
 
-            {/* Online Players */}
-            <div>
-              <h3 className="font-semibold text-muted-foreground mb-2">
-                Players ({mc?.online_players ?? 0}/{mc?.max_players ?? 0})
-              </h3>
-              {mc?.player_names_online?.length > 0 ? (
-                <ul className="list-disc list-inside text-sm">
-                  {mc.player_names_online.map((player) => (
-                    <li key={player}>{player}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">No players online</p>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+              <div className="flex flex-col sm:flex-row justify-between gap-4">
+                {/* Status & Version */}
+                <div>
+                  <h3 className="font-semibold text-muted-foreground mb-2">Status</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span
+                      className={`inline-block h-3 w-3 rounded-full ${
+                        mc?.online ? "bg-green-500 animate-pulse" : "bg-red-500"
+                      }`}
+                    />
+                    <span className="font-bold">{mc?.online ? "Online" : "Offline"}</span>
+                  </div>
+                  <p className="text-sm"><strong>Version:</strong> {mc?.version || "-"}</p>
+                  <p className="text-sm"><strong>Last Ping:</strong> {timeAgo(mc?.last_ping_at)}</p>
+                  <p className="text-sm"><strong>Last Restart:</strong> {timeAgo(mc?.last_restart_at)}</p>
+                  <p className="text-sm"><strong>Restart Count:</strong> {mc?.restart_count}</p>
+                </div>
+
+                {/* Online Players */}
+                <div>
+                  <h3 className="font-semibold text-muted-foreground mb-2">
+                    Players ({mc?.online_players ?? 0}/{mc?.max_players ?? 0})
+                  </h3>
+                  {mc?.player_names_online?.length > 0 ? (
+                    <ul className="list-disc list-inside text-sm">
+                      {mc.player_names_online.map((player) => (
+                        <li key={player}>{player}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-muted-foreground italic">No players online</p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
