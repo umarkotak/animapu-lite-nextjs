@@ -214,7 +214,7 @@ export default function SystemStatusPage() {
               <div className="flex gap-2">
                 <Input
                   type="text"
-                  placeholder="Enter RCON command (e.g., 'list', 'say Hello World', 'gamemode creative @a')"
+                  placeholder="Enter RCON command (e.g., 'list', 'say Hello World')"
                   value={rconCommand}
                   onChange={(e) => setRconCommand(e.target.value)}
                   disabled={isExecutingRcon}
@@ -244,7 +244,6 @@ export default function SystemStatusPage() {
             {!rconResult && (
               <div className="text-center text-muted-foreground py-8">
                 <p>Enter an RCON command above to see the results here</p>
-                <p className="text-xs mt-2">Common commands: list, help, say &lt;message&gt;, gamemode, time set</p>
               </div>
             )}
           </CardContent>
