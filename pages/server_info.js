@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button"; // Import Button
-import { RefreshCw } from "lucide-react"; // Import a refresh icon
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { RefreshCw, Send } from "lucide-react";
 import animapuApi from "@/apis/AnimapuApi";
+import { toast } from "react-toastify";
 
 const StatCard = ({ title, children, className = "" }) => (
   <Card className={className}>
@@ -37,28 +39,71 @@ const timeAgo = (iso) => {
 export default function SystemStatusPage() {
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
-  const [isFetching, setIsFetching] = useState(true); // State to track fetching
+  const [isFetching, setIsFetching] = useState(true);
+  const [rconResult, setRconResult] = useState("");
+  const [rconCommand, setRconCommand] = useState("");
+  const [isExecutingRcon, setIsExecutingRcon] = useState(false);
 
-  const fetchStatus = useCallback(async () => {
-    setIsFetching(true); // Indicate fetching has started
+  const fetchStatus = async () => {
+    setIsFetching(true);
     try {
       const res = await fetch(`${animapuApi.GoHomeServerHost}/go-home-server/system/status`);
       if (!res.ok) throw new Error("Network response was not ok");
       const json = await res.json();
       setStatus(json?.data ?? null);
-      setError(null); // Clear previous errors on success
+      setError(null);
     } catch {
       setError("Failed to fetch system status.");
     } finally {
-      setIsFetching(false); // Indicate fetching has finished
+      setIsFetching(false);
     }
-  }, []);
+  };
+
+  const ExecRcon = async (command) => {
+    if (!command.trim()) {
+      toast.error("Please enter a command");
+      return;
+    }
+
+    setIsExecutingRcon(true);
+    try {
+      const uri = `${animapuApi.GoHomeServerHost}/go-home-server/minecraft/rcon`;
+      const res = await fetch(uri, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          command: command,
+        })
+      });
+
+      if (!res.ok) {
+        toast.error("Error executing RCON command");
+        return;
+      }
+
+      const json = await res.json();
+      setRconResult(JSON.stringify(json, null, 2));
+      toast.success("RCON command executed successfully");
+    } catch (error) {
+      toast.error("Failed to execute RCON command");
+      console.error("RCON Error:", error);
+    } finally {
+      setIsExecutingRcon(false);
+    }
+  };
+
+  const handleRconSubmit = (e) => {
+    e.preventDefault();
+    ExecRcon(rconCommand);
+  };
 
   useEffect(() => {
-    fetchStatus(); // Fetch on initial load
-    const interval = setInterval(fetchStatus, 3000); // Refresh every 3 seconds
-    return () => clearInterval(interval); // Cleanup on component unmount
-  }, [fetchStatus]);
+    fetchStatus();
+    const interval = setInterval(fetchStatus, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (!status && isFetching) return <p className="p-4">Loading system status...</p>;
   if (error && !status) return <p className="p-4 text-red-500">{error}</p>;
@@ -158,6 +203,52 @@ export default function SystemStatusPage() {
             </CardContent>
           </Card>
         )}
+
+        {/* RCON Command Interface */}
+        <Card className="lg:col-span-4 md:col-span-2">
+          <CardContent className="p-4">
+            <h2 className="text-xl font-semibold mb-4">RCON Console</h2>
+
+            {/* Command Input Form */}
+            <form onSubmit={handleRconSubmit} className="mb-4">
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="Enter RCON command (e.g., 'list', 'say Hello World', 'gamemode creative @a')"
+                  value={rconCommand}
+                  onChange={(e) => setRconCommand(e.target.value)}
+                  disabled={isExecutingRcon}
+                  className="flex-1"
+                />
+                <Button
+                  type="submit"
+                  disabled={isExecutingRcon || !rconCommand.trim()}
+                  variant="default"
+                >
+                  <Send className={`mr-2 h-4 w-4 ${isExecutingRcon ? "animate-spin" : ""}`} />
+                  Execute
+                </Button>
+              </div>
+            </form>
+
+            {/* Result Display */}
+            {rconResult && (
+              <div>
+                <h3 className="font-semibold text-muted-foreground mb-2">Result:</h3>
+                <pre className="bg-muted p-3 rounded-md text-sm overflow-x-auto whitespace-pre-wrap border">
+                  {rconResult}
+                </pre>
+              </div>
+            )}
+
+            {!rconResult && (
+              <div className="text-center text-muted-foreground py-8">
+                <p>Enter an RCON command above to see the results here</p>
+                <p className="text-xs mt-2">Common commands: list, help, say &lt;message&gt;, gamemode, time set</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
