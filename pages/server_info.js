@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { RefreshCw, Send } from "lucide-react";
 import animapuApi from "@/apis/AnimapuApi";
 import { toast } from "react-toastify";
+import { useSearchParams } from "next/navigation";
 
 const StatCard = ({ title, children, className = "" }) => (
   <Card className={className}>
@@ -123,6 +124,15 @@ export default function SystemStatusPage() {
   const [rconResult, setRconResult] = useState("");
   const [rconCommand, setRconCommand] = useState("");
   const [isExecutingRcon, setIsExecutingRcon] = useState(false);
+
+  const searchParams = useSearchParams()
+
+  const [showRcon, setShowRcon] = useState(false)
+  useEffect(() => {
+    if (searchParams && searchParams.get('rcon')) {
+      setShowRcon(true)
+    }
+  }, [searchParams])
 
   const fetchStatus = async () => {
     setIsFetching(true);
@@ -294,7 +304,7 @@ export default function SystemStatusPage() {
         )}
 
         {/* RCON Command Interface */}
-        <Card className="lg:col-span-4 md:col-span-2">
+        {showRcon && <Card className="lg:col-span-4 md:col-span-2">
           <CardContent className="p-4">
             <h2 className="text-xl font-semibold mb-4">RCON Console</h2>
 
@@ -342,7 +352,7 @@ export default function SystemStatusPage() {
               </div>
             )}
           </CardContent>
-        </Card>
+        </Card>}
       </div>
     </div>
   );
