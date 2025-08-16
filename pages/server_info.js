@@ -36,6 +36,86 @@ const timeAgo = (iso) => {
   return "just now";
 };
 
+const UptimeStatusBar = ({ statusHistory }) => {
+  if (!statusHistory || statusHistory.length === 0) {
+    return (
+      <div className="text-center text-muted-foreground py-2">
+        <p className="text-sm">No uptime history available</p>
+      </div>
+    );
+  }
+
+  // Calculate uptime percentage
+  const totalChecks = statusHistory.length;
+  const onlineChecks = statusHistory.filter(entry => entry.online).length;
+  const uptimePercentage = totalChecks > 0 ? (onlineChecks / totalChecks) * 100 : 0;
+
+  // Get time range
+  const oldestTime = statusHistory[0]?.time;
+  const newestTime = statusHistory[statusHistory.length - 1]?.time;
+  const timeRange = oldestTime && newestTime ?
+    `${timeAgo(oldestTime)} - ${timeAgo(newestTime)}` :
+    "Unknown range";
+
+  return (
+    <div className="space-y-3">
+      {/* Uptime percentage and info */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div>
+          <span className="text-2xl font-bold text-green-600">
+            {uptimePercentage.toFixed(1)}%
+          </span>
+          <span className="text-sm text-muted-foreground ml-2">uptime</span>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {onlineChecks}/{totalChecks} checks online
+        </div>
+      </div>
+
+      {/* Status bar visualization */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-1 overflow-hidden">
+          {statusHistory.map((entry, index) => {
+            const date = new Date(entry.time);
+            const tooltip = `${entry.online ? 'Online' : 'Offline'} at ${date.toLocaleTimeString()}`;
+
+            return (
+              <div
+                key={index}
+                className={`flex-1 min-w-[2px] h-8 rounded-sm transition-all hover:scale-y-110 cursor-help ${
+                  entry.online
+                    ? 'bg-green-500 hover:bg-green-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
+                title={tooltip}
+              />
+            );
+          })}
+        </div>
+
+        {/* Time range indicator */}
+        <div className="flex justify-between text-xs text-muted-foreground">
+          <span>Oldest</span>
+          <span>{timeRange}</span>
+          <span>Latest</span>
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div className="flex items-center gap-4 text-sm">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-green-500 rounded-sm"></div>
+          <span>Online</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 bg-red-500 rounded-sm"></div>
+          <span>Offline</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function SystemStatusPage() {
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
@@ -47,6 +127,8 @@ export default function SystemStatusPage() {
   const fetchStatus = async () => {
     setIsFetching(true);
     try {
+      // For demo purposes, use mock data
+      // Replace this with your actual API call:
       const res = await fetch(`${animapuApi.GoHomeServerHost}/go-home-server/system/status`);
       if (!res.ok) throw new Error("Network response was not ok");
       const json = await res.json();
@@ -94,8 +176,7 @@ export default function SystemStatusPage() {
     }
   };
 
-  const handleRconSubmit = (e) => {
-    e.preventDefault();
+  const handleRconSubmit = () => {
     ExecRcon(rconCommand);
   };
 
@@ -112,7 +193,7 @@ export default function SystemStatusPage() {
   const mc = s?.minecraft_server_status;
 
   return (
-    <div className="p-4">
+    <div className="">
       {/* Header with Refresh Button and Indicator */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">System Status</h1>
@@ -126,7 +207,7 @@ export default function SystemStatusPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2">
         <StatCard title="CPU Usage">
           <p className="text-2xl font-bold">{s?.cpu_usage_percent?.toFixed(1) ?? "N/A"}%</p>
           <Progress value={s?.cpu_usage_percent ?? 0} className="mt-2" />
@@ -153,7 +234,9 @@ export default function SystemStatusPage() {
           <p className="text-sm"><strong>Platform:</strong> {s?.platform ?? "-"} {s?.platform_version ?? ""}</p>
           <p className="text-sm"><strong>Network:</strong> {s?.network_name ?? "-"}</p>
         </StatCard>
+      </div>
 
+      <div className="mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {mc && (
           <Card className="lg:col-span-4 md:col-span-2">
             <CardContent className="p-4">
@@ -166,9 +249,9 @@ export default function SystemStatusPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row justify-between gap-4">
-                {/* Status & Version */}
-                <div>
+              <div className="flex flex-col lg:flex-row justify-between gap-6">
+                {/* Left side: Status & Version */}
+                <div className="flex-shrink-0">
                   <h3 className="font-semibold text-muted-foreground mb-2">Status</h3>
                   <div className="flex items-center gap-2 mb-2">
                     <span
@@ -184,8 +267,14 @@ export default function SystemStatusPage() {
                   <p className="text-sm"><strong>Restart Count:</strong> {mc?.restart_count}</p>
                 </div>
 
-                {/* Online Players */}
-                <div>
+                {/* Middle: Uptime Status Bar */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-muted-foreground mb-2">Uptime History</h3>
+                  <UptimeStatusBar statusHistory={mc?.status_history} />
+                </div>
+
+                {/* Right side: Online Players */}
+                <div className="flex-shrink-0">
                   <h3 className="font-semibold text-muted-foreground mb-2">
                     Players ({mc?.online_players ?? 0}/{mc?.max_players ?? 0})
                   </h3>
@@ -210,18 +299,24 @@ export default function SystemStatusPage() {
             <h2 className="text-xl font-semibold mb-4">RCON Console</h2>
 
             {/* Command Input Form */}
-            <form onSubmit={handleRconSubmit} className="mb-4">
+            <div className="mb-4">
               <div className="flex gap-2">
                 <Input
                   type="text"
                   placeholder="Enter RCON command (e.g., 'list', 'say Hello World')"
                   value={rconCommand}
                   onChange={(e) => setRconCommand(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      ExecRcon(rconCommand);
+                    }
+                  }}
                   disabled={isExecutingRcon}
                   className="flex-1"
                 />
                 <Button
-                  type="submit"
+                  onClick={() => ExecRcon(rconCommand)}
                   disabled={isExecutingRcon || !rconCommand.trim()}
                   variant="default"
                 >
@@ -229,7 +324,7 @@ export default function SystemStatusPage() {
                   Execute
                 </Button>
               </div>
-            </form>
+            </div>
 
             {/* Result Display */}
             {rconResult && (
