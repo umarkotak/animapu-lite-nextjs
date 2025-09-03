@@ -9,11 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RefreshCw, Send, Sun, Moon, Users, MapPin, Gamepad2, Crown, Shield, Zap, CloudRain, Save, UserCheck, UserX, Clock, Globe } from "lucide-react";
+import { RefreshCw, Send, Sun, Moon, Users, MapPin, Gamepad2, Crown, Shield, Zap, CloudRain, Save, UserCheck, UserX, Clock, Globe, DownloadIcon } from "lucide-react";
 import animapuApi from "@/apis/AnimapuApi";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 const timeAgo = (iso) => {
   if (!iso) return "-";
@@ -116,11 +126,13 @@ export default function SystemStatusPage() {
   const [teleportCoords, setTeleportCoords] = useState({ x: "", y: "", z: "" });
   const [selectedPlayer, setSelectedPlayer] = useState("");
   const [targetPlayer, setTargetPlayer] = useState("");
+  const [backups, setBackups] = useState([])
 
   const searchParams = useSearchParams()
 
   const [showRcon, setShowRcon] = useState(false)
   useEffect(() => {
+    GetBackups()
     if (searchParams && searchParams.get('rcon')) {
       setShowRcon(true)
     }
@@ -213,6 +225,30 @@ export default function SystemStatusPage() {
     }
   };
 
+  const GetBackups = async () => {
+    try {
+      const uri = `${animapuApi.GoHomeServerHost}/go-home-server/minecraft/backups`;
+      const res = await fetch(uri, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        toast.error("Error getting Backups");
+        return;
+      }
+
+      const json = await res.json();
+
+      setBackups(json.data)
+
+    } catch (error) {
+      toast.error("Failed to get Backups");
+      console.error("RCON Error:", error);
+    }
+  };
+
   const handleQuickCommand = (command) => {
     ExecRcon(command);
   };
@@ -296,6 +332,25 @@ export default function SystemStatusPage() {
           <Button size="sm" variant="outline">Arena Builder</Button>
         </Link>
         <Button size="sm" variant="outline" onClick={() => ExecBackup()}>Backup!</Button>
+        <Drawer>
+          <DrawerTrigger><Button size="sm" variant="outline">Backup List</Button></DrawerTrigger>
+          <DrawerContent>
+            <div className="mx-auto max-w-80">
+              <DrawerHeader>
+                <DrawerTitle>Backups</DrawerTitle>
+                <DrawerDescription>Download backup.</DrawerDescription>
+              </DrawerHeader>
+
+              <div className="flex flex-col gap-1 mb-4">
+                {backups.map((backup) => (
+                  <div key={backup}>
+                    <a href={backup.url}><Button><DownloadIcon /> {backup.name}</Button></a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
 
       {/* Server Status Overview */}
