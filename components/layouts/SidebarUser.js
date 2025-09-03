@@ -7,6 +7,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   Download,
+  Gamepad2Icon,
   LogIn,
   LogOut,
   ServerIcon,
@@ -127,6 +128,14 @@ export function SidebarUser() {
           <SidebarMenuButton>
             <ServerIcon />
             <span>Server Info</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </Link>
+      <Link href="/mc/status">
+        <SidebarMenuItem>
+          <SidebarMenuButton>
+            <Gamepad2Icon />
+            <span>Minecraft Server</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </Link>
