@@ -312,7 +312,7 @@ export default function SystemStatusPage() {
   if (!pingerStatus && isFetching) return <p className="p-4">Loading system status...</p>;
   if (error && !pingerStatus) return <p className="p-4 text-red-500">{error}</p>;
 
-  const onlinePlayers = pingerStatus?.player_names_online || [];
+  const onlinePlayers = realtimeStatus?.player_names_online || [];
 
   return (
     <div className="space-y-4">
@@ -367,20 +367,20 @@ export default function SystemStatusPage() {
                   />
                   <div>
                     <h2 className="text-xl font-semibold">
-                      {pingerStatus?.motd || "Minecraft Server"}
+                      {realtimeStatus?.motd || "Minecraft Server"}
                     </h2>
                     <p className="text-sm text-muted-foreground font-mono">
-                      {pingerStatus?.server_host}
+                      {realtimeStatus?.server_host}
                     </p>
                   </div>
                 </div>
                 <Badge variant={realtimeStatus?.online ? "default" : "destructive"} className="ml-4">
-                  {pingerStatus?.status}
+                  {realtimeStatus?.status}
                 </Badge>
               </div>
 
               <div className="text-right">
-                <p className="text-sm text-muted-foreground">Version: {pingerStatus?.version || "-"}</p>
+                <p className="text-sm text-muted-foreground">Version: {realtimeStatus?.version || "-"}</p>
                 <p className="text-sm text-muted-foreground">Players: {realtimeStatus?.online_players ?? 0}/{realtimeStatus?.max_players ?? 0}</p>
               </div>
             </div>
