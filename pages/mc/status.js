@@ -321,7 +321,7 @@ export default function SystemStatusPage() {
         <h1 className="text-3xl font-bold">Minecraft Server Console</h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            {isFetching && !error && <p className="text-sm text-muted-foreground">Updating...</p>}
+            {(isFetching && !error) ? <p className="text-sm">updating</p> : <p className="text-sm">updated</p>}
             {error && <p className="text-sm text-red-500">Update failed!</p>}
           </div>
         </div>
@@ -364,6 +364,7 @@ export default function SystemStatusPage() {
                     className={`inline-block h-4 w-4 rounded-full ${
                       realtimeStatus?.online ? "bg-green-500 animate-pulse" : "bg-red-500"
                     }`}
+                    onClick={() => {window.location.replace("/mc/status?rcon=1")}}
                   />
                   <div>
                     <h2 className="text-xl font-semibold">
