@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RefreshCw, Send, Sun, Moon, Users, MapPin, Gamepad2, Crown, Shield, Zap, CloudRain, Save, UserCheck, UserX, Clock, Globe, DownloadIcon } from "lucide-react";
+import { RefreshCw, Send, Sun, Moon, Users, MapPin, Gamepad2, Crown, Shield, Zap, CloudRain, Save, UserCheck, UserX, Clock, Globe, DownloadIcon, Play, Pause, Bomb, BombIcon } from "lucide-react";
 import animapuApi from "@/apis/AnimapuApi";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
@@ -518,6 +518,54 @@ export default function SystemStatusPage() {
                     <Separator />
 
                     <div>
+                      <h4 className="font-medium mb-3">Game Rules</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <Button
+                          onClick={() => handleQuickCommand("gamerule doDaylightCycle false")}
+                          disabled={isExecutingRcon}
+                          variant="outline"
+                          size="sm"
+                          className="justify-start"
+                        >
+                          <Pause className="mr-2 h-4 w-4" />
+                          Freeze Day Cycle
+                        </Button>
+                        <Button
+                          onClick={() => handleQuickCommand("gamerule doDaylightCycle true")}
+                          disabled={isExecutingRcon}
+                          variant="outline"
+                          size="sm"
+                          className="justify-start"
+                        >
+                          <Play className="mr-2 h-4 w-4" />
+                          Enable Day Cycle
+                        </Button>
+                        <Button
+                          onClick={() => handleQuickCommand("gamerule mobGriefing false")}
+                          disabled={isExecutingRcon}
+                          variant="outline"
+                          size="sm"
+                          className="justify-start"
+                        >
+                          <Shield className="mr-2 h-4 w-4" />
+                          Disable Mob Griefing
+                        </Button>
+                        <Button
+                          onClick={() => handleQuickCommand("gamerule mobGriefing true")}
+                          disabled={isExecutingRcon}
+                          variant="outline"
+                          size="sm"
+                          className="justify-start"
+                        >
+                          <BombIcon className="mr-2 h-4 w-4" />
+                          Enable Mob Griefing
+                        </Button>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    <div>
                       <h4 className="font-medium mb-3">World Management</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <Button
@@ -874,6 +922,7 @@ export default function SystemStatusPage() {
                         <li><code>ban &lt;player&gt;</code> - Ban a player</li>
                         <li><code>pardon &lt;player&gt;</code> - Unban a player</li>
                         <li><code>difficulty &lt;peaceful|easy|normal|hard&gt;</code> - Change difficulty</li>
+                        <li><code>gamerule &lt;rule&gt; &lt;value&gt;</code> - Change game rules</li>
                       </ul>
                     </div>
                   </CardContent>
