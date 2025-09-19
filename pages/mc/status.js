@@ -386,6 +386,10 @@ export default function SystemStatusPage() {
               </div>
             </div>
 
+            <p className="text-sm text-muted-foreground font-mono">
+              setelah login, silahkan kirim command ini untuk mulai bermain: /login admin123
+            </p>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               {/* Server Stats */}
               <div className="col-span-3">
