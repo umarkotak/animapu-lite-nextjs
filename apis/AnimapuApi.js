@@ -196,6 +196,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetUsersAnimeActivities(limit) {
+    var uri = `${this.AnimapuApiHost}/users/animes/activities?limit=${limit}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async GetAnimesBySeason(params) {
     var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/season/${params.year}/${params.season}`
     const response = await fetch(uri, {
