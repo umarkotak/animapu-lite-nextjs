@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import { BookIcon, BookmarkIcon, EyeIcon, HeartIcon, PlayIcon, Share2Icon, XIcon } from 'lucide-react'
 import { Badge } from './ui/badge'
 import { AnimeCardModal } from './AnimeCard'
+import utils from '@/models/Utils'
 
 export default function AnimeCardBar(props) {
   const [showModal, setShowModal] = useState(false)

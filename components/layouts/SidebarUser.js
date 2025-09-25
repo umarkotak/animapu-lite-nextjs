@@ -30,6 +30,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  SidebarGroup,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -123,30 +125,30 @@ export function SidebarUser() {
           </SidebarMenuButton>
         </SidebarMenuItem>
       }
-      <Link href="/server_info">
+      <a href="/server_info">
         <SidebarMenuItem>
           <SidebarMenuButton>
             <ServerIcon />
             <span>Server Info</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
-      </Link>
-      <Link href="/mc/status">
+      </a>
+      <a href="/mc/status">
         <SidebarMenuItem>
           <SidebarMenuButton>
             <Gamepad2Icon />
             <span>Minecraft Server</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
-      </Link>
-      <Link href="/setting">
+      </a>
+      <a href="/setting">
         <SidebarMenuItem>
           <SidebarMenuButton>
             <Settings />
             <span>Setting</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
-      </Link>
+      </a>
       <SidebarMenuItem>
         {user.email ?
           <DropdownMenu>
@@ -200,10 +202,10 @@ export function SidebarUser() {
           </DropdownMenu>
         :
           <SidebarMenuButton asChild>
-            <Link href="/login">
+            <a href="/login">
               <LogIn />
               <span>Login</span>
-            </Link>
+            </a>
           </SidebarMenuButton>
         }
       </SidebarMenuItem>

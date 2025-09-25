@@ -19,7 +19,8 @@ export default function AdminIndex() {
         <CardContent className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <Link href="/admin/affiliate_link"><Button className="w-full">Affiliate Link Management</Button></Link>
-            <Link href="/admin/user_activity"><Button className="w-full">User Activity</Button></Link>
+            <Link href="/admin/user_activity"><Button className="w-full">User Manga Activity</Button></Link>
+            <Link href="/admin/user_anime_activity"><Button className="w-full">User Anime Activity</Button></Link>
             <Link href="/admin/voice_recorder"><Button className="w-full">Voice Recorder</Button></Link>
           </div>
         </CardContent>
