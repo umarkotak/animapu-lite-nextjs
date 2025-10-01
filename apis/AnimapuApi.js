@@ -3,11 +3,11 @@ import { v4 as uuidv4 } from 'uuid'
 class AnimapuApi {
   constructor() {
     if (typeof(window) !== "undefined" && window.location.protocol === "https:") {
-      this.GoHomeServerHost = "https://go-home-server.cloudflare-avatar-id-1.site"
-      this.AnimapuApiHost = "https://animapu-api-m4.cloudflare-avatar-id-1.site"
+      this.GoHomeServerHost = "https://home-server-api.cloudflare-avatar-id-1.site"
+      this.AnimapuApiHost = "https://animapu-api.cloudflare-avatar-id-1.site"
     } else {
-      this.GoHomeServerHost = "https://go-home-server.cloudflare-avatar-id-1.site"
-      this.AnimapuApiHost = "https://animapu-api-m4.cloudflare-avatar-id-1.site"
+      this.GoHomeServerHost = "https://home-server-api.cloudflare-avatar-id-1.site"
+      this.AnimapuApiHost = "https://animapu-api.cloudflare-avatar-id-1.site"
       // this.AnimapuApiHost = "http://localhost:6001"
     }
   }
