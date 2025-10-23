@@ -21,7 +21,6 @@ export default function AdminIndex() {
             <Link href="/admin/affiliate_link"><Button className="w-full">Affiliate Link Management</Button></Link>
             <Link href="/admin/user_activity"><Button className="w-full">User Manga Activity</Button></Link>
             <Link href="/admin/user_anime_activity"><Button className="w-full">User Anime Activity</Button></Link>
-            <Link href="/admin/voice_recorder"><Button className="w-full">Voice Recorder</Button></Link>
           </div>
         </CardContent>
       </Card>

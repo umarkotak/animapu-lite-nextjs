@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -6,20 +5,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { GraduationCap, MoreHorizontal, Plus, Trash } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import animapuApi from "@/apis/AnimapuApi"
-import { Checkbox } from "@/components/ui/checkbox"
-import { DropdownMenuContent, DropdownMenuTrigger, DropdownMenu, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import AnimeCardBar from "@/components/AnimeCardBar"
-import AnimeCard from "@/components/AnimeCard"
 
 export default function UserActivity() {
   const [usersAnimeActivity, setUsersAnimeActivity] = useState([])
@@ -46,7 +35,7 @@ export default function UserActivity() {
     <div className="flex flex-col gap-4">
       <Card>
         <CardHeader className="p-4">
-          <CardTitle>Users Manga Activity</CardTitle>
+          <CardTitle>Users Anime Activity</CardTitle>
         </CardHeader>
         <CardContent className="p-4">
           <div className="flex flex-col gap-6">

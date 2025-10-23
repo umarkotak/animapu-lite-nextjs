@@ -10,6 +10,7 @@ import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';
 import { ThemeProvider } from 'next-themes'
 import { Geist, Roboto } from 'next/font/google'
 import { DefaultLayout } from '@/components/layouts/DefaultLayout'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 const roboto = Geist({
   weight: '400',
@@ -47,13 +48,15 @@ function MyApp({ Component, pageProps }) {
 
       <ThemeProvider
         attribute="class"
-        defaultTheme="system"
+        defaultTheme="dark"
         enableSystem
       >
         <div className={roboto.className}>
-          <DefaultLayout>
-            <Component {...pageProps} />
-          </DefaultLayout>
+          <SidebarProvider>
+            <DefaultLayout>
+              <Component {...pageProps} />
+            </DefaultLayout>
+          </SidebarProvider>
         </div>
       </ThemeProvider>
 
