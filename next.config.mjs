@@ -1,17 +1,16 @@
-import withPWA from 'next-pwa';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,      // Enable React strict mode for improved error handling
-    swcMinify: true,            // Enable SWC minification for improved performance
-    compiler: {
-        removeConsole: process.env.NODE_ENV !== "development"     // Remove console.log in production
-    }
+  reactStrictMode: true,
+  turbopack: {
+    // You can now safely use __dirname here
+    root: path.join(__dirname, '..'),
+  },
 };
 
-export default withPWA({
-    dest: "public",         // destination directory for the PWA files
-    disable: process.env.NODE_ENV === "development",        // disable PWA in the development environment
-    register: true,         // register the PWA service worker
-    skipWaiting: true,      // skip waiting for service worker activation
-})(nextConfig);
+export default nextConfig;

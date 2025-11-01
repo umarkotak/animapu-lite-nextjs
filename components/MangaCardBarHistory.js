@@ -33,7 +33,7 @@ export default function MangaCardBarHistory(props) {
       >
         <div className="relative flex-none">
           <img
-            className={`flex-none object-cover h-full w-[100px]`}
+            className={`flex-none object-contain h-full w-[100px]`}
             src={
               (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
                 || "/images/default-book.png"
@@ -45,7 +45,7 @@ export default function MangaCardBarHistory(props) {
           </div>}
         </div>
         <div className="flex flex-col justify-between">
-          <p className="text-xs leading-1 line-clamp-2">{props.manga.title}</p>
+          <p className="text-xs line-clamp-2">{props.manga.title}</p>
 
           <div className="flex flex-col pb-4">
             <span className="text-xs">{props.manga.latest_chapter_number !== 0 ? `ch ${props.manga.latest_chapter_number}` : "Read"}</span>

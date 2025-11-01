@@ -296,7 +296,7 @@ class AnimapuApi {
         return localStorage.getItem("ANIMAPU_LITE:ACTIVE_MANGA_SOURCE")
       }
     }
-    return "mangabat"
+    return "komikindo"
   }
 
   GetActiveAnimeSource() {

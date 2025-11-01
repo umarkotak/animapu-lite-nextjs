@@ -1,5 +1,5 @@
 run:
-	npm run dev
+	bun --bun run dev
 
 build:
-	npm run build
+	bun --bun run build

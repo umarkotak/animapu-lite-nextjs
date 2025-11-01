@@ -3,15 +3,15 @@ import { useRouter } from "next/router"
 
 import animapuApi from "../apis/AnimapuApi"
 import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
+import ChangeAnimeSourceModalOnly from "../components/ChangeAnimeSourceModalOnly"
 import { toast } from 'react-toastify'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Search } from 'lucide-react'
 import MangaCardV2 from '@/components/MangaCardV2'
+import AnimeCard from '@/components/AnimeCard'
 import { LoadingSpinner } from '@/components/ui/icon'
 
 var onApiCall = false
@@ -19,19 +19,28 @@ export default function Home() {
   let router = useRouter()
   const query = router.query
 
+  // Toggle between manga and anime
+  const [searchType, setSearchType] = useState("manga") // "manga" or "anime"
+
+  // Manga states
   const [mangas, setMangas] = useState([])
-  const [title, setTitle] = useState("")
-  const [activeSource, setActiveSource] = useState("")
-  const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
-  const [showModal, setShowModal] = useState(false)
-  const closeModal = () => {
-    setShowModal(false)
-  }
   const [mangaSourcesData, setMangaSourcesData] = useState([])
   const [searchMode, setSearchMode] = useState("global")
+  const [activeMangaSource, setActiveMangaSource] = useState("")
+  const [showMangaModal, setShowMangaModal] = useState(false)
+
+  // Anime states
+  const [animes, setAnimes] = useState([])
+  const [activeAnimeSource, setActiveAnimeSource] = useState("")
+  const [showAnimeModal, setShowAnimeModal] = useState(false)
+
+  // Shared states
+  const [title, setTitle] = useState("")
+  const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
 
   useEffect(() => {
-    setActiveSource(animapuApi.GetActiveMangaSource())
+    setActiveMangaSource(animapuApi.GetActiveMangaSource())
+    setActiveAnimeSource(animapuApi.GetActiveAnimeSource())
   }, [])
 
   async function SearchManga() {
@@ -40,8 +49,6 @@ export default function Home() {
     try {
       setIsLoadMoreLoading(true)
       if (mangaSourcesData.length > 0 && searchMode === "global") {
-        // console.log(mangaSourcesData)
-
         var tmpSearchData = []
 
         await Promise.all(mangaSourcesData.map(async (oneMangaSourceData) => {
@@ -72,7 +79,6 @@ export default function Home() {
         }
       }
       onApiCall = false
-
       setIsLoadMoreLoading(false)
 
     } catch (e) {
@@ -83,69 +89,151 @@ export default function Home() {
     }
   }
 
+  async function SearchAnime() {
+    if (onApiCall) {return}
+    onApiCall = true
+    try {
+      setIsLoadMoreLoading(true)
+      const response = await animapuApi.SearchAnime({
+        anime_source: activeAnimeSource,
+        title: title
+      })
+      const body = await response.json()
+
+      if (response.status == 200) {
+        setAnimes(body.data)
+      } else {
+        toast.error(body.error.message)
+        console.error("FAIL", body)
+      }
+      onApiCall = false
+      setIsLoadMoreLoading(false)
+
+    } catch (e) {
+      console.error(e)
+      onApiCall = false
+      toast.error(e.message)
+      setIsLoadMoreLoading(false)
+    }
+  }
+
+  function handleSearch() {
+    if (searchType === "manga") {
+      SearchManga()
+    } else {
+      SearchAnime()
+    }
+  }
+
   function handleKeyDown(e) {
-    if (e.key === "Enter") SearchManga()
+    if (e.key === "Enter") handleSearch()
   }
 
   return (
-    <div className='flex flex-col gap-4'>
-      <Card>
-        <CardHeader className="p-4">
-          <CardTitle className="flex justify-between items-center">
-            <div>
-              <h1 className='text-xl'>{activeSource}</h1>
+    <div className='flex flex-col gap-2'>
+      {/* Type Toggle Card */}
+      <div>
+        <div className="p-2">
+          <div className="flex justify-between items-center">
+            <h1 className='text-xl'>Search</h1>
+            <div className="flex items-center space-x-2">
+              <Label htmlFor="search-type">Manga</Label>
+              <Switch
+                id="search-type"
+                checked={searchType === "anime"}
+                onClick={() => setSearchType(searchType === "manga" ? "anime" : "manga")}
+              />
+              <Label htmlFor="search-type">Anime</Label>
             </div>
-            <div>
-              <Button onClick={()=>{setShowModal(true)}}>Ganti Sumber</Button>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="global-search"
+                checked={searchMode === "global"}
+                onClick={() => setSearchMode(searchMode === "global" ? "single" : "global")}
+              />
+              <Label htmlFor="global-search">Global Search</Label>
             </div>
-          </CardTitle>
-        </CardHeader>
-      </Card>
+          </div>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader className="p-4">
-          <CardTitle className="flex justify-between items-center">
+      {/* Source Card */}
+      <div>
+        <div className="p-2">
+          <div className="flex justify-between items-center">
             <div>
-              <h1 className='text-xl'>Search</h1>
+              <h1 className='text-xl'>
+                {searchType === "manga" ? activeMangaSource : activeAnimeSource}
+              </h1>
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="global-search"
-                  checked={searchMode==="global"}
-                  onClick={()=>{searchMode==="global" ? setSearchMode("single") : setSearchMode("global")}}
-                />
-                <Label htmlFor="global-search">Global Search</Label>
-              </div>
+              <Button onClick={() => {
+                if (searchType === "manga") {
+                  setShowMangaModal(true)
+                } else {
+                  setShowAnimeModal(true)
+                }
+              }}>
+                Ganti Sumber
+              </Button>
             </div>
-          </CardTitle>
-        </CardHeader>
+          </div>
+        </div>
+      </div>
 
-        <CardContent className="p-4">
+      {/* Search Card */}
+      <div>
+        <div className="p-2">
           <div className='flex items-center gap-2'>
             <Input
               type="text"
               placeholder="Search"
+              value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={(e) => handleKeyDown(e)}
             />
-            <Button onClick={()=>SearchManga()}>
+            <Button onClick={handleSearch}>
               <Search />
               Search
             </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      { isLoadMoreLoading ? <LoadingSpinner /> : <></>}
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-        {mangas.map((manga, idx) => (
-          <MangaCardV2 manga={manga} idx={idx} key={`${manga.source}-${manga.source_id}`} show_hover_source={true} />
-        ))}
+        </div>
       </div>
 
-      <ChangeSourceModalOnly show={showModal} onClose={closeModal} setMangaSourcesData={setMangaSourcesData} />
+      {/* Loading Spinner */}
+      {isLoadMoreLoading ? <LoadingSpinner /> : <></>}
+
+      {/* Results Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
+        {searchType === "manga"
+          ? mangas.map((manga, idx) => (
+              <MangaCardV2
+                manga={manga}
+                idx={idx}
+                key={`${manga.source}-${manga.source_id}`}
+                show_hover_source={true}
+              />
+            ))
+          : animes.map((oneAnimeData) => (
+              <AnimeCard
+                anime={oneAnimeData}
+                key={`${oneAnimeData.source}-${oneAnimeData.id}`}
+                source={oneAnimeData.source}
+              />
+            ))
+        }
+      </div>
+
+      {/* Modals */}
+      <ChangeSourceModalOnly
+        show={showMangaModal}
+        onClose={() => setShowMangaModal(false)}
+        setMangaSourcesData={setMangaSourcesData}
+      />
+      <ChangeAnimeSourceModalOnly
+        show={showAnimeModal}
+        onClose={() => setShowAnimeModal(false)}
+      />
     </div>
   )
 }

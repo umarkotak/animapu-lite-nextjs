@@ -1,18 +1,11 @@
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { GraduationCap } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/router"
-import { useState } from "react"
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { toast } from "react-toastify"
 import { jwtDecode } from "jwt-decode";
@@ -22,7 +15,7 @@ const G_CLIENT_ID = "915149914245-vd6k2rs1qgaeqddb1mticba2aumtaq4h.apps.googleus
 
 export default function Login() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <div className="flex min-h-[calc(100vh-60px)] flex-col items-center gap-6 p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Link href="/" className="flex items-center gap-2 self-center font-medium">
           <img src="/images/cover192.png" className="h-10 w-10 rounded-lg" />
@@ -35,8 +28,6 @@ export default function Login() {
 }
 
 function SignInForm({className, ...props}) {
-  const router = useRouter()
-
   function GoogleLoginCallback(response) {
     try {
       var googleData = response
@@ -50,7 +41,6 @@ function SignInForm({className, ...props}) {
       localStorage.setItem("ANIMAPU_LITE:USER:EMAIL", decoded.email)
 
       toast.info("Login sukses!")
-      // router.push("/home")
       window.location.href = "/home"
     } catch(e) {
       toast.error(`Error: ${e}`)
@@ -61,7 +51,7 @@ function SignInForm({className, ...props}) {
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Hello!</CardTitle>
+          <CardTitle className="text-xl">Welcome to Animapu!</CardTitle>
         </CardHeader>
         <CardContent>
           <div>
@@ -87,10 +77,6 @@ function SignInForm({className, ...props}) {
           </div>
         </CardContent>
       </Card>
-      <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:text-primary  ">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
     </div>
   )
 }

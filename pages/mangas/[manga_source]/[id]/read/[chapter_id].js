@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 import { Img } from 'react-image'
@@ -12,7 +12,7 @@ import { toast } from 'react-toastify'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Bookmark, ChevronDownIcon, DownloadIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
+import { Bookmark, ChevronDownIcon, ChevronLeft, DownloadIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import AdsCard from '@/components/AdsCard'
@@ -37,6 +37,7 @@ export default function ReadManga(props) {
   const [loadedImageUrls, setLoadedImageUrls] = useState({})
   const [failedImageUrls, setFailedImageUrls] = useState({})
   const [chapterFilter, setChapterFilter] = useState("")
+  const [selectedChapterId, setSelectedChapterId] = useState(query.chapter_id || "")
 
   useEffect(() => {
     if (animapuApi.GetUserLogin().logged_in === "") {
@@ -234,6 +235,21 @@ export default function ReadManga(props) {
     return pdfUrl
   }
 
+  useEffect(() => {
+    if (showChaptersModal) {
+      // Small delay to ensure the drawer animation has started
+      setTimeout(() => {
+        const currentChapterElement = document.getElementById('current-chapter');
+        if (currentChapterElement) {
+          currentChapterElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
+      }, 100);
+    }
+  }, [showChaptersModal]);
+
   return (
     <>
       <Head>
@@ -251,15 +267,15 @@ export default function ReadManga(props) {
         </>}
       </Head>
 
-      <div className="flex flex-col gap-4">
-        <Card className="border-none bg-primary">
-          <CardHeader>
-            <CardTitle className='text-3xl tracking-wide'>{manga.title}</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <div className="flex flex-col gap-4 mt-2">
+        <div className="">
+          <div>
+            <div className='text-3xl tracking-wide'>{manga.title}</div>
+          </div>
+          <div>
             source: {manga.source}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <Drawer open={showChaptersModal} onOpenChange={setShowChaptersModal}>
           <DrawerContent>
@@ -275,17 +291,21 @@ export default function ReadManga(props) {
                 />
               </div>
               <div className='flex flex-col gap-2 p-4'>
-                {manga.chapters.filter((mangaChapter) => mangaChapter.title.includes(chapterFilter)).map((mangaChapter) => (
-                  <Link
-                    href={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
-                    onClick={()=>{setShowChaptersModal(false)}}
-                    key={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
-                  >
-                    <Button variant="outline" className="w-full">
-                      {mangaChapter.title}
-                    </Button>
-                  </Link>
-                ))}
+                {manga.chapters.filter((mangaChapter) => mangaChapter.title.includes(chapterFilter)).map((mangaChapter) => {
+                  const isCurrentChapter = mangaChapter.id === selectedChapterId;
+                  return (
+                    <Link
+                      key={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
+                      href={`/mangas/${manga.source}/${manga.source_id}/read/${mangaChapter.id}`}
+                      onClick={()=>{setShowChaptersModal(false)}}
+                      id={isCurrentChapter ? 'current-chapter' : undefined}
+                    >
+                      <Button variant={isCurrentChapter ? "default" : "outline"} className="w-full">
+                        {mangaChapter.title}
+                      </Button>
+                    </Link>
+                  );
+                })}
               </div>
               <DrawerFooter className="pt-2">
                 <DrawerClose asChild>
@@ -299,18 +319,28 @@ export default function ReadManga(props) {
         <div>
           {chapters.map((oneChapter) => (
             <div key={`chapter-${oneChapter.id}-${oneChapter.number}`}>
-              <div className='mb-4'>
+              {/* <div className='mb-4'>
                 <AdsCard variant={"manga_chapter"} limit={2} />
-              </div>
+              </div> */}
 
-              <Card className="sticky top-12 border-none rounded-none">
-                <CardContent className="p-0 flex flex-col">
+              <div className="sticky top-0 bg-accent">
+                <div className="p-0 flex flex-col">
                   <div className='flex justify-between items-center gap-1'>
-                    <Button size="sm" variant="outline" onClick={()=>setShowChaptersModal(!showChaptersModal)}>
-                      {onApiCallSt && <LoadingSpinner />}
-                      Chapter - {oneChapter.number}
-                      <ChevronDownIcon size={14} />
-                    </Button>
+                    <div className='flex items-center gap-1'>
+                      <Button size="sm" variant="outline" onClick={()=>{
+                        router.back()
+                      }}>
+                        <ChevronLeft size={14} />
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={()=>{
+                        setSelectedChapterId(oneChapter.id);
+                        setShowChaptersModal(!showChaptersModal);
+                      }}>
+                        {onApiCallSt && <LoadingSpinner />}
+                        Chapter - {oneChapter.number}
+                        <ChevronDownIcon size={14} />
+                      </Button>
+                    </div>
                     <div className='flex items-center gap-1'>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -362,8 +392,8 @@ export default function ReadManga(props) {
                     showPercentage={false}
                     className=""
                   />
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
               <div id={`${oneChapter.id}-top`} className=''></div>
               <div className='flex flex-col items-center gap-1 w-full max-w-[800px]'>

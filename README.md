@@ -1,1 +1,1 @@
-# Animapu Lite
+# Animapu

@@ -1,15 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import {Img} from 'react-image'
-import animapuApi from '@/apis/AnimapuApi'
-import { Button } from './ui/button'
-import { toast } from 'react-toastify'
-import { useRouter } from 'next/router'
-import { BookIcon, BookmarkIcon, EyeIcon, HeartIcon, PlayIcon, Share2Icon, XIcon } from 'lucide-react'
-import { Badge } from './ui/badge'
+import { useState } from 'react'
 import { AnimeCardModal } from './AnimeCard'
 import utils from '@/models/Utils'
 
@@ -36,7 +27,7 @@ export default function AnimeCardBar(props) {
       >
         <div className="relative flex-none">
           <img
-            className={`flex-none object-cover h-full w-[100px]`}
+            className={`flex-none object-contain h-full w-[100px]`}
             src={(props?.anime?.cover_urls) || "/images/default-book.png"}
             alt="thumb"
           />
@@ -45,7 +36,7 @@ export default function AnimeCardBar(props) {
           </div>}
         </div>
         <div className="flex flex-col justify-between">
-          <p className="text-xs leading-1 line-clamp-2">{props.anime.title}</p>
+          <p className="text-xs line-clamp-2">{props.anime.title}</p>
 
           <div className="flex flex-col pb-4">
             <span className="text-xs">{props.anime.latest_episode !== 0 ? `ep ${props.anime.latest_episode}` : "Read"}</span>

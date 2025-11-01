@@ -44,7 +44,7 @@ export default function MangaCardV2(props) {
 
   return(
     <div
-      className={`w-full max-w-[175px] h-[265px] mx-auto`}
+      className={`w-full max-w-[175px] h-[265px] mx-auto group`}
       key={`${props.manga.source}-${props.manga.source_id}`}
       id={`${props.manga.source}-${props.manga.source_id}`}
     >
@@ -54,7 +54,7 @@ export default function MangaCardV2(props) {
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
             <img
-              className={`w-full object-cover h-[265px] rounded-xl hover:scale-105 transition z-0 cursor-pointer`}
+              className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
               src={
                 (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
                   || "/images/default-book.png"
@@ -72,10 +72,10 @@ export default function MangaCardV2(props) {
             <small>last update: {utils.GetTimeElapsed(props.manga.updated_at)}</small>
           </div>}
           <div
-            className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"
+            className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black/80 backdrop-blur-sm cursor-pointer"
             onClick={()=>setShowModal(!showModal)}
           >
-            <p className="text-sm leading-1 line-clamp-1">
+            <p className="text-sm line-clamp-2 group-hover:text-blue-400">
               {props.manga.title}
             </p>
             <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
