@@ -1,44 +1,86 @@
-import { useState, useEffect } from "react"
-import {
-  Book,
-  Bookmark,
-  Download,
-  Eye,
-  Heart,
-  Play,
-  Share2,
-  X,
-  ChevronDown,
-  Search
-} from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
-import animapuApi from "@/apis/AnimapuApi"
+import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/router"
+import { BookIcon, BookmarkIcon, DownloadIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
+import { toast } from 'react-toastify'
+import Link from 'next/link'
 
-// Shimmer Loading Card
-function MangaCardShimmer({ manga }) {
-  return (
+import animapuApi from "../apis/AnimapuApi"
+import Manga from "../models/Manga"
+import { Button } from "./ui/button"
+import { Badge } from "./ui/badge"
+import utils from "@/models/Utils"
+
+export default function MangaCardV2(props) {
+  const [showModal, setShowModal] = useState(false)
+
+  function lastReadChapter() {
+    if (props.manga.last_link) {
+      return(`continue: ch ${props.manga.last_chapter_read}`)
+    }
+  }
+
+  if (props.manga.shimmer) {
+    return(
+      <div
+        className={`w-full max-w-[175px] h-[265px] mx-auto rounded-xl`}
+        key={`card-${props.manga.source}-${props.manga.source_id}`}
+      >
+        <div className="w-[175px] h-[265px] rounded-xl">
+          <div className="flex flex-col justify-end relative z-10 animate-pulse shadow-xl">
+            <div className="w-full h-[265px] rounded-xl bg-slate-500">
+            </div>
+
+            <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded-b-xl w-full">
+              <div className="h-2 bg-slate-500 rounded mb-2"></div>
+              <div className="h-2 bg-slate-500 rounded mb-2"></div>
+              <div className="h-3 w-12 bg-blue-500 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return(
     <div
-      className="w-full max-w-[175px] h-[265px] mx-auto rounded-xl"
-      key={`card-${manga.source}-${manga.source_id}`}
+      className={`w-full max-w-[175px] h-[265px] mx-auto group`}
+      key={`${props.manga.source}-${props.manga.source_id}`}
+      id={`${props.manga.source}-${props.manga.source_id}`}
     >
-      <div className="w-[175px] h-[265px] rounded-xl">
-        <div className="flex flex-col justify-end relative z-10 animate-pulse shadow-xl">
-          <div className="w-full h-[265px] rounded-xl bg-slate-500" />
-          <div className="absolute bg-black bg-opacity-75 p-2 text-white z-10 rounded-b-xl w-full">
-            <div className="h-2 bg-slate-500 rounded mb-2" />
-            <div className="h-2 bg-slate-500 rounded mb-2" />
-            <div className="h-3 w-12 bg-blue-500 rounded" />
+      <div className="flex flex-col relative shadow-xl rounded-xl">
+        <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
+
+        <div className="overflow-hidden rounded-xl">
+          <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
+            <img
+              className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
+              src={
+                (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                  || "/images/default-book.png"
+              }
+              alt="thumb"
+            />
+          </div>
+        </div>
+
+        <div>
+          {props.show_hover_source && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
+            <small>{props.manga.source}</small>
+          </div>}
+          {props.show_updated_at && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
+            <small>last update: {utils.GetTimeElapsed(props.manga.updated_at)}</small>
+          </div>}
+          <div
+            className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black/80 backdrop-blur-sm cursor-pointer"
+            onClick={()=>setShowModal(!showModal)}
+          >
+            <p className="text-sm line-clamp-2 group-hover:text-blue-400">
+              {props.manga.title}
+            </p>
+            <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
+              <span>{props.manga.latest_chapter_number !== 0 ? `Ch ${props.manga.latest_chapter_number}` : "Read"}</span>
+              <span className="text-[12px]">{lastReadChapter()}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -46,399 +88,282 @@ function MangaCardShimmer({ manga }) {
   )
 }
 
-// Main Card Component
-export default function MangaCardV2({ manga, show_hover_source, show_updated_at, disableBookmarkIcon }) {
-  const [showDrawer, setShowDrawer] = useState(false)
-  const [followed, setFollowed] = useState(manga.is_in_library)
+export function MangaCardModal(props) {
+  let router = useRouter()
+  const query = router.query
 
-  const lastReadText = manga.last_link ? `continue: ch ${manga.last_chapter_read}` : null
+  const [show, setShow] = useState(false)
+  const [manga, setManga] = useState(initManga(props.manga))
 
-  const coverImage = manga.cover_image?.[0]?.image_urls?.[0] || "/images/default-book.png"
-
-  const handleBookmark = async () => {
-    if (!manga.source_id) return
-
-    const newFollowedState = !followed
-    setFollowed(newFollowedState)
-
-    try {
-      const params = { source: manga.source, source_id: manga.source_id }
-      // Simulated API call
-      console.log(followed ? 'Remove from library' : 'Add to library', params)
-
-      // Simulate success
-      console.log(followed ? "Manga removed from library!" : "Manga saved to library!")
-    } catch (e) {
-      setFollowed(!newFollowedState)
-      console.error(`Error: ${e}`)
-    }
+  function initManga(initialManga) {
+    initialManga.chapters = []
+    return initialManga
   }
 
-  if (manga.shimmer) {
-    return <MangaCardShimmer manga={manga} />
-  }
-
-  return (
-    <>
-      <div
-        className="w-full max-w-[175px] h-[265px] mx-auto group"
-        key={`${manga.source}-${manga.source_id}`}
-        id={`${manga.source}-${manga.source_id}`}
-      >
-        <div className="flex flex-col relative shadow-xl rounded-xl">
-          {!disableBookmarkIcon && (
-            <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10">
-              <button
-                onClick={handleBookmark}
-                className="drop-shadow-sm bg-white bg-opacity-50 backdrop-blur rounded-full p-1"
-              >
-                <Bookmark
-                  strokeWidth={3}
-                  size={20}
-                  className={followed ? "text-[#ec294b] fill-[#ec294b]" : ""}
-                />
-              </button>
-            </div>
-          )}
-
-          <div className="overflow-hidden rounded-xl">
-            <div className="bg-black rounded-xl" onClick={() => setShowDrawer(true)}>
-              <img
-                className="w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer"
-                src={coverImage}
-                alt={manga.title}
-              />
-            </div>
-          </div>
-
-          <div>
-            {show_hover_source && (
-              <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
-                <small>{manga.source}</small>
-              </div>
-            )}
-            {show_updated_at && (
-              <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
-                <small>last update: {manga.updated_at}</small>
-              </div>
-            )}
-            <div
-              className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black/80 backdrop-blur-sm cursor-pointer"
-              onClick={() => setShowDrawer(true)}
-            >
-              <p className="text-sm line-clamp-2 group-hover:text-blue-400">
-                {manga.title}
-              </p>
-              <div className="flex justify-between items-center text-sm text-[#75b5f0] mt-1">
-                <span>{manga.latest_chapter_number !== 0 ? `Ch ${manga.latest_chapter_number}` : "Read"}</span>
-                {lastReadText && <span className="text-[12px]">{lastReadText}</span>}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <MangaDrawer
-        manga={manga}
-        open={showDrawer}
-        onOpenChange={setShowDrawer}
-        followed={followed}
-        onFollowChange={setFollowed}
-      />
-    </>
-  )
-}
-
-// Drawer Component
-function MangaDrawer({ manga, open, onOpenChange, followed, onFollowChange }) {
-  const [mangaDetails, setMangaDetails] = useState({ ...manga, chapters: [] })
-  const [continueManga, setContinueManga] = useState({ last_link: "#", last_chapter_read: 0 })
-  const [isLoading, setIsLoading] = useState(false)
-  const [chapterSearch, setChapterSearch] = useState("")
-
-  const coverImage = mangaDetails.cover_image?.[0]?.image_urls?.[0] || "/images/default-book.png"
-
-  useEffect(() => {
-    if (open) {
-      fetchMangaDetails()
-      checkContinuePossible()
-    }
-  }, [open])
-
-  const fetchMangaDetails = async () => {
-    setIsLoading(true)
+  async function GetMangaDetail() {
     try {
       const response = await animapuApi.GetMangaDetail({
-        manga_source: manga.source,
-        manga_id: manga.source_id,
+        manga_source: props.manga.source,
+        manga_id: props.manga.source_id,
       })
       const body = await response.json()
-
-      if (response.status === 200) {
-        setMangaDetails(body.data)
+      if (response.status == 200) {
+        setManga(body.data)
+        return
       }
+
     } catch (e) {
       console.error(e)
-    } finally {
-      setIsLoading(false)
     }
   }
 
-  const checkContinuePossible = () => {
-    if (manga.last_chapter_read) {
-      setContinueManga({
-        last_link: manga.last_link,
-        last_chapter_read: manga.last_chapter_read
-      })
+  useEffect(() => {
+    setShow(props.showModal)
+  }, [props])
+
+  useEffect(() => {
+    if (show) { GetMangaDetail() }
+
+    props.setShowModal(show)
+  }, [show])
+
+  const [chapters, setChapters] = useState([{id: 1}])
+  const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
+  const [followed, setFollowed] = useState(props.manga.is_in_library)
+
+  function isContinuePossible() {
+    try {
+      var mangaObj = new Manga(props.manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+
+      if (props.manga.last_chapter_read) {
+        setContinueManga({last_link: props.manga.last_link, last_chapter_read: props.manga.last_chapter_read})
+      }
+    } catch (e) {
     }
   }
 
-  const handleBookmark = async () => {
-    if (!manga.source_id) return
+  useEffect(() => {
+    setChapters(manga.chapters)
+    isContinuePossible()
+  }, [manga])
 
-    const newFollowedState = !followed
-    onFollowChange(newFollowedState)
+  async function HandleBookmark() {
+    if (!manga.source_id) { return }
+
+    if (followed) {
+      setFollowed(false)
+    } else {
+      setFollowed(true)
+    }
+
+    // API CALL
+    try {
+      var callParams = {source: manga.source, source_id: manga.source_id}
+      if (followed) {
+        const response = await animapuApi.PostRemoveMangaFromLibrary(callParams)
+        const body = await response.json()
+        if (response.status !== 200) {
+          toast.error(`${body.error.error_code} || ${body.error.message}`)
+          return
+        }
+      } else {
+        const response = await animapuApi.PostAddMangaToLibrary(callParams)
+        const body = await response.json()
+        if (response.status !== 200) {
+          toast.error(`${body.error.error_code} || ${body.error.message}`)
+          return
+        }
+      }
+    } catch (e) {
+      toast.error(`Error: ${e}`)
+    }
+
+    if (followed) {
+      toast.info("Manga ini udah dihapus dari library kamu!")
+    } else {
+      toast.info("Manga ini udah disimpen ke library kamu!")
+    }
+  }
+
+  async function handleUpvote() {
+    if (!manga.source_id) { return }
 
     try {
-      console.log(followed ? 'Remove from library' : 'Add to library')
-      console.log(followed ? "Manga removed from library!" : "Manga saved to library!")
+      manga.star = true
+      const response = await animapuApi.PostUpvoteManga(manga)
+      const body = await response.json()
+      if (response.status !== 200) {
+        toast.error(`${body.error.error_code} || ${body.error.message}`)
+        return
+      }
+      toast.info("Upvote sukses!")
+
     } catch (e) {
-      onFollowChange(!newFollowedState)
-      console.error(`Error: ${e}`)
+      toast.error(e.message)
     }
   }
 
-  const handleShare = () => {
-    const shareText = `Read *${mangaDetails.title}* for free at https://animapu.vercel.app/mangas/${mangaDetails.source}/${mangaDetails.source_id}`
-    navigator.clipboard.writeText(shareText)
-    console.log("Link copied!")
+  function startReadDecider(chapters) {
+    try {
+      return chapters.at(-1).id
+    } catch {
+      return 1
+    }
   }
 
-  const getStartReadChapterId = () => {
-    return mangaDetails.chapters?.at(-1)?.id || 1
-  }
+  useEffect(() => {
+    if (show) {
+      router.push({
+        pathname: window.location.pathname,
+        query: {
+          ...query,
+          back_page: query.page,
+          selected: `${props.manga.source}-${props.manga.source_id}`,
+        },
+      }, undefined, { shallow: true })
+      return
+    }
 
-  // Filter chapters based on search
-  const filteredChapters = mangaDetails.chapters?.filter(chapter => {
-    if (!chapterSearch) return true
+  }, [show])
 
-    const searchTerm = chapterSearch.toLowerCase().trim()
-    const chapterTitle = chapter.title.toLowerCase()
-    const chapterNumber = chapter.number?.toString() || ""
-
-    return chapterTitle.includes(searchTerm) || chapterNumber.includes(searchTerm)
-  }) || []
-
-  return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-[90vh]">
-        <div className="mt-4 flex flex-col h-full overflow-hidden mx-auto w-full max-w-[768px]">
-          {/* Header Section - Fixed */}
-          <div className="flex-shrink-0 px-4 pb-4">
-            <div className="flex items-start gap-4">
-              {/* Cover Image */}
-              <div className="flex-shrink-0">
-                <img
-                  src={coverImage}
-                  alt={mangaDetails.title}
-                  className="w-24 h-32 object-cover rounded-lg shadow-lg"
-                />
+  return(
+    <div>
+      {!props.disableBookmarkIcon && <div className="absolute top-1 right-1 p-1 rounded-lg text-black hover:text-[#ec294b] z-10" onClick={() => HandleBookmark()}>
+        <button className="drop-shadow-sm bg-white bg-opacity-50 backdrop-blur rounded-full p-1">
+          <span className={`${followed ? "text-[#ec294b]": ""}`}><BookmarkIcon strokeWidth={3} size={20} /></span>
+        </button>
+      </div>}
+      {
+        show &&
+        <div className='z-10'>
+          <div className="fixed top-0 right-0 left-0 bg-black bg-opacity-70 h-screen w-full z-20 backdrop-blur-sm" onClick={()=>setShow(!show)}></div>
+          <div className="fixed mx-auto inset-x-0 top-[40px] p-4 w-full max-w-md z-20">
+            <div className="relative bg-white rounded-xl shadow dark:bg-gray-700 z-10 overflow-hidden border border-primary">
+              <div className={`h-[100px] z-0 ${manga.title ? "" : "animate-pulse"} rounded-xl`} style={{
+                backgroundImage: `url(${(manga?.cover_image && manga?.cover_image[0]?.image_urls[0]) || "/images/default-book.png"})`,
+                backgroundColor: "#d6e0ef",
+                backgroundPosition: "50% 35%",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+              }}>
+                <div className="backdrop-blur-md h-full"></div>
+              </div>
+              <div className="absolute z-10 top-3 right-2.5 flex flex-row gap-2 items-center">
+                <Button
+                  size="sm"
+                  onClick={(e)=>{
+                    navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                    toast.info("Link berhasil dicopy!")
+                  }}
+                ><Share2Icon size={14} /> Share</Button>
+                <Button
+                  size="sm"
+                  onClick={()=>setShow(!show)}
+                >
+                  <XIcon size={14} />
+                </Button>
               </div>
 
-              {/* Title & Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1">
-                    <Badge variant="secondary" className="mb-2">{mangaDetails.source}</Badge>
-                    <h2 className="text-lg font-bold line-clamp-2 mb-1">
-                      {mangaDetails.title || <div className="h-6 bg-gray-300 rounded animate-pulse w-3/4" />}
-                    </h2>
-                    {mangaDetails.latest_chapter_number && (
-                      <p className="text-sm text-muted-foreground">
-                        Latest: Ch {mangaDetails.latest_chapter_number}
-                      </p>
-                    )}
+              <div className="bg-accent">
+                <div className="container mx-auto py-4 px-[20px] max-w-[768px]">
+                  <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
+                    <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
+                      <div className="grid justify-items-center">
+                        <img
+                          className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
+                          src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
+                        />
+                      </div>
+                      <div className=''>
+                        <small>
+                          <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-1 text-center rounded-full" onClick={() => HandleBookmark()}>
+                            <span className='text-xs flex gap-1 items-center justify-center'><HeartIcon size={14} /> {followed ? "Un-Follow" : "Follow"}</span>
+                          </button>
+                        </small>
+                        <small>
+                          <Link
+                            href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}
+                            className="block w-full bg-[#3db3f2] hover:bg-[#333d43] text-white mt-2 p-1 text-center rounded-full"
+                          >
+                            <span className='text-xs flex gap-1 items-center justify-center'><EyeIcon size={14} /> Detail</span>
+                          </Link>
+                        </small>
+                        <small>
+                          <Link
+                            href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
+                            className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full"
+                          >
+                            <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Read</span>
+                          </Link>
+                        </small>
+                        {continueManga.last_link && continueManga.last_link !== "#" && <div>
+                          <small>
+                            <Link
+                              href={continueManga.last_link || "#"}
+                              className={`block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-1 text-center mt-2 rounded-full`}
+                            >
+                              <span className='text-xs flex gap-1 items-center justify-center'>
+                                <PlayIcon size={14} />
+                                Cont Ch {continueManga.last_chapter_read}
+                              </span>
+                            </Link>
+                          </small>
+                        </div>}
+                      </div>
+                    </div>
+                    <div className="col-span-3 p-2">
+                      <div className='max-h-[100px] overflow-auto mt-[-10px]'>
+                        <Badge>{manga.source}</Badge>
+                        <h1 className="text-md">
+                          { manga.title ? manga.title : <div className="h-3 bg-gray-600 rounded animate-pulse w-1/2"></div> }
+                        </h1>
+                      </div>
+                      <hr/>
+                      {
+                        manga.description ?
+                        <p className="text-xs text-justify max-h-32 overflow-hidden overflow-y-scroll  mt-1">
+                          {manga.description}
+                        </p>
+                        :
+                        <div></div>
+                      }
+                    </div>
                   </div>
-                  <DrawerClose asChild>
-                    <Button size="icon" variant="ghost">
-                      <X size={20} />
-                    </Button>
-                  </DrawerClose>
                 </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-2 mt-3">
-                  <Button
-                    size="sm"
-                    className="bg-[#ec294b] hover:bg-[#B11F38] text-white"
-                    onClick={handleBookmark}
-                  >
-                    <Heart size={14} className={followed ? "fill-current" : ""} />
-                    {followed ? "Following" : "Follow"}
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={handleShare}>
-                    <Share2 size={14} />
-                    Share
-                  </Button>
+              </div>
+              <div>
+                <div className="container mx-auto py-4 px-[20px] max-w-[768px] bg-background rounded-b-xl">
+                  <div className="grid grid-cols-1">
+                    <div className="p-2 flex flex-col gap-2 max-h-48 overflow-hidden overflow-y-scroll">
+                      {manga.chapters.map((chapter, idx) => (
+                        <div className="flex flex-row items-center gap-2" key={chapter.title}>
+                          <a
+                            href={animapuApi.DownloadMangaChapterPdfUri({
+                              manga_source: manga.source,
+                              manga_id: manga.source_id,
+                              chapter_id: chapter.id,
+                            })}
+                            onClick={()=>{toast.info("we are preparing your file, just wait...")}}
+                          >
+                            <Button size="sm" className="w-full"><DownloadIcon /></Button>
+                          </a>
+                          <div className="w-full">
+                            <Link
+                              href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}`}
+                            >
+                              <Button size="sm" className="w-full">{chapter.title}</Button>
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Tabs Section - Scrollable */}
-          <Tabs defaultValue="chapters" className="flex-1 flex flex-col overflow-hidden">
-            <TabsList className="w-full rounded-none">
-              <TabsTrigger value="chapters" className="flex-1">
-                Chapters {mangaDetails.chapters?.length > 0 && `(${mangaDetails.chapters.length})`}
-              </TabsTrigger>
-              <TabsTrigger value="about" className="flex-1">About</TabsTrigger>
-            </TabsList>
-
-            {/* Chapters Tab */}
-            <TabsContent value="chapters" className="flex-1 overflow-hidden mt-0">
-              <ScrollArea className="h-full px-4 py-2">
-                {isLoading ? (
-                  <div className="space-y-2">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <div key={i} className="h-12 bg-accent rounded-lg animate-pulse" />
-                    ))}
-                  </div>
-                ) : mangaDetails.chapters?.length > 0 ? (
-                  <div className="space-y-2 pb-4">
-                    {/* Continue Reading Button */}
-                    {continueManga.last_link && continueManga.last_link !== "#" && (
-                      <Button
-                        size="lg"
-                        className="w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mb-3"
-                      >
-                        <Play size={18} />
-                        Continue Reading - Ch {continueManga.last_chapter_read}
-                      </Button>
-                    )}
-
-                    {/* Start Reading Button */}
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="w-full mb-4"
-                    >
-                      <Book size={18} />
-                      Start from Beginning
-                    </Button>
-
-                    {/* Chapter Search Input */}
-                    <div className="relative mb-4">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
-                      <Input
-                        type="text"
-                        placeholder="Search by chapter number..."
-                        value={chapterSearch}
-                        onChange={(e) => setChapterSearch(e.target.value)}
-                        className="pl-10"
-                      />
-                      {chapterSearch && (
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 px-2"
-                          onClick={() => setChapterSearch("")}
-                        >
-                          <X size={14} />
-                        </Button>
-                      )}
-                    </div>
-
-                    {/* Search Results Count */}
-                    {chapterSearch && (
-                      <div className="text-sm text-muted-foreground mb-2">
-                        Found {filteredChapters.length} chapter{filteredChapters.length !== 1 ? 's' : ''}
-                      </div>
-                    )}
-
-                    <div className="border-t pt-4">
-                      <h3 className="text-sm font-semibold mb-3 text-muted-foreground">
-                        {chapterSearch ? 'Search Results' : 'All Chapters'}
-                      </h3>
-                      {filteredChapters.length > 0 ? (
-                        filteredChapters.map((chapter) => (
-                          <div
-                            key={chapter.id}
-                            className="group flex items-center gap-2 mb-2 p-3 rounded-lg border hover:bg-accent transition-colors"
-                          >
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between">
-                                <span className="font-medium text-sm truncate">
-                                  {chapter.title}
-                                </span>
-                                <ChevronDown className="rotate-[-90deg] text-muted-foreground group-hover:text-foreground transition-colors" size={16} />
-                              </div>
-                            </div>
-                            <Button size="icon" variant="ghost" className="flex-shrink-0">
-                              <Download size={16} />
-                            </Button>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-8 text-center">
-                          <Search size={48} className="text-muted-foreground mb-4" />
-                          <p className="text-muted-foreground">No chapters found matching "{chapterSearch}"</p>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="mt-3"
-                            onClick={() => setChapterSearch("")}
-                          >
-                            Clear Search
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <Book size={48} className="text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">No chapters available yet</p>
-                  </div>
-                )}
-              </ScrollArea>
-            </TabsContent>
-
-            {/* About Tab */}
-            <TabsContent value="about" className="flex-1 overflow-hidden mt-0">
-              <ScrollArea className="h-full px-4 py-4">
-                <div className="space-y-4 pb-4">
-                  {mangaDetails.description ? (
-                    <>
-                      <div>
-                        <h3 className="font-semibold mb-2">Description</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {mangaDetails.description}
-                        </p>
-                      </div>
-                      <div className="flex gap-2 pt-2">
-                        <Button variant="outline" className="w-full">
-                          <Eye size={16} />
-                          View Full Details
-                        </Button>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                      <p className="text-muted-foreground mb-4">No description available</p>
-                      <Button variant="outline">
-                        <Eye size={16} />
-                        View Full Details
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-            </TabsContent>
-          </Tabs>
         </div>
-      </DrawerContent>
-    </Drawer>
+      }
+    </div>
   )
 }
-
-export {MangaDrawer}
