@@ -245,7 +245,7 @@ export function DefaultLayout({ children }) {
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger>Manga</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className={"bg-black/0"}>Manga</NavigationMenuTrigger>
                     <NavigationMenuContent>
                       {mangaItems.map((item) => (
                         <Link href={item.url} key={item.url}>
@@ -259,7 +259,7 @@ export function DefaultLayout({ children }) {
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger>Anime</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className={"bg-black/0"}>Anime</NavigationMenuTrigger>
                     <NavigationMenuContent>
                       {animeItems.map((item) => (
                         <Link href={item.url} key={item.url}>
@@ -273,7 +273,7 @@ export function DefaultLayout({ children }) {
               {isAdmin && <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger>Admin</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className={"bg-black/0"}>Admin</NavigationMenuTrigger>
                     <NavigationMenuContent>
                       {adminItems.map((item) => (
                         <Link href={item.url} key={item.url}>
