@@ -9,6 +9,7 @@ import Manga from "../models/Manga"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 import utils from "@/models/Utils"
+import { MangaCardDrawer } from "./MangaCardDrawer"
 
 export default function MangaCardV2(props) {
   const [showModal, setShowModal] = useState(false)
@@ -48,7 +49,7 @@ export default function MangaCardV2(props) {
       id={`${props.manga.source}-${props.manga.source_id}`}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
-        <MangaCardModal manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
+        <MangaCardDrawer manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
 
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
