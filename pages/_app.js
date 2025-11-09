@@ -1,9 +1,6 @@
 import '../styles/globals.css'
 import Head from 'next/head'
-import NProgress from 'nprogress'
 import "nprogress/nprogress.css"
-import Router from 'next/router'
-import Script from 'next/script'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';

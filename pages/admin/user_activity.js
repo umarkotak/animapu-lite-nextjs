@@ -43,32 +43,29 @@ export default function UserActivity() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Card>
-        <CardHeader className="p-4">
-          <CardTitle>Users Manga Activity</CardTitle>
-        </CardHeader>
-        <CardContent className="p-4">
-          <div className="flex flex-col gap-6">
-            {usersMangaActivity.map((oneUsersMangaActivity) => (
-              <Card className="border-none" key={oneUsersMangaActivity.visitor_id}>
-                <CardHeader className="py-4 px-0">
-                  <CardTitle>{oneUsersMangaActivity.email !== "" ? oneUsersMangaActivity.email : "Guest"}</CardTitle>
-                  <CardDescription className="break-all">visitor id: {oneUsersMangaActivity.visitor_id}</CardDescription>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <div className="flex flex-row gap-4 overflow-auto">
-                    {oneUsersMangaActivity.manga_histories.map((manga) => (
-                      <div className="flex-none" key={oneUsersMangaActivity.visitor_id+manga.source+manga.source_id}>
-                        <MangaCardBarHistory manga={manga} key={`${manga.source}-${manga.source_id}`} show_last_access={true} />
-                      </div>
-                    ))}
+      <div className="mt-2">
+        <h1 className="text-xl">Users Manga Activity</h1>
+      </div>
+
+      <div className="flex flex-col gap-6">
+        {usersMangaActivity.map((oneUsersMangaActivity) => (
+          <Card className="border-none" key={oneUsersMangaActivity.visitor_id}>
+            <CardHeader>
+              <CardTitle>{oneUsersMangaActivity.email !== "" ? oneUsersMangaActivity.email : "Guest"}</CardTitle>
+              <CardDescription className="break-all">visitor id: {oneUsersMangaActivity.visitor_id}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-row gap-4 overflow-auto">
+                {oneUsersMangaActivity.manga_histories.map((manga) => (
+                  <div className="flex-none" key={oneUsersMangaActivity.visitor_id+manga.source+manga.source_id}>
+                    <MangaCardBarHistory manga={manga} key={`${manga.source}-${manga.source_id}`} show_last_access={true} />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }

@@ -1,23 +1,14 @@
 import { useState, useEffect } from "react"
 import { toast } from "react-toastify"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-
 import animapuApi from "@/apis/AnimapuApi"
 import Latest from "./latest"
 import MangaCardBarHistory from "@/components/MangaCardBarHistory"
 import Link from "next/link"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { BookIcon, BookMarkedIcon, Clapperboard, EyeIcon, HistoryIcon, HomeIcon, Megaphone, MoveRightIcon, SearchIcon } from "lucide-react"
-import { useSwipeable } from "react-swipeable"
+import { Clapperboard, EyeIcon, HistoryIcon } from "lucide-react"
 import AnimeSourceHome from "./anime/latest"
 import AnimeHistory from "./anime/history"
-import { Separator } from "@/components/ui/separator"
-
-const CarouselData = [
-  {image_url: "/images/animehub_cover_2.png", target_url: "https://trakteer.id/marumaru", text: "support animapu disini"},
-  {image_url: "/images/animehub_cover_3.png", target_url: "/anime/latest", text: "nonton anime"},
-]
 
 export default function Home() {
   const [mangaHistories, setMangaHistories] = useState([])

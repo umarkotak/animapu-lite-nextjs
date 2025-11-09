@@ -8,8 +8,6 @@ import animapuApi from "@/apis/AnimapuApi"
 import ChangeSourceModalOnly from "@/components/ChangeSourceModalOnly"
 import MangaCardV2 from "@/components/MangaCardV2"
 import AdsCard from "@/components/AdsCard"
-import { Label } from "@/components/ui/label"
-import { Badge } from "@/components/ui/badge"
 
 var onApiCall = false
 var page = 1
