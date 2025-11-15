@@ -50,6 +50,11 @@ const adminItems = [
   { title: "Anime Activity", url: "/admin/user_anime_activity", icon: Circle },
 ]
 
+const miscItems = [
+  { title: "Minecraft Status", url: "/mc/status", icon: Circle },
+  { title: "Minecraft Arena Gen", url: "/mc/arena_builder", icon: Circle },
+]
+
 const ADM_EMS = [
   "umarkotak@gmail.com"
 ]
@@ -195,6 +200,23 @@ export function DefaultLayout({ children }) {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Misc</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {miscItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild isActive={item.url == pathname}>
+                      <Link href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
           {isAdmin && <SidebarGroup>
             <SidebarGroupLabel>Admin</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -249,7 +271,7 @@ export function DefaultLayout({ children }) {
                     <NavigationMenuContent>
                       {mangaItems.map((item) => (
                         <Link href={item.url} key={item.url}>
-                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-36"><item.icon size={16} />{item.title}</NavigationMenuLink>
+                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-48"><item.icon size={16} />{item.title}</NavigationMenuLink>
                         </Link>
                       ))}
                     </NavigationMenuContent>
@@ -263,7 +285,21 @@ export function DefaultLayout({ children }) {
                     <NavigationMenuContent>
                       {animeItems.map((item) => (
                         <Link href={item.url} key={item.url}>
-                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-36"><item.icon size={16} />{item.title}</NavigationMenuLink>
+                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-48"><item.icon size={16} />{item.title}</NavigationMenuLink>
+                        </Link>
+                      ))}
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className={"bg-black/0"}>Misc</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      {miscItems.map((item) => (
+                        <Link href={item.url} key={item.url}>
+                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-48"><item.icon size={16} />{item.title}</NavigationMenuLink>
                         </Link>
                       ))}
                     </NavigationMenuContent>
@@ -277,7 +313,7 @@ export function DefaultLayout({ children }) {
                     <NavigationMenuContent>
                       {adminItems.map((item) => (
                         <Link href={item.url} key={item.url}>
-                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-36"><item.icon size={16} />{item.title}</NavigationMenuLink>
+                          <NavigationMenuLink className="flex flex-row items-center gap-2 w-48"><item.icon size={16} />{item.title}</NavigationMenuLink>
                         </Link>
                       ))}
                     </NavigationMenuContent>
