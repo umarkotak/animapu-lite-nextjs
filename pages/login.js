@@ -11,7 +11,7 @@ import { toast } from "react-toastify"
 import { jwtDecode } from "jwt-decode";
 var sha512 = require('js-sha512').sha512
 
-const G_CLIENT_ID = "915149914245-vd6k2rs1qgaeqddb1mticba2aumtaq4h.apps.googleusercontent.com"
+const G_CLIENT_ID = "218571481520-eg3pfk5m2rtu846e7d90qfoh0a7jsi3d.apps.googleusercontent.com"
 
 export default function Login() {
   return (

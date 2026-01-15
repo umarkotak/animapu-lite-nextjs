@@ -1,26 +1,72 @@
-import { useState, useEffect } from 'react'
-
-import animapuApi from "../../apis/AnimapuApi"
-import { toast } from 'react-toastify'
-import Link from 'next/link'
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import MangaCardV2 from '@/components/MangaCardV2'
-import { useParams } from 'next/navigation'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useParams, useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
-import Select from 'react-select'
-import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { toast } from 'react-toastify'
+import { ChevronLeft, ChevronRight, Snowflake, Flower2, Sun, Leaf, Calendar } from 'lucide-react'
+
+import animapuApi from '@/apis/AnimapuApi'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import AnimeSeasonCard from '@/components/AnimeSeasonCard'
 
-var tempAllMangas = []
-var limit = 16
-var defaultSeasonIdx = 1
-var defaultSelectedSeason = {
-  value: `2025 - spring`,
-  label: `2025 - spring`,
-  season_name: `spring`,
-  year: `2025`,
+// Constants
+const SEASONS = ['winter', 'spring', 'summer', 'fall']
+const MIN_YEAR = 1999
+const MIN_SEASON = 'fall'
+
+// Season utility functions
+const getSeasonFromMonth = (month) => {
+  if (month >= 1 && month <= 3) return 'winter'
+  if (month >= 4 && month <= 6) return 'spring'
+  if (month >= 7 && month <= 9) return 'summer'
+  return 'fall'
+}
+
+const getSeasonIcon = (seasonName) => {
+  const iconProps = { className: 'h-4 w-4' }
+  switch (seasonName) {
+    case 'winter': return <Snowflake {...iconProps} />
+    case 'spring': return <Flower2 {...iconProps} />
+    case 'summer': return <Sun {...iconProps} />
+    case 'fall': return <Leaf {...iconProps} />
+    default: return <Calendar {...iconProps} />
+  }
+}
+
+const getCurrentSeasonInfo = () => {
+  const now = new Date()
+  return {
+    year: now.getFullYear(),
+    season: getSeasonFromMonth(now.getMonth() + 1),
+  }
+}
+
+const generateSeasonOptions = () => {
+  const { year: maxYear, season: maxSeason } = getCurrentSeasonInfo()
+  const options = []
+
+  for (let year = maxYear; year >= MIN_YEAR; year--) {
+    const startSeasonIndex = year === MIN_YEAR ? SEASONS.indexOf(MIN_SEASON) : 0
+    const endSeasonIndex = year === maxYear ? SEASONS.indexOf(maxSeason) : SEASONS.length - 1
+
+    for (let i = endSeasonIndex; i >= startSeasonIndex; i--) {
+      options.push({
+        value: `${year}-${SEASONS[i]}`,
+        year: year.toString(),
+        season: SEASONS[i],
+        label: `${year} - ${SEASONS[i].charAt(0).toUpperCase() + SEASONS[i].slice(1)}`,
+      })
+    }
+  }
+
+  return options
 }
 
 export default function AnimeSeason() {
@@ -28,195 +74,168 @@ export default function AnimeSeason() {
   const searchParams = useSearchParams()
   const router = useRouter()
 
-  const [seasonFilters, setSeasonFilters] = useState([])
-  const [animePerSeasons, setAnimePerSeasons] = useState([{animes: []}])
-  const [selectedSeason, setSelectedSeason] = useState(defaultSelectedSeason)
+  // Memoize season options to avoid recalculation on every render
+  const seasonOptions = useMemo(() => generateSeasonOptions(), [])
 
-  useEffect(() => {
-    if (!window) { return }
+  const [animeData, setAnimeData] = useState({ animes: [], release_year: '', season_name: '' })
+  const [isLoading, setIsLoading] = useState(false)
 
-    var tmpSeasonFilters = []
+  // Get current selection from URL or default to first option
+  const currentSelection = useMemo(() => {
+    const urlYear = searchParams.get('year')
+    const urlSeason = searchParams.get('season')
 
-    // winter, spring, summer, fall
-    var allSeasonContents = generateSeasonData(1999, "fall", 2025, "fall")
-
-    allSeasonContents.forEach((oneSeasonContent) => {
-      tmpSeasonFilters.push({
-        value: `${oneSeasonContent.year} - ${oneSeasonContent.season_name}`,
-        label: `${oneSeasonContent.year} - ${oneSeasonContent.season_name}`,
-        season_name: oneSeasonContent.season_name,
-        year: oneSeasonContent.year,
-      })
-    })
-
-    setSeasonFilters(tmpSeasonFilters)
-  }, [])
-
-  function generateSeasonData(minYear, minSeason, maxYear, maxSeason) {
-    const seasons = ["winter", "spring", "summer", "fall"]
-    var data = [];
-
-    for (let year = maxYear; year >= minYear; year--) {
-      let startSeasonIndex = 0;
-      let endSeasonIndex = seasons.length - 1;
-
-      if (year === minYear) {
-        startSeasonIndex = seasons.indexOf(minSeason);
-      }
-
-      if (year === maxYear) {
-        endSeasonIndex = seasons.indexOf(maxSeason);
-      }
-
-      for (let i = endSeasonIndex; i >=startSeasonIndex ; i--) {
-        data.push({
-          year: year,
-          season_name: seasons[i],
-        });
-      }
+    if (urlYear && urlSeason) {
+      return seasonOptions.find(opt => opt.year === urlYear && opt.season === urlSeason) || seasonOptions[0]
     }
+    return seasonOptions[0]
+  }, [searchParams, seasonOptions])
 
-    return data;
-  }
+  // Find current index for navigation
+  const currentIndex = useMemo(() => {
+    return seasonOptions.findIndex(opt => opt.value === currentSelection.value)
+  }, [seasonOptions, currentSelection])
 
-  useEffect(() => {
-    if (!seasonFilters || seasonFilters.length === 0) {
-      return
-    }
-
-    var year = searchParams.get('year') || seasonFilters[defaultSeasonIdx].year
-    var season = searchParams.get('season') || seasonFilters[defaultSeasonIdx].season_name
-
-    GetAnimesBySeason(year, season, 0)
-  }, [seasonFilters, searchParams])
-
-  async function GetAnimesBySeason(year, season, iter) {
-    if (iter >= 10) {
-      toast.error("error get season")
-      return
-    }
-
+  // Fetch anime data
+  const fetchAnimesBySeason = useCallback(async (year, season) => {
+    setIsLoading(true)
     try {
       const response = await animapuApi.GetAnimesBySeason({
-        anime_source: params.anime_source,
-        year: year,
-        season: season
+        anime_source: params?.anime_source,
+        year,
+        season,
       })
       const body = await response.json()
+
       if (response.status !== 200) {
-        console.log("error", body)
+        toast.error(`Failed to fetch anime for ${year} ${season}`)
         return
       }
-      setAnimePerSeasons([body.data])
-      setSelectedSeason({
-        value: `${year} - ${season}`,
-        label: `${year} - ${season}`,
-        season_name: season,
-        year: year,
-      })
 
-    } catch (e) {
-      toast.error(`error get season, ${year}, ${season}. ${iter}`)
-      // GetAnimesBySeason(year, season, iter + 1)
+      setAnimeData(body.data || { animes: [], release_year: year, season_name: season })
+    } catch (error) {
+      toast.error(`Error fetching anime: ${error.message}`)
+    } finally {
+      setIsLoading(false)
     }
-  }
+  }, [params?.anime_source])
 
-  function handleChange(selectedOption) {
-    router.push(`/anime/season?year=${selectedOption.year}&season=${selectedOption.season_name}`)
-  }
-
-  function SeasonIconGenerator(seasonName) {
-    if (seasonName === "winter") { return "fa-solid fa-snowflake" }
-    if (seasonName === "spring") { return "fa-solid fa-fan" }
-    if (seasonName === "summer") { return "fa-solid fa-sun" }
-    if (seasonName === "fall") { return "fa-solid fa-leaf" }
-    return "fa-solid fa-border-all"
-  }
-
-  function prevSeason() {
-    var currIndex = 0
-
-    if (!searchParams.get('year') && !searchParams.get('season')) {
-      return
+  // Fetch data when selection changes
+  useEffect(() => {
+    if (currentSelection) {
+      fetchAnimesBySeason(currentSelection.year, currentSelection.season)
     }
+  }, [currentSelection, fetchAnimesBySeason])
 
-    seasonFilters.forEach((val, idx) => {
-      if (`${val.year}` === searchParams.get('year') && val.season_name === searchParams.get('season')) {
-        currIndex = idx
-      }
-    })
+  // Navigation handlers
+  const navigateToSeason = useCallback((option) => {
+    router.push(`/anime/season?year=${option.year}&season=${option.season}`)
+  }, [router])
 
-    if (currIndex <= 0) {
-      return
+  const handleSelectChange = useCallback((value) => {
+    const selected = seasonOptions.find(opt => opt.value === value)
+    if (selected) {
+      navigateToSeason(selected)
     }
+  }, [seasonOptions, navigateToSeason])
 
-    router.push(`/anime/season?year=${seasonFilters[currIndex-1].year}&season=${seasonFilters[currIndex-1].season_name}`)
-  }
-
-  function nextSeason() {
-    var currIndex = 0
-
-    if (!searchParams.get('year') && !searchParams.get('season')) {
-      console.log("a")
-      router.push(`/anime/season?year=${seasonFilters[1].year}&season=${seasonFilters[1].season_name}`)
-      return
+  const goToPreviousSeason = useCallback(() => {
+    if (currentIndex < seasonOptions.length - 1) {
+      navigateToSeason(seasonOptions[currentIndex + 1])
     }
+  }, [currentIndex, seasonOptions, navigateToSeason])
 
-    seasonFilters.forEach((val, idx) => {
-      if (`${val.year}` === searchParams.get('year') && val.season_name === searchParams.get('season')) {
-        currIndex = idx
-      }
-    })
-
-    if (currIndex >= seasonFilters.length-1) {
-      return
+  const goToNextSeason = useCallback(() => {
+    if (currentIndex > 0) {
+      navigateToSeason(seasonOptions[currentIndex - 1])
     }
+  }, [currentIndex, seasonOptions, navigateToSeason])
 
-    router.push(`/anime/season?year=${seasonFilters[currIndex+1].year}&season=${seasonFilters[currIndex+1].season_name}`)
-  }
+  const canGoPrevious = currentIndex < seasonOptions.length - 1
+  const canGoNext = currentIndex > 0
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-row gap-2 w-full">
-        <Button
-          onClick={()=>prevSeason()}
-        >
-          <ArrowLeft />
-        </Button>
-        <Select
-          // defaultValue={seasonFilters[0]}
-          options={seasonFilters}
-          className='w-[180px] bg-background text-black'
-          onChange={handleChange}
-          placeholder={'Select season'}
-          value={selectedSeason}
-        />
-        <Button
-          onClick={()=>nextSeason()}
-        >
-          <ArrowRight />
-        </Button>
-      </div>
+    <div className="flex flex-col gap-3 sm:gap-4">
+      {/* Sticky Season Navigator */}
+      <div className="sticky top-12 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b py-2 -mx-2 px-2 sm:-mx-4 sm:px-4">
+        <Card className="shadow-sm p-0">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-1 sm:gap-2">
+              {/* Previous Season Button */}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={goToPreviousSeason}
+                disabled={!canGoPrevious}
+                className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
+                aria-label="Previous season"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
 
-      <div className="flex flex-col mb-6">
-        {animePerSeasons.map((oneSeason) => (
-          <div className="flex flex-col gap-4" key={`season-${oneSeason?.release_year}-${oneSeason?.season_name}`}>
-            <Card>
-              <CardHeader className="p-4">
-                <CardTitle>
-                  {oneSeason?.release_year} - {oneSeason?.season_name}
-                </CardTitle>
-              </CardHeader>
-            </Card>
+              {/* Season Selector */}
+              <Select value={currentSelection.value} onValueChange={handleSelectChange}>
+                <SelectTrigger className="flex-1 min-w-0 sm:min-w-[180px]">
+                  <div className="flex items-center gap-2 truncate">
+                    <SelectValue placeholder="Select season" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="max-h-[300px]">
+                  {seasonOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <div className="flex items-center gap-2">
+                        {getSeasonIcon(option.season)}
+                        <span>{option.label}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-              {oneSeason.animes && oneSeason.animes.map((oneAnimeData) => (
-                <AnimeSeasonCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
-              ))}
+              {/* Next Season Button */}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={goToNextSeason}
+                disabled={!canGoNext}
+                className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
+                aria-label="Next season"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
-          </div>
-        ))}
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="h-[240px] sm:h-[280px] md:h-[320px] rounded-xl bg-muted animate-pulse" />
+          ))}
+        </div>
+      )}
+
+      {/* Anime Grid */}
+      {!isLoading && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
+          {animeData.animes?.map((anime) => (
+            <AnimeSeasonCard
+              key={`${anime.source}-${anime.id}`}
+              oneAnimeData={anime}
+              source={params?.anime_source}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && (!animeData.animes || animeData.animes.length === 0) && (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground">No anime found for this season.</p>
+        </Card>
+      )}
     </div>
   )
 }
