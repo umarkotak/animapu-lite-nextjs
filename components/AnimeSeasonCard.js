@@ -64,7 +64,7 @@ export default function AnimeSeasonCard({ oneAnimeData, source }) {
         </div>
 
         {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent" />
 
         {/* Episode Badge */}
         {latest_episode > 0 && (

@@ -164,13 +164,15 @@ export default function AnimeSeason() {
               {/* Previous Season Button */}
               <Button
                 variant="outline"
-                size="icon"
                 onClick={goToPreviousSeason}
                 disabled={!canGoPrevious}
-                className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
+                className="shrink-0 h-9 sm:h-10 px-2 sm:px-3 text-xs"
                 aria-label="Previous season"
               >
                 <ChevronLeft className="h-4 w-4" />
+                <span className="hidden sm:inline ml-1">
+                  {canGoPrevious ? seasonOptions[currentIndex + 1]?.label : ''}
+                </span>
               </Button>
 
               {/* Season Selector */}
@@ -195,12 +197,14 @@ export default function AnimeSeason() {
               {/* Next Season Button */}
               <Button
                 variant="outline"
-                size="icon"
                 onClick={goToNextSeason}
                 disabled={!canGoNext}
-                className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
+                className="shrink-0 h-9 sm:h-10 px-2 sm:px-3 text-xs"
                 aria-label="Next season"
               >
+                <span className="hidden sm:inline mr-1">
+                  {canGoNext ? seasonOptions[currentIndex - 1]?.label : ''}
+                </span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
