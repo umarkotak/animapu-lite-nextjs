@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
 import { toast } from "react-toastify"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -16,17 +15,48 @@ var dummyMangas = [
   {source: "shimmer", source_id: "shimmer-2", shimmer: true},
 ]
 var tempMangas = []
-var scrolledToSelect = false
-export default function Latest({content_only}) {
-  let router = useRouter()
-  const query = router.query
+var latestMangaFeeds = {}
+const LATEST_MANGA_FEED_CACHE_PREFIX = "ANIMAPU_LITE:LATEST_MANGA_FEED:"
 
+function getCachedLatestMangaFeed(source, includeSessionCache = false) {
+  if (typeof window === "undefined") { return null }
+
+  if (latestMangaFeeds[source]) {
+    return latestMangaFeeds[source]
+  }
+
+  if (!includeSessionCache) { return null }
+
+  try {
+    const cachedFeed = JSON.parse(sessionStorage.getItem(`${LATEST_MANGA_FEED_CACHE_PREFIX}${source}`))
+    if (cachedFeed && Array.isArray(cachedFeed.mangas) && Number.isInteger(cachedFeed.page)) {
+      latestMangaFeeds[source] = cachedFeed
+      return cachedFeed
+    }
+  } catch (e) {}
+
+  return null
+}
+
+function cacheLatestMangaFeed(source, mangas, loadedPage) {
+  const cachedFeed = { mangas, page: loadedPage }
+  latestMangaFeeds[source] = cachedFeed
+
+  try {
+    sessionStorage.setItem(`${LATEST_MANGA_FEED_CACHE_PREFIX}${source}`, JSON.stringify(cachedFeed))
+  } catch (e) {}
+}
+
+export default function Latest({content_only}) {
   const [activeSource, setActiveSource] = useState("")
-  const [mangas, setMangas] = useState(dummyMangas)
+  const [mangas, setMangas] = useState(() => {
+    const cachedFeed = getCachedLatestMangaFeed(animapuApi.GetActiveMangaSource())
+    return cachedFeed ? cachedFeed.mangas : dummyMangas
+  })
   const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
 
-  async function GetLatestManga(append) {
+  async function GetLatestManga(append, source = animapuApi.GetActiveMangaSource()) {
     if (onApiCall) {return}
     onApiCall = true
 
@@ -35,14 +65,13 @@ export default function Latest({content_only}) {
     } else {
       tempMangas = []
       page = 1
-      scrolledToSelect = false
     }
 
     try {
       setIsLoadMoreLoading(true)
 
       const response = await animapuApi.GetLatestManga({
-        manga_source: animapuApi.GetActiveMangaSource(),
+        manga_source: source,
         page: page
       })
       const body = await response.json()
@@ -59,17 +88,13 @@ export default function Latest({content_only}) {
       //   is_ads: true
       // }, 10)
 
-      router.push({
-        pathname: window.location.pathname,
-        query: {...query, page: page},
-      }, undefined, { shallow: true })
-
       if (append) {
         tempMangas = tempMangas.concat(mangasData)
       } else {
         tempMangas = mangasData
       }
       setMangas(tempMangas)
+      cacheLatestMangaFeed(source, tempMangas, page)
 
     } catch (e) {
       toast.error(e.message)
@@ -78,24 +103,21 @@ export default function Latest({content_only}) {
     onApiCall = false
     setIsLoadMoreLoading(false)
 
-    var back_page = parseInt(query.back_page)
-    if (back_page > 1 && page < back_page) {
-      GetLatestManga(true)
-    }
   }
 
   useEffect(() => {
-    if (scrolledToSelect) { return }
-    var targetMangaCardID = query.selected
-    try {
-      document.querySelector(`#${targetMangaCardID}`).scrollIntoView( { behavior: "smooth", block: "start" } )
-      scrolledToSelect = true
-    } catch (e) {}
-  }, [mangas])
+    const source = animapuApi.GetActiveMangaSource()
+    setActiveSource(source)
 
-  useEffect(() => {
-    setActiveSource(animapuApi.GetActiveMangaSource())
-    GetLatestManga(false)
+    const cachedFeed = getCachedLatestMangaFeed(source, true)
+    if (cachedFeed) {
+      page = cachedFeed.page
+      tempMangas = cachedFeed.mangas
+      setMangas(cachedFeed.mangas)
+      return
+    }
+
+    GetLatestManga(false, source)
   }, [])
 
   function injectObjectEveryNthElement(array, object, n) {

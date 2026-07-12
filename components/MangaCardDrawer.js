@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
 import { BookIcon, BookmarkIcon, DownloadIcon, EyeIcon, PlayIcon, Share2Icon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Link from 'next/link'
@@ -9,9 +8,6 @@ import { Button } from "./ui/button"
 import { Drawer, DrawerContent } from "@/components/ui/drawer"
 
 export function MangaCardDrawer(props) {
-  let router = useRouter()
-  const query = router.query
-
   const [show, setShow] = useState(false)
   const [manga, setManga] = useState(initManga(props.manga))
 
@@ -130,21 +126,6 @@ export function MangaCardDrawer(props) {
       return 1
     }
   }
-
-  useEffect(() => {
-    if (show) {
-      router.push({
-        pathname: window.location.pathname,
-        query: {
-          ...query,
-          back_page: query.page,
-          selected: `${props.manga.source}-${props.manga.source_id}`,
-        },
-      }, undefined, { shallow: true })
-      return
-    }
-
-  }, [show])
 
   return(
     <div>

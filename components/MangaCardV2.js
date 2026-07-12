@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react"
-import { useRouter } from "next/router"
 import { BookIcon, BookmarkIcon, DownloadIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Link from 'next/link'
@@ -90,9 +89,6 @@ export default function MangaCardV2(props) {
 }
 
 export function MangaCardModal(props) {
-  let router = useRouter()
-  const query = router.query
-
   const [show, setShow] = useState(false)
   const [manga, setManga] = useState(initManga(props.manga))
 
@@ -211,21 +207,6 @@ export function MangaCardModal(props) {
       return 1
     }
   }
-
-  useEffect(() => {
-    if (show) {
-      router.push({
-        pathname: window.location.pathname,
-        query: {
-          ...query,
-          back_page: query.page,
-          selected: `${props.manga.source}-${props.manga.source_id}`,
-        },
-      }, undefined, { shallow: true })
-      return
-    }
-
-  }, [show])
 
   return(
     <div>
