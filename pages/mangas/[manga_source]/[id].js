@@ -2,250 +2,214 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from "next/router"
 import Link from 'next/link'
+import { ArrowLeft, BookOpen, Bookmark, Check, ChevronRight, Copy, Library, Play, Share2, Tag } from 'lucide-react'
 
-import BottomMenuBar from "../../../components/BottomMenuBar"
 import animapuApi from "../../../apis/AnimapuApi"
 import Manga from "../../../models/Manga"
 import { toast } from 'react-toastify'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 
 export default function MangaDetail(props) {
-  const [darkMode, setDarkMode] = useState(true)
-  useEffect(() => {
-    if (!localStorage) {return}
-    if (localStorage.getItem("ANIMAPU_LITE:DARK_MODE") === "true") {
-      setDarkMode(true)
-    } else { setDarkMode(false) }
-  }, [])
-
-  let router = useRouter()
+  const router = useRouter()
   const query = router.query
-
-  var manga_source = query.manga_source
-  var manga_id = query.id
-  var secondary_source_id = query.secondary_source_id
   const manga = props.manga
-  const [chapters, setChapters] = useState([{id: 1}])
-
-  var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-  var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
-  const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
-
+  const chapters = Array.isArray(manga.chapters) ? manga.chapters : []
+  const coverImage = manga?.cover_image?.[0]?.image_urls?.[0] || "/images/default-book.png"
+  const mangaSource = manga.source || query.manga_source
+  const mangaId = manga.source_id || query.id
+  const secondarySourceId = query.secondary_source_id || manga.secondary_source_id
+  const [continueManga, setContinueManga] = useState({ last_link: "#", last_chapter_read: 0 })
   const [followed, setFollowed] = useState(false)
+
+  const listKey = "ANIMAPU_LITE:FOLLOW:LOCAL:LIST"
+  const detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
 
   function isContinuePossible() {
     try {
-      var mangaObj = new Manga(props.manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
+      const mangaObj = new Manga(manga, localStorage.getItem("ANIMAPU_LITE:USER:UNIQUE_SHA"))
 
-      if (typeof window !== "undefined" && localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
-        if (localStorage.getItem(mangaObj.GetOnlineHistoryKey())) {
-          var onlineManga = JSON.parse(localStorage.getItem(mangaObj.GetOnlineHistoryKey()))
-          setContinueManga(onlineManga)
+      if (localStorage.getItem("ANIMAPU_LITE:USER:LOGGED_IN") === "true") {
+        const onlineHistory = localStorage.getItem(mangaObj.GetOnlineHistoryKey())
+        if (onlineHistory) {
+          setContinueManga(JSON.parse(onlineHistory))
+          return
         }
       }
 
-      if (typeof window !== "undefined") {
-        if (localStorage.getItem(mangaObj.GetLocalHistoryKey())) {
-          var localManga = JSON.parse(mangaObj.GetLocalHistoryKey())
-          setContinueManga(localManga)
-        }
+      const localHistory = localStorage.getItem(mangaObj.GetLocalHistoryKey())
+      if (localHistory) {
+        setContinueManga(JSON.parse(localHistory))
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   function isInLibrary() {
-    try {
-      if (typeof window !== "undefined" && localStorage.getItem(detailKey)) { return true }
-    } catch (e) {}
-    return false
+    return typeof window !== "undefined" && Boolean(localStorage.getItem(detailKey))
   }
 
   useEffect(() => {
-    setChapters(manga.chapters)
     setFollowed(isInLibrary())
     isContinuePossible()
-  }, [manga])
+  }, [manga.source, manga.source_id, manga.secondary_source_id])
 
   function handleFollow() {
     if (!manga.source_id) { return }
 
-    var libraryArrayString = localStorage.getItem(listKey)
-
-    var libraryArray
-    if (libraryArrayString) {
-      libraryArray = JSON.parse(libraryArrayString)
-    } else {
-      libraryArray = []
-    }
-
-    libraryArray = libraryArray.filter(arrManga => !(`${arrManga.source}-${arrManga.source_id}` === `${manga.source}-${manga.source_id}`))
+    const libraryArrayString = localStorage.getItem(listKey)
+    const libraryArray = libraryArrayString ? JSON.parse(libraryArrayString) : []
+    const nextLibrary = libraryArray.filter((savedManga) => (
+      `${savedManga.source}-${savedManga.source_id}` !== `${manga.source}-${manga.source_id}`
+    ))
 
     if (followed) {
-      localStorage.setItem(listKey, JSON.stringify(libraryArray))
+      localStorage.setItem(listKey, JSON.stringify(nextLibrary))
       localStorage.removeItem(detailKey)
-      setFollowed(isInLibrary())
+      setFollowed(false)
+      toast.info("Manga dihapus dari library kamu.")
       return
     }
 
-    var tempManga = manga
-    libraryArray.unshift(tempManga)
-
-    localStorage.setItem(listKey, JSON.stringify(libraryArray))
-    localStorage.setItem(detailKey, JSON.stringify(tempManga))
-    setFollowed(isInLibrary())
-
+    nextLibrary.unshift(manga)
+    localStorage.setItem(listKey, JSON.stringify(nextLibrary))
+    localStorage.setItem(detailKey, JSON.stringify(manga))
+    setFollowed(true)
     toast.info("Manga ini udah masuk library kamu!")
   }
 
-  async function handleUpvote() {
-    if (!manga.source_id) { return }
-
-    try {
-      manga.star = true
-      const response = await animapuApi.PostUpvoteManga(manga)
-      const body = await response.json()
-      if (response.status !== 200) {
-        toast.error(`${body.error.error_code} || ${body.error.message}`)
-        return
-      }
-      toast.info("Upvote sukses!")
-
-    } catch (e) {
-      toast.error(e.message)
-    }
+  function startReadDecider() {
+    return chapters.at(-1)?.id || 1
   }
 
-  function startReadDecider(chapters) {
-    try {
-      if (!chapters) { return 1 }
-      if (!chapters.at(-1)) { return 1 }
-      if (!chapters.at(-1).id) { return 1 }
-      return chapters.at(-1).id
-    } catch {
-      return 1
-    }
+  function readHref(chapterId) {
+    const secondarySourceQuery = secondarySourceId ? `?secondary_source_id=${secondarySourceId}` : ""
+    return `/mangas/${mangaSource}/${mangaId}/read/${chapterId}${secondarySourceQuery}`
+  }
+
+  function shareManga() {
+    navigator.clipboard.writeText(`Read *${manga.title}* for free at ${window.location.href}`)
+    toast.info("Link berhasil dicopy!")
   }
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className="px-4 py-5 sm:px-6">
       <Head>
-        <meta itemProp="description" content={`${manga.title}`} />
-        <meta itemProp="image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
-
-        <meta name="og:description" content={`${manga.title}`} />
-        <meta name="og:image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
-
-        <meta name="twitter:description" content={`${manga.title}`} />
-        <meta name="twitter:image" content={`${manga?.cover_image[0]?.image_urls[0] || "#"}`} />
+        <title>{manga.title ? `${manga.title} - Animapu` : "Animapu"}</title>
+        <meta itemProp="description" content={manga.title || ""} />
+        <meta itemProp="image" content={coverImage} />
+        <meta name="og:title" content={manga.title || "Animapu"} />
+        <meta name="og:description" content={manga.title || ""} />
+        <meta name="og:image" content={coverImage} />
+        <meta name="twitter:description" content={manga.title || ""} />
+        <meta name="twitter:image" content={coverImage} />
       </Head>
 
-      <div className="bg-[#fafafa]">
-        <div className="container mx-auto py-4 px-[50px] max-w-[768px]">
-          <div className="backdrop-blur-sm grid grid-cols-1 sm:grid-cols-3">
-            <div className="h-full z-5 p-2">
+      <div className="mx-auto flex max-w-4xl flex-col gap-5">
+        <Button variant="ghost" size="sm" className="w-fit" onClick={() => router.back()}>
+          <ArrowLeft size={16} /> Back
+        </Button>
+
+        <Card className="overflow-hidden border-border/70 bg-card">
+          <CardContent className="grid gap-5 p-4 sm:grid-cols-[190px_1fr] sm:p-6">
+            <div className="mx-auto w-full max-w-[190px] sm:mx-0">
               <img
-                className={`rounded w-full shadow-md ${manga.title ? "" : "animate-pulse"}`}
-                src={manga?.cover_image[0]?.image_urls[0] || "#"}
+                className="aspect-[2/3] w-full rounded-xl object-cover shadow-xl"
+                src={coverImage}
+                alt={`Cover of ${manga.title || "manga"}`}
               />
-              <div className='flex'>
-                <button className="block w-full bg-[#ebb62d] hover:bg-[#A57F1F] text-white mt-2 p-2 text-center rounded-full mr-1" onClick={() => handleUpvote()}>
-                  <i className="fa-solid fa-star"></i> Upvote
-                </button>
-                <button className="block w-full bg-[#ec294b] hover:bg-[#B11F38] text-white mt-2 p-2 text-center rounded-full ml-1" onClick={() => handleFollow()}>
-                  <i className="fa-solid fa-heart"></i> {followed ? "Un-Follow" : "Follow"}
-                </button>
-              </div>
-              <Link
-                href={`/mangas/${manga_source}/${manga_id}/read/${startReadDecider(chapters)}?secondary_source_id=${secondary_source_id}`}
-                className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-2 text-center rounded-full"
-              >
-                <i className="fa-solid fa-book"></i> Start Read
-              </Link>
-              <Link
-                href={continueManga.last_link || "#"}
-                className={`${continueManga.title ? "block" : "hidden"} w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white p-2 text-center mt-2 rounded-full`}
-              >
-                <i className="fa-solid fa-play"></i> {
-                  continueManga.last_chapter_read ? `Cont Ch ${continueManga.last_chapter_read}` : "Continue"
-                }
-              </Link>
             </div>
-            <div className="col-span-2 p-2">
-              <button
-                className="text-sm text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full"
-                onClick={(e)=>{
-                  navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
-                  toast.info("Link berhasil dicopy!")
-                }}
-              ><i className="fa-solid fa-share-nodes"></i> Share</button>
-              <h1 className="text-[#5c728a] text-xl mb-1">
-                <b>{manga.source}</b> - { manga.title ? manga.title : <div className="h-3 bg-slate-500 rounded mb-4 animate-pulse w-1/2"></div> }
-              </h1>
-              {manga.description ? <p className="text-sm text-[#7a858f] text-justify max-h-80 overflow-hidden overflow-y-scroll">{manga.description}</p> : <div className="animate-pulse">
-                <div className="h-2 bg-slate-500 rounded mb-4"></div>
-                <div className="h-2 bg-slate-500 rounded mb-4"></div>
-                <div className="h-2 bg-slate-500 rounded mb-4"></div>
-                <div className="h-2 bg-slate-500 rounded mb-4"></div>
-                <div className="h-2 bg-slate-500 rounded mb-4 w-2/3"></div>
-              </div>}
-              <div className="mt-2 overflow-x-clip">
-                {manga.genres && manga.genres.map((genre, idx) => (
-                  <span className="text-sm text-[#26394a] text-center px-2 mt-1 rounded-full bg-[#bee3f9] mr-1" key={genre + idx}>{genre}</span>
+
+            <div className="flex min-w-0 flex-col">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <Badge variant="secondary" className="mb-2 max-w-full truncate">{manga.source || "Manga"}</Badge>
+                  <h1 className="text-2xl font-semibold leading-tight sm:text-3xl">{manga.title || "Untitled manga"}</h1>
+                </div>
+                <Button variant="ghost" size="icon" onClick={shareManga} aria-label="Copy manga link">
+                  <Share2 size={18} />
+                </Button>
+              </div>
+
+              {manga.description && <p className="mt-4 text-sm leading-6 text-muted-foreground whitespace-pre-line">{manga.description}</p>}
+
+              {manga.genres?.length > 0 && <div className="mt-4 flex flex-wrap gap-2">
+                {manga.genres.map((genre, index) => (
+                  <Badge key={`${genre}-${index}`} variant="outline" className="gap-1 font-normal"><Tag size={12} />{genre}</Badge>
                 ))}
+              </div>}
+
+              <div className="mt-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                <Button asChild className="col-span-2 sm:col-auto">
+                  <Link href={readHref(startReadDecider())}><BookOpen size={16} /> Start reading</Link>
+                </Button>
+                {continueManga.last_link && continueManga.last_link !== "#" && <Button asChild variant="secondary" className="col-span-2 sm:col-auto">
+                  <Link href={continueManga.last_link}><Play size={16} /> Continue ch. {continueManga.last_chapter_read}</Link>
+                </Button>}
+                <Button variant={followed ? "secondary" : "outline"} onClick={handleFollow}>
+                  {followed ? <Check size={16} /> : <Bookmark size={16} />}
+                  {followed ? "In library" : "Add to library"}
+                </Button>
+                <Button variant="outline" size="icon" onClick={shareManga} aria-label="Copy manga link">
+                  <Copy size={16} />
+                </Button>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div className="container mx-auto py-4 px-[50px] max-w-[768px]">
-          <div className="grid grid-cols-1 sm:grid-cols-3">
-            <div className="p-2 rounded">
-              <div className="bg-white p-2 rounded">
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4 sm:p-6">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h2 className="flex items-center gap-2 text-lg font-semibold"><Library size={19} /> Chapters</h2>
+                <p className="text-sm text-muted-foreground">{chapters.length} available chapter{chapters.length === 1 ? "" : "s"}</p>
               </div>
             </div>
 
-            <div className="col-span-2 p-2">
-              {manga.chapters.map((chapter, idx) => (
-                <div className="" key={chapter.title}>
-                  <Link
-                    href={`/mangas/${manga_source}/${manga_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}
-                    className="bg-white hover:bg-[#eeeeee] rounded mb-2 p-2 text-[#5c728a] text-center block w-full"
-                  >
-                    {chapter.title}
-                  </Link>
-                </div>
+            <div className="flex flex-col gap-2">
+              {chapters.map((chapter, index) => (
+                <Link
+                  key={chapter.id || `${chapter.title}-${index}`}
+                  href={readHref(chapter.id)}
+                  className="group flex items-center justify-between gap-3 rounded-lg border border-border/70 px-3 py-3 transition-colors hover:bg-accent"
+                >
+                  <span className="min-w-0 truncate text-sm font-medium">{chapter.title || `Chapter ${index + 1}`}</span>
+                  <ChevronRight size={18} className="shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+                </Link>
               ))}
+              {chapters.length === 0 && <p className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">No chapters are available yet.</p>}
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
 }
 
 export async function getServerSideProps(context) {
-  var query = context.query
+  const query = context.query
 
   try {
     const response = await animapuApi.GetMangaDetail({
       manga_source: query.manga_source,
       manga_id: query.id,
-      secondary_source_id: query.secondary_source_id
+      secondary_source_id: query.secondary_source_id,
     })
     const body = await response.json()
-    if (response.status == 200) {
-      return {props:{manga:body.data}}
+    if (response.status === 200) {
+      return { props: { manga: body.data } }
     }
-
   } catch (e) {
     console.error(e)
   }
 
   return {
-    props:{
-      manga: {cover_image:[{image_urls:["/images/default-book.png"]}], chapters:[{id: 1}]}
-    }
+    props: {
+      manga: {
+        cover_image: [{ image_urls: ["/images/default-book.png"] }],
+        chapters: [],
+      },
+    },
   }
 }

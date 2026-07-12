@@ -49,7 +49,7 @@ function MyApp({ Component, pageProps }) {
         enableSystem
       >
         <div className={roboto.className}>
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={false}>
             <DefaultLayout>
               <Component {...pageProps} />
             </DefaultLayout>

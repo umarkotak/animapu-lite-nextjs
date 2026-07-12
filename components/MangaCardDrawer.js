@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useRouter } from "next/router"
 import { BookIcon, BookmarkIcon, DownloadIcon, EyeIcon, PlayIcon, Share2Icon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Link from 'next/link'
@@ -8,6 +9,8 @@ import { Button } from "./ui/button"
 import { Drawer, DrawerContent } from "@/components/ui/drawer"
 
 export function MangaCardDrawer(props) {
+  const router = useRouter()
+
   const [show, setShow] = useState(false)
   const [manga, setManga] = useState(initManga(props.manga))
 
