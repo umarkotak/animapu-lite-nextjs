@@ -25,6 +25,29 @@ var tempChapters = []
 var onApiCall = false
 var tempLoadedImageUrls = {}
 var tempFailedImageUrls = {}
+const IMAGE_RETRY_DELAY_MS = 1000
+const MAX_IMAGE_RETRIES = 2
+
+function preloadImageWithRetry(url, retriesLeft = MAX_IMAGE_RETRIES) {
+  return new Promise((resolve) => {
+    const image = new Image()
+
+    image.onload = () => resolve(true)
+    image.onerror = () => {
+      if (retriesLeft === 0) {
+        resolve(false)
+        return
+      }
+
+      setTimeout(() => {
+        preloadImageWithRetry(url, retriesLeft - 1).then(resolve)
+      }, IMAGE_RETRY_DELAY_MS)
+    }
+
+    image.src = url
+  })
+}
+
 export default function ReadManga(props) {
   let router = useRouter()
   const query = router.query
@@ -115,19 +138,12 @@ export default function ReadManga(props) {
         for (let j = 0; j < imageObj.image_urls.length; j++) {
           const oneImageUrl = imageObj.image_urls[j];
 
-          const image = new Image();
-          image.src = oneImageUrl;
-
-          await new Promise((resolve, reject) => {
-            image.onload = () => {
-              tempLoadedImageUrls[imageObj.image_urls.join(";")] = true
-              resolve()
-            };
-            image.onerror = () => {
-              failCount = failCount + 1
-              resolve()
-            };
-          });
+          const imageLoaded = await preloadImageWithRetry(oneImageUrl)
+          if (imageLoaded) {
+            tempLoadedImageUrls[imageObj.image_urls.join(";")] = true
+          } else {
+            failCount = failCount + 1
+          }
 
           setLoadedImageUrls({...tempLoadedImageUrls})
         }

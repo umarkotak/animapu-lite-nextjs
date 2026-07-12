@@ -19,6 +19,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import UserDropdown from "./UserDropdown"
+import { ChangeThemeButton } from "@/components/utils/ChangeThemeButton"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -324,7 +325,8 @@ export function DefaultLayout({ children }) {
           </div>
           <div className="flex-1 hidden lg:flex flex-row justify-center items-center">
           </div>
-          <div className="flex flex-row items-center justify-end">
+          <div className="flex flex-row items-center justify-end gap-1">
+            <ChangeThemeButton />
             <div className="size-10 flex items-center justify-center hover:bg-accent rounded cursor-pointer">
               <UserDropdown />
             </div>
