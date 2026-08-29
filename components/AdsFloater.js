@@ -6,7 +6,6 @@ import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 import { BookIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
-import * as Cronitor from "@cronitorio/cronitor-rum"
 
 export default function AdsFloater() {
   const [prayerTimes, setPrayerTimes] = useState({})
@@ -45,10 +44,6 @@ export default function AdsFloater() {
 
     fetchPrayerTimes();
   }, [])
-
-  async function trackClick(codename) {
-    Cronitor.track(`ADS_CLICK_${codename}`)
-  }
 
   return(<>
     <div className='fixed w-[270px] top-[60px] z-0 left-1/2 hidden xl:block text-white' style={{transform: `translate(-660px, 0%)`}}>
@@ -100,7 +95,7 @@ export default function AdsFloater() {
         </div>
         {adsList.map((oneAds) => (
           <div className='w-full overflow-hidden rounded-lg relative border border-white' key={oneAds.codename}>
-            <Link href={oneAds.link} target="_blank" onClick={()=>trackClick(oneAds.codename)}>
+            <Link href={oneAds.link} target="_blank">
               <img className='cursor-pointer hover:scale-105 transition' src={oneAds.image} />
               <div className='bottom-0 w-full bg-black bg-opacity-70 backdrop-blur-sm absolute p-2 text-sm line-clamp-3 rounded-b-lg'>
                 {oneAds.name}

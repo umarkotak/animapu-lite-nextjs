@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { useRouter } from "next/router"
 import { Img } from 'react-image'
 import Link from 'next/link'
-import * as Cronitor from "@cronitorio/cronitor-rum";
 import { jsPDF } from "jspdf";
 import { saveAs } from 'file-saver';
 

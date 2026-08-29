@@ -12,7 +12,6 @@ import ReactPlayer from 'react-player'
 
 import animapuApi from '@/apis/AnimapuApi'
 // import AnimeCardRelationV3 from '../AnimeCardRelationV3'
-import * as Cronitor from "@cronitorio/cronitor-rum"
 import Utils from '@/models/Utils'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
@@ -118,9 +117,6 @@ export default function WatchAnime() {
       if (`${ep.id}` === `${params.episode_id}`) {
         setEpisode(ep)
 
-        var trackData = `W_${removeSpecialCharacters(`${anime.title}`.substring(0,20))}_${removeSpecialCharacters(ep.number)}`
-        console.log("TRACKING", trackData)
-        Cronitor.track(trackData)
       }
 
       if (params.episode_id === ep.id) {
@@ -163,9 +159,6 @@ export default function WatchAnime() {
         if (`${ep.id}` === `${params.episode_id}`) {
           setEpisode(ep)
 
-          var trackData = `W_${removeSpecialCharacters(`${tmpAnime.title}`.substring(0,20))}_${removeSpecialCharacters(ep.number)}`
-          console.log("TRACKING", trackData)
-          Cronitor.track(trackData)
         }
       })
 

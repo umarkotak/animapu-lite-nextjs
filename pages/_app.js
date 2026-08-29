@@ -3,7 +3,6 @@ import Head from 'next/head'
 import "nprogress/nprogress.css"
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useCronitor } from '@cronitorio/cronitor-rum-nextjs';
 import { ThemeProvider } from 'next-themes'
 import { Geist, Roboto } from 'next/font/google'
 import { DefaultLayout } from '@/components/layouts/DefaultLayout'
@@ -15,8 +14,6 @@ const roboto = Geist({
 })
 
 function MyApp({ Component, pageProps }) {
-  useCronitor('7aedc8d5a68c296cfc670b4719b4f4c6');
-
   return (
     <>
       <Head>

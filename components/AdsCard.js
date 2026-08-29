@@ -6,7 +6,6 @@ import animapuApi from "../apis/AnimapuApi"
 import Manga from "../models/Manga"
 import { BookIcon, BookmarkIcon, Eye, EyeIcon, Heart, HeartIcon, PlayIcon, Share2Icon, StarIcon, XIcon } from 'lucide-react'
 import { toast } from 'react-toastify'
-import * as Cronitor from "@cronitorio/cronitor-rum"
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Badge } from './ui/badge'
@@ -32,16 +31,12 @@ export default function AdsCard({variant, limit = 1}) {
     }
   }
 
-  async function trackClick(codename) {
-    Cronitor.track(`ADS_CLICK_${codename}`)
-  }
-
   if (variant === "manga_chapter") {
     return(<>
       <div className='grid grid-cols-2 gap-1 w-full h-[195px] shadow-lg'>
         {affiliateLinkList.map((oneAds) => (
           <div key={`${new Date}-${oneAds.short_link}`} className='overflow-hidden hover:border hover:border-primary'>
-            <Link href={oneAds.short_link} target="_blank" onClick={()=>trackClick(oneAds.short_link)}>
+            <Link href={oneAds.short_link} target="_blank">
               <div className="w-full flex flex-row justify-start">
                 <img
                   className={`h-[195px] object-cover w-full`}
@@ -67,7 +62,7 @@ export default function AdsCard({variant, limit = 1}) {
         className={`w-full max-w-[175px] h-[265px] mx-auto border overflow-hidden rounded-xl border-primary`}
         key={`${new Date}-${oneAds.short_link}`}
       >
-        <Link href={oneAds.short_link} target="_blank" onClick={()=>trackClick(oneAds.short_link)}>
+        <Link href={oneAds.short_link} target="_blank">
           <div className="flex flex-col relative shadow-xl rounded-xl">
             <div className="overflow-hidden rounded-xl">
               <div className="bg-black rounded-xl">

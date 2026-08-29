@@ -12,7 +12,6 @@ import screenfull from 'screenfull'
 
 import AnimapuApi from '@/models/AnimapuApi'
 import AnimeCardRelationV3 from '../AnimeCardRelationV3'
-import * as Cronitor from "@cronitorio/cronitor-rum"
 import Utils from '@/models/Utils'
 
 var mobileModeLimit = 470
@@ -125,9 +124,6 @@ export default function WatchV3() {
         if (`${ep.id}` === `${params.episode_id}`) {
           setEpisode(ep)
 
-          var trackData = `W_${removeSpecialCharacters(`${tmpAnime.title}`.substring(0,20))}_${removeSpecialCharacters(ep.number)}`
-          console.log("TRACKING", trackData)
-          Cronitor.track(trackData)
         }
       })
 
