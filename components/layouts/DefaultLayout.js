@@ -46,7 +46,7 @@ const animeItems = [
 ]
 
 const adminItems = [
-  { title: "Affiliate Links", url: "/admin/affiliate_link", icon: Circle },
+  // { title: "Affiliate Links", url: "/admin/affiliate_link", icon: Circle },
   { title: "Manga Activity", url: "/admin/user_activity", icon: Circle },
   { title: "Anime Activity", url: "/admin/user_anime_activity", icon: Circle },
 ]
@@ -201,7 +201,7 @@ export function DefaultLayout({ children }) {
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
-          <SidebarGroup>
+          {/* <SidebarGroup>
             <SidebarGroupLabel>Misc</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -217,7 +217,7 @@ export function DefaultLayout({ children }) {
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
-          </SidebarGroup>
+          </SidebarGroup> */}
           {isAdmin && <SidebarGroup>
             <SidebarGroupLabel>Admin</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -293,7 +293,7 @@ export function DefaultLayout({ children }) {
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
-              <NavigationMenu>
+              {/* <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
                     <NavigationMenuTrigger className={"bg-black/0"}>Misc</NavigationMenuTrigger>
@@ -306,7 +306,7 @@ export function DefaultLayout({ children }) {
                     </NavigationMenuContent>
                   </NavigationMenuItem>
                 </NavigationMenuList>
-              </NavigationMenu>
+              </NavigationMenu> */}
               {isAdmin && <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>

@@ -19,12 +19,11 @@ export default function MangaDetail(props) {
   const coverImage = manga?.cover_image?.[0]?.image_urls?.[0] || "/images/default-book.png"
   const mangaSource = manga.source || query.manga_source
   const mangaId = manga.source_id || query.id
-  const secondarySourceId = query.secondary_source_id || manga.secondary_source_id
   const [continueManga, setContinueManga] = useState({ last_link: "#", last_chapter_read: 0 })
   const [followed, setFollowed] = useState(false)
 
   const listKey = "ANIMAPU_LITE:FOLLOW:LOCAL:LIST"
-  const detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+  const detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}`
 
   function isContinuePossible() {
     try {
@@ -52,7 +51,7 @@ export default function MangaDetail(props) {
   useEffect(() => {
     setFollowed(isInLibrary())
     isContinuePossible()
-  }, [manga.source, manga.source_id, manga.secondary_source_id])
+  }, [manga.source, manga.source_id])
 
   function handleFollow() {
     if (!manga.source_id) { return }
@@ -83,8 +82,7 @@ export default function MangaDetail(props) {
   }
 
   function readHref(chapterId) {
-    const secondarySourceQuery = secondarySourceId ? `?secondary_source_id=${secondarySourceId}` : ""
-    return `/mangas/${mangaSource}/${mangaId}/read/${chapterId}${secondarySourceQuery}`
+    return `/mangas/${mangaSource}/${mangaId}/read/${chapterId}`
   }
 
   function shareManga() {
@@ -194,7 +192,6 @@ export async function getServerSideProps(context) {
     const response = await animapuApi.GetMangaDetail({
       manga_source: query.manga_source,
       manga_id: query.id,
-      secondary_source_id: query.secondary_source_id,
     })
     const body = await response.json()
     if (response.status === 200) {

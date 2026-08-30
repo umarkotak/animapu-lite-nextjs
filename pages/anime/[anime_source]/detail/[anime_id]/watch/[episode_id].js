@@ -367,6 +367,16 @@ export default function WatchAnime() {
                       onReady={()=>onReactPlayerReady()}
                     />
                   </div>
+                  <div style={{height: videoPlayerHeight}} className={`${episodeStream.stream_type === "gdrive" ? "block" : "hidden"}`}>
+                    <video
+                      className='w-full h-full'
+                      controls
+                      autoPlay
+                      playsInline
+                      preload='metadata'
+                      src={`/api/video/${encodeURIComponent(episodeStream.gdrive_conf?.gid || "")}?${new URLSearchParams({access_token: episodeStream.gdrive_conf?.access_token || ""})}`}
+                    />
+                  </div>
                   <div style={{height: videoPlayerHeight}} className={`overflow-hidden ${(episodeStream.stream_type === "iframe") ? "block" : "hidden"}`}>
                     {/* <div>Iframe URL: {episodeStream.stream_type} | {episodeStream.iframe_url}</div> */}
                     <iframe
@@ -468,10 +478,10 @@ export default function WatchAnime() {
                 href={`/anime/${params.anime_source}/detail/${oneEpisode.anime_id}/watch/${oneEpisode.id}`}
               >
                 <div className='min-w-[168px] max-w-[168px] h-[94px]'>
-                  <div className='relative overflow-clip'>
+                  <div className='relative overflow-clip bg-black'>
                     <Img
                       className={`shadow-md w-[168px] h-[94px]
-                      hover:scale-110 transition duration-500 cursor-pointer overflow-clip object-none`}
+                      hover:scale-110 transition duration-500 cursor-pointer overflow-clip object-contain`}
                       src={oneEpisode?.cover_urls || "/images/thumb_not_found_1.png"}
                       alt="thumb"
                     />

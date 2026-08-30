@@ -48,7 +48,7 @@ export default function Setting() {
     var libraryPayload = JSON.parse(loadLibraryPayload)
 
     libraryPayload.map((manga) => {
-      var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+      var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}`
       localStorage.setItem(detailKey, JSON.stringify(manga))
     })
 

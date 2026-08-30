@@ -155,7 +155,7 @@ export function MangaCardDrawer(props) {
                     variant="default"
                     className=""
                     onClick={(e)=>{
-                      navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                      navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}`)
                       toast.info("Link berhasil dicopy!")
                     }}
                   >
@@ -187,7 +187,7 @@ export function MangaCardDrawer(props) {
                 <Button
                   size="xs"
                   variant="default"
-                  onClick={() => { router.push(`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`) }}
+                  onClick={() => { router.push(`/mangas/${manga.source}/${manga.source_id}`) }}
                 >
                   <EyeIcon size={10} />
                   Detail
@@ -195,7 +195,7 @@ export function MangaCardDrawer(props) {
                 <Button
                   size="xs"
                   variant="default"
-                  onClick={() => { router.push(`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`) }}
+                  onClick={() => { router.push(`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}`) }}
                 >
                   <BookIcon size={10} />
                   Start Read

@@ -8,8 +8,6 @@
 // latest_chapter_number: 46
 // latest_chapter_title: "Chapter 46: Page.46"
 // rating: ""
-// secondary_source: ""
-// secondary_source_id: ""
 // source: "mangabat"
 // source_id: "read-ih387026"
 // status: ""
@@ -22,11 +20,11 @@ class Manga {
   }
 
   GetOnlineHistoryKey() {
-    return `ANIMAPU_LITE:HISTORY:ONLINE:DETAIL:${this.userId}:${this.manga.source}:${this.manga.source_id}:${this.manga.secondary_source_id}`
+    return `ANIMAPU_LITE:HISTORY:ONLINE:DETAIL:${this.userId}:${this.manga.source}:${this.manga.source_id}`
   }
 
   GetLocalHistoryKey() {
-    return `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${this.manga.source}:${this.manga.source_id}:${this.manga.secondary_source_id}`
+    return `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${this.manga.source}:${this.manga.source_id}`
   }
 }
 

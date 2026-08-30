@@ -44,7 +44,7 @@ export default function AnimeCard(props) {
 
   return (
     <div
-      className={`w-full max-w-[175px] h-[265px] mx-auto`}
+      className={`w-full max-w-[175px] h-[265px] mx-auto group`}
       key={`${props.anime.source}-${props.anime.id}`}
       id={`${props.anime.source}-${props.anime.id}`}
     >
@@ -54,7 +54,7 @@ export default function AnimeCard(props) {
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
             <img
-              className={`w-full object-cover h-[265px] rounded-xl hover:scale-105 transition z-0 cursor-pointer`}
+              className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
               src={(props?.anime?.cover_urls) || "/images/default-book.png"}
               alt="thumb"
             />
@@ -66,10 +66,10 @@ export default function AnimeCard(props) {
             <small>{props.anime.source}</small>
           </div>}
           <div
-            className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black bg-opacity-75 hover:bg-opacity-90 backdrop-blur-sm cursor-pointer"
+            className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black/80 backdrop-blur-sm cursor-pointer"
             onClick={()=>setShowModal(!showModal)}
           >
-            <p className="text-sm leading-1 line-clamp-1">
+            <p className="text-sm line-clamp-2 group-hover:text-blue-400">
               {props.anime.title}
             </p>
             <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
@@ -258,7 +258,7 @@ export function AnimeCardModal(props) {
                         </small>
                         <small>
                           <Link
-                            href={`/anime/${anime.source}/detail/${anime.id}/watch/${startReadDecider(episodes)}?secondary_source_id=${anime.secondary_source_id}`}
+                            href={`/anime/${anime.source}/detail/${anime.id}/watch/${startReadDecider(episodes)}`}
                             className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full"
                           >
                             <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Watch</span>

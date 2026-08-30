@@ -234,7 +234,7 @@ export function MangaCardModal(props) {
                 <Button
                   size="sm"
                   onClick={(e)=>{
-                    navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                    navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}`)
                     toast.info("Link berhasil dicopy!")
                   }}
                 ><Share2Icon size={14} /> Share</Button>
@@ -264,7 +264,7 @@ export function MangaCardModal(props) {
                         </small>
                         <small>
                           <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}
+                            href={`/mangas/${manga.source}/${manga.source_id}`}
                             className="block w-full bg-[#3db3f2] hover:bg-[#333d43] text-white mt-2 p-1 text-center rounded-full"
                           >
                             <span className='text-xs flex gap-1 items-center justify-center'><EyeIcon size={14} /> Detail</span>
@@ -272,7 +272,7 @@ export function MangaCardModal(props) {
                         </small>
                         <small>
                           <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
+                            href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}`}
                             className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full"
                           >
                             <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Read</span>

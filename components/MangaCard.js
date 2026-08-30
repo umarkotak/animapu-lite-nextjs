@@ -24,7 +24,7 @@ export default function MangaCard(props) {
   }
 
   function followed(manga) {
-    var libraryDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+    var libraryDetailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}`
     if (typeof window !== "undefined" && localStorage.getItem(libraryDetailKey)) { return true }
 
     return false
@@ -107,7 +107,7 @@ export default function MangaCard(props) {
       }
 
       if (typeof window !== "undefined") {
-        var localHistoryDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+        var localHistoryDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}`
         if (localStorage.getItem(localHistoryDetailKey)) {
           var localManga = JSON.parse(localStorage.getItem(localHistoryDetailKey))
 
@@ -150,7 +150,7 @@ export default function MangaCard(props) {
       className={`
         flex justify-center
         ${props.remove_margination ? "" : "px-1 mb-4"}
-        ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}-${props.manga.secondary_source_id}`) ? "hidden" : "block"}
+        ${localStorage.getItem(`unsupported-title-${props.manga.source}-${props.manga.source_id}`) ? "hidden" : "block"}
       `}
       key={`${props.idx}-${props.manga.id}`}
     >

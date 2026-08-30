@@ -40,7 +40,7 @@ export default function BottomMenuBar(props) {
       if (props.chapter_id === chapter.id) {
         currentIdx = idx
       }
-      chapter.value = `/mangas/${props.manga.source}/${props.manga.source_id}/read/${chapter.id}?secondary_source_id=${props.manga.secondary_source_id}`
+      chapter.value = `/mangas/${props.manga.source}/${props.manga.source_id}/read/${chapter.id}`
       chapter.label = chapter.title
       return chapter
     })
@@ -68,7 +68,7 @@ export default function BottomMenuBar(props) {
   function nextChapter() {
     if (!props.manga) { return "/#" }
     if (!chapters[currentIdx-1]) {
-      return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
+      return `/mangas/${props.manga.source}/${props.manga.source_id}`
     }
     return chapters[currentIdx-1].value
   }
@@ -76,14 +76,14 @@ export default function BottomMenuBar(props) {
   function prevChapter() {
     if (!props.manga) { return "#" }
     if (!chapters[currentIdx+1]) {
-      return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
+      return `/mangas/${props.manga.source}/${props.manga.source_id}`
     }
     return chapters[currentIdx+1].value
   }
 
   function toManga() {
     if (!props.manga) { return "/#" }
-    return `/mangas/${props.manga.source}/${props.manga.source_id}?secondary_source_id=${props.manga.secondary_source_id}`
+    return `/mangas/${props.manga.source}/${props.manga.source_id}`
   }
 
   const LEFT_KEYS = ["37", "ArrowLeft"]

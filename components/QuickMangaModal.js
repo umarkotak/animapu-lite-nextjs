@@ -24,7 +24,6 @@ export default function QuickMangaModal(props) {
       const response = await animapuApi.GetMangaDetail({
         manga_source: props.manga.source,
         manga_id: props.manga.source_id,
-        secondary_source_id: props.manga.secondary_source_id
       })
       const body = await response.json()
       if (response.status == 200) {
@@ -47,9 +46,9 @@ export default function QuickMangaModal(props) {
     props.setShowModal(show)
   }, [show])
 
-  var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+  var historyDetailKey = `ANIMAPU_LITE:HISTORY:LOCAL:DETAIL:${manga.source}:${manga.source_id}`
   var listKey = `ANIMAPU_LITE:FOLLOW:LOCAL:LIST`
-  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}:${manga.secondary_source_id}`
+  var detailKey = `ANIMAPU_LITE:FOLLOW:LOCAL:DETAIL:${manga.source}:${manga.source_id}`
   const [chapters, setChapters] = useState([{id: 1}])
   const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
 
@@ -229,7 +228,7 @@ export default function QuickMangaModal(props) {
               <button
                 className="absolute z-10 top-3 right-[46px] text-xs text-white float-right bg-[#3db3f2] hover:bg-[#318FC2] p-1 rounded-full flex items-center gap-1"
                 onClick={(e)=>{
-                  navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`)
+                  navigator.clipboard.writeText(`Read *${manga.title}* for free at https://animapu.vercel.app/mangas/${manga.source}/${manga.source_id}`)
                   toast.info("Link berhasil dicopy!")
                 }}
               ><Share2Icon size={14} /> Share</button>
@@ -243,14 +242,12 @@ export default function QuickMangaModal(props) {
                   <div className="backdrop-blur-sm grid grid-cols-5 sm:grid-cols-5">
                     <div className="col-span-2 h-full z-5 p-2 mt-[-100px]">
                       <div className="grid justify-items-center">
-                        {/* <Link href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}> */}
-                          <a>
-                            <img
-                              className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
-                              src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
-                            />
-                          </a>
-                        {/* </Link> */}
+                        <a>
+                          <img
+                            className={`rounded-lg h-50 w-30 shadow-md ${manga.title ? "" : "animate-pulse"}`}
+                            src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
+                          />
+                        </a>
                       </div>
                       <div className=''>
                         <small>
@@ -260,7 +257,7 @@ export default function QuickMangaModal(props) {
                         </small>
                         <small>
                           <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}?secondary_source_id=${manga.secondary_source_id}`}
+                            href={`/mangas/${manga.source}/${manga.source_id}`}
                             className="block w-full bg-[#3db3f2] hover:bg-[#333d43] text-white mt-2 p-1 text-center rounded-full"
                           >
                             <span className='text-xs flex gap-1 items-center justify-center'><EyeIcon size={14} /> Detail</span>
@@ -268,7 +265,7 @@ export default function QuickMangaModal(props) {
                         </small>
                         <small>
                           <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}?secondary_source_id=${manga.secondary_source_id}`}
+                            href={`/mangas/${manga.source}/${manga.source_id}/read/${startReadDecider(chapters)}`}
                             className="block w-full bg-[#3db3f2] hover:bg-[#318FC2] text-white mt-2 p-1 text-center rounded-full"
                           >
                             <span className='text-xs flex gap-1 items-center justify-center'><BookIcon size={14} /> Start Read</span>
@@ -316,7 +313,7 @@ export default function QuickMangaModal(props) {
                       {manga.chapters.map((chapter, idx) => (
                         <div className="" key={chapter.title} onClick={()=>changeUrl(props.manga)}>
                           <Link
-                            href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}?secondary_source_id=${chapter.secondary_source_id}`}
+                            href={`/mangas/${manga.source}/${manga.source_id}/read/${chapter.id}`}
                             className="bg-white hover:bg-gray-300 rounded-full mb-2 py-1 px-2 text-[#5c728a] text-center block w-full"
                           >
                             {chapter.title}
