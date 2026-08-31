@@ -14,7 +14,6 @@ import ChangeAnimeSourceModalOnly from '@/components/ChangeAnimeSourceModalOnly'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import AnimeCard from '@/components/AnimeCard'
-import AdsCard from '@/components/AdsCard'
 import AnimeCardBar from '@/components/AnimeCardBar'
 
 var onApiCall = false

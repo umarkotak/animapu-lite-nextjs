@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import animapuApi from "@/apis/AnimapuApi"
 import ChangeSourceModalOnly from "@/components/ChangeSourceModalOnly"
 import MangaCardV2 from "@/components/MangaCardV2"
-import AdsCard from "@/components/AdsCard"
 
 var onApiCall = false
 var page = 1
@@ -84,9 +83,6 @@ export default function Latest({content_only}) {
       }
 
       var mangasData = body.data
-      // mangasData = injectObjectEveryNthElement(mangasData, {
-      //   is_ads: true
-      // }, 10)
 
       if (append) {
         tempMangas = tempMangas.concat(mangasData)
@@ -161,11 +157,8 @@ export default function Latest({content_only}) {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-          {/* <AdsCard /> */}
           {mangas.map((manga, idx) => (
-            manga.is_ads
-            ? <AdsCard key={`ads-${idx}`} />
-            : <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
+            <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
           ))}
         </div>
 
@@ -193,11 +186,8 @@ export default function Latest({content_only}) {
       </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-        {/* <AdsCard /> */}
         {mangas.map((manga, idx) => (
-          manga.is_ads
-          ? <AdsCard />
-          : <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
+          <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
         ))}
       </div>
 

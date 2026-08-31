@@ -14,7 +14,6 @@ import ChangeAnimeSourceModalOnly from '@/components/ChangeAnimeSourceModalOnly'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import AnimeCard from '@/components/AnimeCard'
-import AdsCard from '@/components/AdsCard'
 import AnimeCardBar from '@/components/AnimeCardBar'
 
 var page = 1
@@ -129,7 +128,6 @@ export default function AnimeLatest({discoveryBar}) {
       </Card>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-        <AdsCard />
         {animes.map((oneAnimeData) => (
           // <AnimeSourceCard oneAnimeData={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={params.anime_source} />
           <AnimeCard anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />

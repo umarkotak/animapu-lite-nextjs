@@ -14,7 +14,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Bookmark, ChevronDownIcon, ChevronLeft, DownloadIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
-import AdsCard from '@/components/AdsCard'
 import { LoadingSpinner } from '@/components/ui/icon'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -334,10 +333,6 @@ export default function ReadManga(props) {
         <div>
           {chapters.map((oneChapter) => (
             <div key={`chapter-${oneChapter.id}-${oneChapter.number}`}>
-              {/* <div className='mb-4'>
-                <AdsCard variant={"manga_chapter"} limit={2} />
-              </div> */}
-
               <div className="sticky top-0 bg-accent">
                 <div className="p-0 flex flex-col">
                   <div className='flex justify-between items-center gap-1'>
