@@ -336,7 +336,7 @@ export default function WatchV3() {
                   <div style={{height: videoPlayerHeight}} className={`${(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") ? "block" : "hidden"}`}>
                     <ReactPlayer
                       ref={rPlayerRef}
-                      url={episodeStream.raw_stream_url}
+                      src={episodeStream.raw_stream_url}
                       playing={true}
                       controls={true}
                       width={"100%"}

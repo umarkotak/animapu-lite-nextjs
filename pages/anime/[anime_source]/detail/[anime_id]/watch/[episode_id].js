@@ -359,15 +359,19 @@ export default function WatchAnime() {
                   <div style={{height: videoPlayerHeight}} className={`${(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") ? "block" : "hidden"}`}>
                     <ReactPlayer
                       ref={rPlayerRef}
-                      url={episodeStream.raw_stream_url}
+                      src={episodeStream.raw_stream_url}
                       playing={true}
                       controls={true}
                       width={"100%"}
                       height={"100%"}
-                      onReady={()=>onReactPlayerReady()}
+                      onReady={() => {
+                        if (episodeStream.stream_type === "hls") {
+                          onReactPlayerReady()
+                        }
+                      }}
                     />
                   </div>
-                  <div style={{height: videoPlayerHeight}} className={`${episodeStream.stream_type === "gdrive" ? "block" : "hidden"}`}>
+                  {episodeStream.stream_type === "gdrive" ? <div style={{height: videoPlayerHeight}}>
                     <video
                       className='w-full h-full'
                       controls
@@ -376,7 +380,7 @@ export default function WatchAnime() {
                       preload='metadata'
                       src={`/api/video/${encodeURIComponent(episodeStream.gdrive_conf?.gid || "")}?${new URLSearchParams({access_token: episodeStream.gdrive_conf?.access_token || ""})}`}
                     />
-                  </div>
+                  </div> : null}
                   <div style={{height: videoPlayerHeight}} className={`overflow-hidden ${(episodeStream.stream_type === "iframe") ? "block" : "hidden"}`}>
                     {/* <div>Iframe URL: {episodeStream.stream_type} | {episodeStream.iframe_url}</div> */}
                     <iframe
