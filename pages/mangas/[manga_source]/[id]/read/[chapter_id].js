@@ -61,10 +61,10 @@ export default function ReadManga(props) {
   const [selectedChapterId, setSelectedChapterId] = useState(query.chapter_id || "")
 
   useEffect(() => {
-    if (animapuApi.GetUserLogin().logged_in === "") {
-      toast.error("Please login first to start reading")
-      router.push("/login")
-    }
+    // if (animapuApi.GetUserLogin().logged_in === "") {
+    //   toast.error("Please login first to start reading")
+    //   router.push("/login")
+    // }
 
     tempChapters = []
     setChapters(tempChapters)

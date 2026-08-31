@@ -104,11 +104,11 @@ function WatchAnime() {
 
     if (!params) { return }
 
-    if (animapuApi.GetUserLogin().logged_in === "") {
-      toast.error("Please login first to start watching")
-      router.push("/login")
-      return
-    }
+    // if (animapuApi.GetUserLogin().logged_in === "") {
+    //   toast.error("Please login first to start watching")
+    //   router.push("/login")
+    //   return
+    // }
 
     let cancelled = false
     async function loadWatch() {
