@@ -8,7 +8,7 @@ class AnimapuApi {
     } else {
       this.GoHomeServerHost = "https://home-server-api.cabocil.com"
       this.AnimapuApiHost = "https://animapu-api.tempdev-1.site"
-      this.AnimapuApiHost = "http://localhost:6001"
+      // this.AnimapuApiHost = "http://localhost:6001"
     }
   }
 
