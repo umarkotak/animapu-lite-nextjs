@@ -325,6 +325,7 @@ function WatchAnime() {
               ))}
               {episodeStream?.iframe_urls && Object.keys(episodeStream?.iframe_urls).map((k) => (
                 <Button
+                  key={k}
                   onClick={(e)=>{setEpisodeStream({...episodeStream, iframe_url: episodeStream?.iframe_urls[k]})}}
                   size="sm"
                   variant={`${episodeStream.iframe_url === episodeStream?.iframe_urls[k] ? "default" : "outline"}`}
@@ -350,7 +351,7 @@ function WatchAnime() {
             <div className='relative shadow-2xl shadow-gray-900'>
               <div className={`w-full h-full bg-black ${mobileMode ? "" : "overflow-hidden"}`}>
                 {showPlayer ? <>
-                  <div style={{height: videoPlayerHeight}} className={`${(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") ? "block" : "hidden"}`}>
+                  {(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") && episodeStream.raw_stream_url ? <div style={{height: videoPlayerHeight}}>
                     <ReactPlayer
                       ref={rPlayerRef}
                       src={episodeStream.raw_stream_url}
@@ -364,7 +365,7 @@ function WatchAnime() {
                         }
                       }}
                     />
-                  </div>
+                  </div> : null}
                   {episodeStream.stream_type === "gdrive" ? <div style={{height: videoPlayerHeight}}>
                     <video
                       className='w-full h-full'
@@ -375,14 +376,14 @@ function WatchAnime() {
                       src={`/api/video/${encodeURIComponent(episodeStream.gdrive_conf?.gid || "")}?${new URLSearchParams({access_token: episodeStream.gdrive_conf?.access_token || ""})}`}
                     />
                   </div> : null}
-                  <div style={{height: videoPlayerHeight}} className={`overflow-hidden ${(episodeStream.stream_type === "iframe") ? "block" : "hidden"}`}>
+                  {episodeStream.stream_type === "iframe" && episodeStream.iframe_url ? <div style={{height: videoPlayerHeight}} className='overflow-hidden'>
                     {/* <div>Iframe URL: {episodeStream.stream_type} | {episodeStream.iframe_url}</div> */}
                     <iframe
                       className='h-full w-full'
                       src={episodeStream.iframe_url}
                       allowFullScreen={true}
                     />
-                  </div>
+                  </div> : null}
                 </> : null}
               </div>
             </div>
@@ -465,9 +466,9 @@ function WatchAnime() {
           </div>
 
           <div className=''>
-            {episodes && episodes.map((oneEpisode)=>(
+            {episodes && episodes.map((oneEpisode, index)=>(
               <Link
-                key={`${oneEpisode.source}-${oneEpisode.anime_id}-${oneEpisode.id}`}
+                key={`${oneEpisode.source}-${oneEpisode.anime_id}-${oneEpisode.id}-${index}`}
                 className={
                   `mb-3 flex p-2 hover:bg-gray-700
                   ${params.episode_id === oneEpisode.id ? "bg-gray-800" : "bg-gray-950"}
@@ -480,7 +481,7 @@ function WatchAnime() {
                     <Img
                       className={`shadow-md w-[168px] h-[94px]
                       hover:scale-110 transition duration-500 cursor-pointer overflow-clip object-contain`}
-                      src={oneEpisode?.cover_urls || "/images/thumb_not_found_1.png"}
+                      src={oneEpisode?.cover_urls?.[0] || oneEpisode?.cover_url || "/images/thumb_not_found_1.png"}
                       alt="thumb"
                     />
                     {!oneEpisode.cover_url && !anime.cover_url ? <div
