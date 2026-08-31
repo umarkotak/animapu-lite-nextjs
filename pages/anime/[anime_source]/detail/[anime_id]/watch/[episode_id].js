@@ -23,10 +23,12 @@ import { useRouter } from 'next/router'
 var mobileModeLimit = 470
 var smallWebLimit = 1015
 
-export default function WatchAnime() {
+function WatchAnime() {
   let router = useRouter()
   const params = useParams()
   const searchParams = useSearchParams()
+  const resolution = searchParams.get("resolution") || ""
+  const streamIdx = searchParams.get("stream_idx") || ""
 
   var rPlayerRef = useRef(null)
 
@@ -105,38 +107,25 @@ export default function WatchAnime() {
     if (animapuApi.GetUserLogin().logged_in === "") {
       toast.error("Please login first to start watching")
       router.push("/login")
+      return
     }
 
-    GetAnimeDetail(params.anime_id)
-
-    GetEpisodeStream()
-
-    setShowPlayer(true)
-
-    episodes && episodes.length > 0 && episodes.map((ep, idx) => {
-      if (`${ep.id}` === `${params.episode_id}`) {
-        setEpisode(ep)
-
+    let cancelled = false
+    async function loadWatch() {
+      const detailLoaded = await GetAnimeDetail(params.anime_id)
+      if (!cancelled && detailLoaded) {
+        await GetEpisodeStream()
+        if (!cancelled) { setShowPlayer(true) }
       }
+    }
+    loadWatch()
 
-      if (params.episode_id === ep.id) {
-        if (episodes[idx-1]) {
-          setPreviousLink(`/anime/${anime.source}/detail/${anime.id}/watch/${episodes[idx-1].id}`)
-        } else { setPreviousLink(`#`) }
-        if (episodes[idx+1]) {
-          setNextLink(`/anime/${anime.source}/detail/${anime.id}/watch/${episodes[idx+1].id}`)
-        } else { setNextLink(`#`) }
-      }
-    })
+    return () => { cancelled = true }
 
-  }, [searchParams, params])
+  }, [params?.anime_source, params?.anime_id, params?.episode_id, resolution, streamIdx])
 
-  var calling = false
   async function GetAnimeDetail(id) {
-    if (calling) { return }
-    calling = true
-
-    if (anime.id && anime.id !== "") { return }
+    if (anime.id === id) { return true }
 
     try {
       const response = await animapuApi.GetAnimeDetail({
@@ -146,7 +135,7 @@ export default function WatchAnime() {
       const body = await response.json()
       if (response.status !== 200) {
         console.log("error", body)
-        return
+        return false
       }
 
       var tmpAnime = body.data
@@ -173,11 +162,12 @@ export default function WatchAnime() {
         }
       })
 
+      return true
+
     } catch (e) {
       alert(`GetAnimeDetail ${e.message}`)
+      return false
     }
-
-    calling = false
   }
 
   async function GetOnlyAnimeDetail(id) {
@@ -201,28 +191,32 @@ export default function WatchAnime() {
   }
 
   async function GetEpisodeStream() {
-    if (!params.episode_id || params.episode_id === "undefined") { return }
+    if (!params.episode_id || params.episode_id === "undefined") { return false }
     setLoadingStream(true)
     try {
       const response = await animapuApi.GetAnimeWatch({
         anime_source: params.anime_source,
         anime_id: params.anime_id,
         episode_id: params.episode_id,
-        resolution: searchParams.get("resolution") || "",
-        stream_idx: searchParams.get("stream_idx") || "",
+        resolution,
+        stream_idx: streamIdx,
       })
       const body = await response.json()
       if (response.status !== 200) {
         setStreamState("error")
         console.log("error", body)
-        return
+        return false
       }
       setEpisodeStream(body.data)
 
+      return true
+
     } catch (e) {
       alert(`GetEpisodeStream ${e.message}`)
+      return false
+    } finally {
+      setLoadingStream(false)
     }
-    setLoadingStream(false)
   }
 
   useEffect(() => {
@@ -533,3 +527,5 @@ export default function WatchAnime() {
     return `${inputString}`.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()
   }
 }
+
+export default dynamic(() => Promise.resolve(WatchAnime), { ssr: false })
