@@ -46,7 +46,7 @@ function cacheLatestMangaFeed(source, mangas, loadedPage) {
   } catch (e) {}
 }
 
-export default function Latest({content_only}) {
+export default function Latest({content_only, hideSourceSelector = false}) {
   const [activeSource, setActiveSource] = useState("")
   const [mangas, setMangas] = useState(() => {
     const cachedFeed = getCachedLatestMangaFeed(animapuApi.GetActiveMangaSource())
@@ -145,7 +145,7 @@ export default function Latest({content_only}) {
   if (content_only) {
     return(
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row justify-between items-center px-4 py-8 h-full bg-accent rounded-xl">
+        {!hideSourceSelector && <div className="flex flex-row justify-between items-center px-4 py-8 h-full bg-accent rounded-xl">
           <div className="flex flex-col">
             <span className="text-xs">source:</span>
             <h1 className="text-3xl font-mono">{activeSource}</h1>
@@ -154,7 +154,7 @@ export default function Latest({content_only}) {
             <Button onClick={()=>{setShowModal(true)}} size="sm">Change Source</Button>
             <ChangeSourceModalOnly show={showModal} onClose={()=>setShowModal(false)} />
           </div>
-        </div>
+        </div>}
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
           {mangas.map((manga, idx) => (

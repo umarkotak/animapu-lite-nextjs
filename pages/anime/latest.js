@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation'
 
 import AnimeSourceCard from '@/components/AnimeSourceCard'
-import AnimeHistoryCard from '@/components/AnimeHistoryCard'
 import animapuApi from '@/apis/AnimapuApi'
 import ChangeAnimeSourceModalOnly from '@/components/ChangeAnimeSourceModalOnly'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
@@ -18,7 +17,7 @@ import AnimeCardBar from '@/components/AnimeCardBar'
 
 var page = 1
 var onApiCall = false
-export default function AnimeLatest({discoveryBar}) {
+export default function AnimeLatest({discoveryBar, contentOnly = false}) {
   const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -109,6 +108,10 @@ export default function AnimeLatest({discoveryBar}) {
         ))}
       </div>
     )
+  }
+
+  if (contentOnly) {
+    return <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">{animes.map((oneAnimeData) => <AnimeCard anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />)}</div>
   }
 
   return (

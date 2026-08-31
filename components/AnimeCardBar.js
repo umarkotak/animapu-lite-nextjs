@@ -1,11 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { AnimeCardModal } from './AnimeCard'
 import utils from '@/models/Utils'
+import HistoryDrawer from '@/components/HistoryDrawer'
 
 export default function AnimeCardBar(props) {
   const [showModal, setShowModal] = useState(false)
+  const history = {
+    ...props.anime,
+    media_type: "anime",
+    source_id: props.anime.id,
+    cover_urls: Array.isArray(props.anime.cover_urls) ? props.anime.cover_urls : [props.anime.cover_urls],
+    latest_number: props.anime.latest_episode,
+    progress: props.anime.last_episode_watch,
+  }
 
   function lastReadChapter() {
     if (props.anime.last_link) {
@@ -19,11 +27,11 @@ export default function AnimeCardBar(props) {
       key={`${props.anime.source}-${props.anime.id}`}
       id={`${props.anime.source}-${props.anime.id}`}
     >
-      <AnimeCardModal anime={props.anime} showModal={showModal} setShowModal={setShowModal} disableBookmarkIcon={true} />
+      <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />
 
       <div
         className="flex flex-row gap-2 h-full"
-        onClick={()=>setShowModal(!showModal)}
+        onClick={()=>setShowModal(true)}
       >
         <div className="relative flex-none">
           <img

@@ -1,239 +1,96 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { ArrowLeft, Search as SearchIcon } from "lucide-react"
+import animapuApi from "@/apis/AnimapuApi"
+import AnimeCard from "@/components/AnimeCard"
+import MangaCardV2 from "@/components/MangaCardV2"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { LoadingSpinner } from "@/components/ui/icon"
+import { Badge } from "@/components/ui/badge"
 
-import animapuApi from "../apis/AnimapuApi"
-import ChangeSourceModalOnly from "../components/ChangeSourceModalOnly"
-import ChangeAnimeSourceModalOnly from "../components/ChangeAnimeSourceModalOnly"
-import { toast } from 'react-toastify'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { Search } from 'lucide-react'
-import MangaCardV2 from '@/components/MangaCardV2'
-import AnimeCard from '@/components/AnimeCard'
-import { LoadingSpinner } from '@/components/ui/icon'
-
-var onApiCall = false
-export default function Home() {
-  let router = useRouter()
-  const query = router.query
-
-  // Toggle between manga and anime
-  const [searchType, setSearchType] = useState("manga") // "manga" or "anime"
-
-  // Manga states
-  const [mangas, setMangas] = useState([])
-  const [mangaSourcesData, setMangaSourcesData] = useState([])
-  const [searchMode, setSearchMode] = useState("global")
-  const [activeMangaSource, setActiveMangaSource] = useState("")
-  const [showMangaModal, setShowMangaModal] = useState(false)
-
-  // Anime states
-  const [animes, setAnimes] = useState([])
-  const [activeAnimeSource, setActiveAnimeSource] = useState("")
-  const [showAnimeModal, setShowAnimeModal] = useState(false)
-
-  // Shared states
+export default function Search() {
+  const router = useRouter()
   const [title, setTitle] = useState("")
-  const [isLoadMoreLoading, setIsLoadMoreLoading] = useState(false)
+  const [sources, setSources] = useState([])
+  const [sections, setSections] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setActiveMangaSource(animapuApi.GetActiveMangaSource())
-    setActiveAnimeSource(animapuApi.GetActiveAnimeSource())
+    async function loadSources() {
+      try {
+        const [mangaResponse, animeResponse] = await Promise.all([animapuApi.GetSourceList({}), animapuApi.GetAnimeSourceList({})])
+        const [mangaBody, animeBody] = await Promise.all([mangaResponse.json(), animeResponse.json()])
+        const mangaSources = mangaBody.data?.filter((source) => source.active).map((source) => ({ ...source, mediaType: "manga" })) || []
+        const animeSources = animeBody.data?.filter((source) => source.active).map((source) => ({ ...source, mediaType: "anime" })) || []
+        const activeManga = animapuApi.GetActiveMangaSource()
+        const activeAnime = animapuApi.GetActiveAnimeSource()
+        setSources([
+          ...mangaSources.filter((source) => source.id === activeManga),
+          ...animeSources.filter((source) => source.id === activeAnime),
+          ...mangaSources.filter((source) => source.id !== activeManga),
+          ...animeSources.filter((source) => source.id !== activeAnime),
+        ])
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    loadSources()
   }, [])
 
-  async function SearchManga() {
-    if (onApiCall) {return}
-    onApiCall = true
+  async function searchSource(source) {
     try {
-      setIsLoadMoreLoading(true)
-      if (mangaSourcesData.length > 0 && searchMode === "global") {
-        var tmpSearchData = []
-
-        await Promise.all(mangaSourcesData.map(async (oneMangaSourceData) => {
-          const response = await animapuApi.SearchManga({
-            manga_source: oneMangaSourceData.value,
-            title: title
-          })
-          const body = await response.json()
-          if (response.status == 200) {
-            tmpSearchData = tmpSearchData.concat(body.data)
-          }
-        }))
-
-        setMangas(tmpSearchData)
-
-      } else {
-        const response = await animapuApi.SearchManga({
-          manga_source: animapuApi.GetActiveMangaSource(),
-          title: title
-        })
-        const body = await response.json()
-
-        if (response.status == 200) {
-          setMangas(body.data)
-        } else {
-          toast.error(body.error.message)
-          console.error("FAIL", body)
-        }
-      }
-      onApiCall = false
-      setIsLoadMoreLoading(false)
-
-    } catch (e) {
-      console.error(e)
-      onApiCall = false
-      toast.error(e.message)
-      setIsLoadMoreLoading(false)
-    }
-  }
-
-  async function SearchAnime() {
-    if (onApiCall) {return}
-    onApiCall = true
-    try {
-      setIsLoadMoreLoading(true)
-      const response = await animapuApi.SearchAnime({
-        anime_source: activeAnimeSource,
-        title: title
-      })
+      const response = source.mediaType === "anime"
+        ? await animapuApi.SearchAnime({ anime_source: source.id, title })
+        : await animapuApi.SearchManga({ manga_source: source.id, title })
       const body = await response.json()
-
-      if (response.status == 200) {
-        setAnimes(body.data)
-      } else {
-        toast.error(body.error.message)
-        console.error("FAIL", body)
-      }
-      onApiCall = false
-      setIsLoadMoreLoading(false)
-
-    } catch (e) {
-      console.error(e)
-      onApiCall = false
-      toast.error(e.message)
-      setIsLoadMoreLoading(false)
+      return response.status === 200 && body.data?.length ? { ...source, items: body.data } : null
+    } catch (error) {
+      console.error(error)
+      return null
     }
   }
 
-  function handleSearch() {
-    if (searchType === "manga") {
-      SearchManga()
-    } else {
-      SearchAnime()
-    }
-  }
-
-  function handleKeyDown(e) {
-    if (e.key === "Enter") handleSearch()
+  async function handleSearch() {
+    if (!title.trim() || !sources.length) return
+    setLoading(true)
+    setSections([])
+    const results = await Promise.all(sources.map(searchSource))
+    setSections(results.filter(Boolean))
+    setLoading(false)
   }
 
   return (
-    <div className='flex flex-col gap-2'>
-      {/* Type Toggle Card */}
-      <div>
-        <div className="p-2">
-          <div className="flex justify-between items-center">
-            <h1 className='text-xl'>Search</h1>
-            <div className="flex items-center space-x-2">
-              <Label htmlFor="search-type">Manga</Label>
-              <Switch
-                id="search-type"
-                checked={searchType === "anime"}
-                onClick={() => setSearchType(searchType === "manga" ? "anime" : "manga")}
-              />
-              <Label htmlFor="search-type">Anime</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="global-search"
-                checked={searchMode === "global"}
-                onClick={() => setSearchMode(searchMode === "global" ? "single" : "global")}
-              />
-              <Label htmlFor="global-search">Global Search</Label>
-            </div>
-          </div>
+    <div className="relative min-h-screen overflow-x-clip px-4 py-5">
+      <div className="pointer-events-none absolute -top-16 left-1/2 h-64 w-screen -translate-x-1/2 rounded-b-[50%] bg-gradient-to-b from-purple-500/30 via-fuchsia-500/20 to-pink-500/0 blur-3xl" />
+      <div className="relative flex flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <Button aria-label="Go home" onClick={() => router.push("/home")} size="icon" variant="ghost"><ArrowLeft size={20} /></Button>
+          <h1 className="text-xl font-semibold">Search</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Input className="h-11 bg-background/50 backdrop-blur" onChange={(event) => setTitle(event.target.value)} onKeyDown={(event) => event.key === "Enter" && handleSearch()} placeholder="Search manga and anime" value={title} />
+          <Button disabled={!sources.length || loading} onClick={handleSearch} size="icon"><SearchIcon size={20} /></Button>
+        </div>
+
+        {loading && <div className="flex justify-center py-12"><LoadingSpinner /></div>}
+        {!loading && !sections.length && <p className="py-16 text-center text-sm text-muted-foreground">Search all active manga and anime sources.</p>}
+
+        <div className="mt-8 flex flex-col gap-9">
+          {sections.map((section) => (
+            <section key={`${section.mediaType}-${section.id}`}>
+              <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold">
+                <Badge variant="secondary" className="uppercase">{section.mediaType}</Badge>
+                <span>{section.title || section.id}</span>
+              </h2>
+              <div className="flex gap-4 overflow-x-auto pb-2">
+                {section.items.map((item) => <div className="w-[175px] flex-none" key={`${section.id}-${item.id || item.source_id}`}>{section.mediaType === "anime" ? <AnimeCard anime={item} source={section.id} /> : <MangaCardV2 manga={item} />}</div>)}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
-
-      {/* Source Card */}
-      <div>
-        <div className="p-2">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className='text-xl'>
-                {searchType === "manga" ? activeMangaSource : activeAnimeSource}
-              </h1>
-            </div>
-            <div>
-              <Button onClick={() => {
-                if (searchType === "manga") {
-                  setShowMangaModal(true)
-                } else {
-                  setShowAnimeModal(true)
-                }
-              }}>
-                Ganti Sumber
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Search Card */}
-      <div>
-        <div className="p-2">
-          <div className='flex items-center gap-2'>
-            <Input
-              type="text"
-              placeholder="Search"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              onKeyDown={(e) => handleKeyDown(e)}
-            />
-            <Button onClick={handleSearch}>
-              <Search />
-              Search
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Loading Spinner */}
-      {isLoadMoreLoading ? <LoadingSpinner /> : <></>}
-
-      {/* Results Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
-        {searchType === "manga"
-          ? mangas.map((manga, idx) => (
-              <MangaCardV2
-                manga={manga}
-                idx={idx}
-                key={`${manga.source}-${manga.source_id}`}
-                show_hover_source={true}
-              />
-            ))
-          : animes.map((oneAnimeData) => (
-              <AnimeCard
-                anime={oneAnimeData}
-                key={`${oneAnimeData.source}-${oneAnimeData.id}`}
-                source={oneAnimeData.source}
-              />
-            ))
-        }
-      </div>
-
-      {/* Modals */}
-      <ChangeSourceModalOnly
-        show={showMangaModal}
-        onClose={() => setShowMangaModal(false)}
-        setMangaSourcesData={setMangaSourcesData}
-      />
-      <ChangeAnimeSourceModalOnly
-        show={showAnimeModal}
-        onClose={() => setShowAnimeModal(false)}
-      />
     </div>
   )
 }

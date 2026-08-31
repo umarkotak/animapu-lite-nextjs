@@ -163,6 +163,15 @@ class AnimapuApi {
     return response
   }
 
+  async GetHistories(limit, page) {
+    var uri = `${this.AnimapuApiHost}/users/histories?limit=${limit}&page=${page}`
+    const response = await fetch(uri, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async GetRandomAffiliateLinks(limit) {
     var uri = `${this.AnimapuApiHost}/affiliate_links/random?limit=${limit}`
     const response = await fetch(uri, {

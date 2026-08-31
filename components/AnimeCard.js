@@ -8,8 +8,9 @@ import animapuApi from '@/apis/AnimapuApi'
 import { Button } from './ui/button'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
-import { BookIcon, BookmarkIcon, EyeIcon, HeartIcon, PlayIcon, Share2Icon, XIcon } from 'lucide-react'
+import { BookIcon, BookmarkIcon, EyeIcon, HeartIcon, PlayIcon, Share2Icon, Star, XIcon } from 'lucide-react'
 import { Badge } from './ui/badge'
+import HistoryDrawer from '@/components/HistoryDrawer'
 
 export default function AnimeCard(props) {
   const [showModal, setShowModal] = useState(false)
@@ -42,6 +43,16 @@ export default function AnimeCard(props) {
     )
   }
 
+  const history = {
+    ...props.anime,
+    media_type: 'anime',
+    source: props.anime.source || props.source,
+    source_id: props.anime.id,
+    cover_urls: Array.isArray(props.anime.cover_urls) ? props.anime.cover_urls : [props.anime.cover_urls],
+    latest_number: props.anime.latest_episode,
+    progress: props.anime.last_episode_watch,
+  }
+
   return (
     <div
       className={`w-full max-w-[175px] h-[265px] mx-auto group`}
@@ -49,10 +60,10 @@ export default function AnimeCard(props) {
       id={`${props.anime.source}-${props.anime.id}`}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
-        <AnimeCardModal anime={props.anime} showModal={showModal} setShowModal={setShowModal} />
+        <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />
 
         <div className="overflow-hidden rounded-xl">
-          <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
+          <div className="bg-black rounded-xl" onClick={()=>setShowModal(true)}>
             <img
               className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
               src={(props?.anime?.cover_urls) || "/images/default-book.png"}
@@ -61,13 +72,15 @@ export default function AnimeCard(props) {
           </div>
         </div>
 
+        {props.anime.score && <Badge className="absolute right-2 top-2 gap-1 bg-yellow-500/90 text-black hover:bg-yellow-500/90" variant="secondary"><Star className="h-3 w-3 fill-current" />{props.anime.score}</Badge>}
+
         <div>
           {props.show_hover_source && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">
             <small>{props.anime.source}</small>
           </div>}
           <div
             className="absolute bottom-0 p-2 text-white rounded-b-xl w-full bg-black/80 backdrop-blur-sm cursor-pointer"
-            onClick={()=>setShowModal(!showModal)}
+            onClick={()=>setShowModal(true)}
           >
             <p className="text-sm line-clamp-2 group-hover:text-blue-400">
               {props.anime.title}

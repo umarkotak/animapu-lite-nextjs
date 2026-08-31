@@ -15,8 +15,9 @@ import animapuApi from '@/apis/AnimapuApi'
 import Utils from '@/models/Utils'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
-import { ChevronDownIcon } from 'lucide-react'
+import { ChevronDownIcon, Home, LoaderCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 
@@ -49,6 +50,7 @@ function WatchAnime() {
   const [showPlayer, setShowPlayer] = useState(false)
   const [loadingStream, setLoadingStream] = useState(false)
   const [showServersModal, setShowServersModal] = useState(false)
+  const hasServerOptions = episodeStream.stream_options?.length > 0 || Object.keys(episodeStream.iframe_urls || {}).length > 0
 
   // WINDOW SIZE
   const [mobileMode, setMobileMode] = useState(true)
@@ -207,6 +209,7 @@ function WatchAnime() {
       const body = await response.json()
       if (response.status !== 200) {
         setStreamState("error")
+        setLoadingStream(false)
         console.log("error", body)
         return false
       }
@@ -215,10 +218,9 @@ function WatchAnime() {
       return true
 
     } catch (e) {
+      setLoadingStream(false)
       alert(`GetEpisodeStream ${e.message}`)
       return false
-    } finally {
-      setLoadingStream(false)
     }
   }
 
@@ -261,6 +263,8 @@ function WatchAnime() {
       setHlsLevels(tmpHlsLevels)
     } catch (error) {
       console.error(error)
+    } finally {
+      setLoadingStream(false)
     }
   }
 
@@ -291,7 +295,7 @@ function WatchAnime() {
   }
 
   return (
-    <main className={`pb-[100px] min-h-screen ${mobileMode ? "" : "m-6"}`}>
+    <main className={`min-h-screen ${mobileMode ? "" : "m-6"}`}>
       {!params || params.episode_id === "undefined" ? <div>
         <div className='w-full rounded-lg bg-red-500 p-2 mb-4 flex max-w-[1700px] mx-auto'>
           Please select the episode on the right
@@ -301,12 +305,6 @@ function WatchAnime() {
       {streamState === "error" ? <div>
         <div className='w-full rounded-lg bg-red-500 p-2 mb-4 flex max-w-[1700px] mx-auto'>
           Sorry, stream is broken or not available at the moment
-        </div>
-      </div> : null}
-
-      {loadingStream ? <div>
-        <div className='w-full rounded-lg bg-blue-500 p-2 mb-4 flex max-w-[1700px] mx-auto'>
-          <span>Please wait, loading stream . . .</span>
         </div>
       </div> : null}
 
@@ -329,7 +327,7 @@ function WatchAnime() {
               {episodeStream?.iframe_urls && Object.keys(episodeStream?.iframe_urls).map((k) => (
                 <Button
                   key={k}
-                  onClick={(e)=>{setEpisodeStream({...episodeStream, iframe_url: episodeStream?.iframe_urls[k]})}}
+                  onClick={() => { setLoadingStream(true); setEpisodeStream({...episodeStream, iframe_url: episodeStream?.iframe_urls[k]}) }}
                   size="sm"
                   variant={`${episodeStream.iframe_url === episodeStream?.iframe_urls[k] ? "default" : "outline"}`}
                 >
@@ -351,7 +349,7 @@ function WatchAnime() {
         <div className='w-full mr-4 mb-4'>
           {/* VIDEO PLAYER */}
           <div ref={videoPlayerDivRef} id="video-content" className={videoContainerClass(mobileMode, smallWebMode)}>
-            <div className='relative shadow-2xl shadow-gray-900'>
+            <div className='relative aspect-video bg-black shadow-2xl shadow-gray-900'>
               <div className={`w-full h-full bg-black ${mobileMode ? "" : "overflow-hidden"}`}>
                 {showPlayer ? <>
                   {(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") && episodeStream.raw_stream_url ? <div style={{height: videoPlayerHeight}}>
@@ -365,6 +363,8 @@ function WatchAnime() {
                       onReady={() => {
                         if (episodeStream.stream_type === "hls") {
                           onReactPlayerReady()
+                        } else {
+                          setLoadingStream(false)
                         }
                       }}
                     />
@@ -376,6 +376,7 @@ function WatchAnime() {
                       autoPlay
                       playsInline
                       preload='metadata'
+                      onCanPlay={() => setLoadingStream(false)}
                       src={`/api/video/${encodeURIComponent(episodeStream.gdrive_conf?.gid || "")}?${new URLSearchParams({access_token: episodeStream.gdrive_conf?.access_token || ""})}`}
                     />
                   </div> : null}
@@ -384,11 +385,13 @@ function WatchAnime() {
                     <iframe
                       className='h-full w-full'
                       src={episodeStream.iframe_url}
+                      onLoad={() => setLoadingStream(false)}
                       allowFullScreen={true}
                     />
                   </div> : null}
                 </> : null}
               </div>
+              {!streamState && (!showPlayer || loadingStream) && <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-black/80 text-sm text-white"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /><span>Loading stream…</span></div>}
             </div>
           </div>
 
@@ -396,12 +399,14 @@ function WatchAnime() {
             className={`flex justify-between items-center ${mobileMode ? "mx-2" : ""} `}
             style={{marginTop: (mobileMode ? `${videoPlayerHeight+16}px` : "16px")}}
           >
-            <div className="flex-auto font-semibold text-2xl leading-relaxed max-h-20 overflow-auto">
-              {anime.title} {episode.number ? `- Episode ${episode.number}` : null}
+            <div className="line-clamp-3 flex-auto text-base font-semibold leading-relaxed">
+              {episode.number && <Badge className="mr-2 align-middle" variant="secondary">Episode - {episode.number}</Badge>}
+              {anime.title}
             </div>
           </div>
           <div className={`flex justify-between mt-4 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
             <div className='flex justify-start gap-2'>
+              <Button aria-label="Go home" onClick={() => router.push('/home')} size="xs" variant="outline"><Home size={14} /></Button>
               <Link href={episodeStream.original_url ? `${episodeStream.original_url}` : `${anime.original_link}`}>
                 <Button size="xs">Watch on source</Button>
               </Link>
@@ -411,10 +416,10 @@ function WatchAnime() {
               >
                 Full Screen
               </button> */}
-              <Button size="xs" onClick={()=>setShowServersModal(!showServersModal)}>
+              {hasServerOptions && <Button size="xs" onClick={()=>setShowServersModal(!showServersModal)}>
                 Select server
                 <ChevronDownIcon size={14} />
-              </Button>
+              </Button>}
             </div>
             <div className='flex justify-end gap-2'>
               <Link href={previousLink}><Button size="xs">Prev</Button></Link>
@@ -521,7 +526,7 @@ function WatchAnime() {
   }
 
   function videoContainerClass(tmpMobileMode, tmpSmallWebMode) {
-    if (tmpMobileMode) { return "w-full fixed z-10 top-12" }
+    if (tmpMobileMode) { return "w-full fixed z-10" }
     if (tmpSmallWebMode) { return `w-full` }
     return `w-full`
   }

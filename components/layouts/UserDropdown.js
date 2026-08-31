@@ -1,10 +1,11 @@
-import { Download, LogIn, LogInIcon, LogOut, UserIcon } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { Download, LogIn, LogInIcon, LogOut, Moon, Sun, UserIcon } from "lucide-react"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 
 var defaultUser = {
   avatar: "/images/usertemp.png",
@@ -16,6 +17,7 @@ const ADM_EMS = [
 
 export default function UserDropdown() {
   const router = useRouter()
+  const { setTheme, theme } = useTheme()
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const pathName = usePathname()
 
@@ -113,6 +115,10 @@ export default function UserDropdown() {
             <span>Install App</span>
           </DropdownMenuItem>
         }
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuCheckboxItem checked={theme === "light"} onSelect={() => setTheme("light")}><Sun />Light mode</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem checked={theme === "dark"} onSelect={() => setTheme("dark")}><Moon />Dark mode</DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
         {user.email && user.email !== "" ?
           <DropdownMenuItem onClick={()=>Logout()}><LogOut />Log out</DropdownMenuItem>

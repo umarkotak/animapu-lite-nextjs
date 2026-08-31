@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Bookmark, ChevronDownIcon, ChevronLeft, DownloadIcon, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
+import { Bookmark, ChevronDownIcon, DownloadIcon, Home, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { LoadingSpinner } from '@/components/ui/icon'
@@ -336,27 +336,20 @@ export default function ReadManga(props) {
               <div className="sticky top-0 bg-accent">
                 <div className="p-0 flex flex-col">
                   <div className='flex justify-between items-center gap-1'>
-                    <div className='flex items-center gap-1'>
-                      <Button size="sm" variant="outline" onClick={()=>{
-                        router.back()
-                      }}>
-                        <ChevronLeft size={14} />
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={()=>{
-                        setSelectedChapterId(oneChapter.id);
-                        setShowChaptersModal(!showChaptersModal);
-                      }}>
-                        {onApiCallSt && <LoadingSpinner />}
-                        Chapter - {oneChapter.number}
-                        <ChevronDownIcon size={14} />
-                      </Button>
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button size="sm" variant="outline"><Settings2 /></Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
+                    <Button aria-label="Go home" size="sm" variant="outline" onClick={() => router.push('/home')}><Home size={14} /></Button>
+                    <Button size="sm" variant="outline" onClick={()=>{
+                      setSelectedChapterId(oneChapter.id);
+                      setShowChaptersModal(!showChaptersModal);
+                    }}>
+                      {onApiCallSt && <LoadingSpinner />}
+                      Chapter - {oneChapter.number}
+                      <ChevronDownIcon size={14} />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="sm" variant="outline"><Settings2 /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56">
                           <DropdownMenuLabel>Menu</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuGroup>
@@ -392,9 +385,8 @@ export default function ReadManga(props) {
                               <DropdownMenuShortcut><DownloadIcon size={12} /></DropdownMenuShortcut>
                             </DropdownMenuItem></a>
                           </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                   <ScrollProgress
                     topElementId={`${oneChapter.id}-top`}

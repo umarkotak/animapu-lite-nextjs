@@ -1,20 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useParams, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
-import { ChevronLeft, ChevronRight, Snowflake, Flower2, Sun, Leaf, Calendar } from 'lucide-react'
+import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Snowflake, Flower2, Sun, Leaf, Calendar } from 'lucide-react'
 
 import animapuApi from '@/apis/AnimapuApi'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import AnimeSeasonCard from '@/components/AnimeSeasonCard'
+import { Card } from '@/components/ui/card'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
+import AnimeCard from '@/components/AnimeCard'
 
 // Constants
 const SEASONS = ['winter', 'spring', 'summer', 'fall']
@@ -70,7 +64,6 @@ const generateSeasonOptions = () => {
 }
 
 export default function AnimeSeason() {
-  const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
 
@@ -79,6 +72,7 @@ export default function AnimeSeason() {
 
   const [animeData, setAnimeData] = useState({ animes: [], release_year: '', season_name: '' })
   const [isLoading, setIsLoading] = useState(false)
+  const [showSeasonDrawer, setShowSeasonDrawer] = useState(false)
 
   // Get current selection from URL or default to first option
   const currentSelection = useMemo(() => {
@@ -101,7 +95,7 @@ export default function AnimeSeason() {
     setIsLoading(true)
     try {
       const response = await animapuApi.GetAnimesBySeason({
-        anime_source: params?.anime_source,
+        anime_source: animapuApi.GetActiveAnimeSource(),
         year,
         season,
       })
@@ -118,7 +112,7 @@ export default function AnimeSeason() {
     } finally {
       setIsLoading(false)
     }
-  }, [params?.anime_source])
+  }, [])
 
   // Fetch data when selection changes
   useEffect(() => {
@@ -135,6 +129,7 @@ export default function AnimeSeason() {
   const handleSelectChange = useCallback((value) => {
     const selected = seasonOptions.find(opt => opt.value === value)
     if (selected) {
+      setShowSeasonDrawer(false)
       navigateToSeason(selected)
     }
   }, [seasonOptions, navigateToSeason])
@@ -155,91 +150,41 @@ export default function AnimeSeason() {
   const canGoNext = currentIndex > 0
 
   return (
-    <div className="flex flex-col gap-3 sm:gap-4">
-      {/* Sticky Season Navigator */}
-      <div className="sticky top-12 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b py-2 -mx-2 px-2 sm:-mx-4 sm:px-4">
-        <Card className="shadow-sm p-0">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Previous Season Button */}
-              <Button
-                variant="outline"
-                onClick={goToPreviousSeason}
-                disabled={!canGoPrevious}
-                className="shrink-0 h-9 sm:h-10 px-2 sm:px-3 text-xs"
-                aria-label="Previous season"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1">
-                  {canGoPrevious ? seasonOptions[currentIndex + 1]?.label : ''}
-                </span>
-              </Button>
+    <div className="relative min-h-screen overflow-x-clip px-4 py-5 pb-28">
+      <div className="pointer-events-none absolute -top-16 left-1/2 h-64 w-screen -translate-x-1/2 rounded-b-[50%] bg-gradient-to-b from-purple-500/30 via-fuchsia-500/20 to-pink-500/0 blur-3xl" />
+      <div className="relative flex flex-col gap-6">
+        <header className="flex items-center gap-2">
+          <Button aria-label="Go home" onClick={() => router.push('/home')} size="icon" variant="ghost"><ArrowLeft size={20} /></Button>
+          <h1 className="text-xl font-semibold">Season</h1>
+        </header>
 
-              {/* Season Selector */}
-              <Select value={currentSelection.value} onValueChange={handleSelectChange}>
-                <SelectTrigger className="flex-1 min-w-0 sm:min-w-[180px]">
-                  <div className="flex items-center gap-2 truncate">
-                    <SelectValue placeholder="Select season" />
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="max-h-[300px]">
-                  {seasonOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      <div className="flex items-center gap-2">
-                        {getSeasonIcon(option.season)}
-                        <span>{option.label}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {isLoading && <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 md:grid-cols-4">{[...Array(8)].map((_, i) => <div key={i} className="h-[240px] rounded-xl bg-muted animate-pulse sm:h-[280px] md:h-[320px]" />)}</div>}
 
-              {/* Next Season Button */}
-              <Button
-                variant="outline"
-                onClick={goToNextSeason}
-                disabled={!canGoNext}
-                className="shrink-0 h-9 sm:h-10 px-2 sm:px-3 text-xs"
-                aria-label="Next season"
-              >
-                <span className="hidden sm:inline mr-1">
-                  {canGoNext ? seasonOptions[currentIndex - 1]?.label : ''}
-                </span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {!isLoading && <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          {animeData.animes?.map((anime) => <AnimeCard anime={anime} key={`${anime.source}-${anime.id}`} source={anime.source || animapuApi.GetActiveAnimeSource()} />)}
+        </div>}
+
+        {!isLoading && (!animeData.animes || animeData.animes.length === 0) && <Card className="p-8 text-center"><p className="text-muted-foreground">No anime found for this season.</p></Card>}
       </div>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
-          {[...Array(8)].map((_, i) => (
-            <div key={i} className="h-[240px] sm:h-[280px] md:h-[320px] rounded-xl bg-muted animate-pulse" />
-          ))}
+      <div className="fixed inset-x-0 bottom-2 z-40 flex justify-center px-2">
+        <div className="flex items-center rounded-2xl border border-white/15 bg-background/65 p-2.5 shadow-2xl shadow-black/30 backdrop-blur-2xl">
+          <Button aria-label="Previous season" className="h-11 rounded-2xl px-4" disabled={!canGoPrevious} onClick={goToPreviousSeason} size="sm" variant="ghost"><ChevronLeft size={18} /><span className="hidden sm:inline">Previous</span></Button>
+          <Button className="h-11 min-w-40 rounded-2xl px-4" onClick={() => setShowSeasonDrawer(true)} size="sm" variant="default">{getSeasonIcon(currentSelection.season)}<span>{currentSelection.label}</span><ChevronDown size={18} /></Button>
+          <Button aria-label="Next season" className="h-11 rounded-2xl px-4" disabled={!canGoNext} onClick={goToNextSeason} size="sm" variant="ghost"><span className="hidden sm:inline">Next</span><ChevronRight size={18} /></Button>
         </div>
-      )}
+      </div>
 
-      {/* Anime Grid */}
-      {!isLoading && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-4">
-          {animeData.animes?.map((anime) => (
-            <AnimeSeasonCard
-              key={`${anime.source}-${anime.id}`}
-              oneAnimeData={anime}
-              source={params?.anime_source}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!isLoading && (!animeData.animes || animeData.animes.length === 0) && (
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground">No anime found for this season.</p>
-        </Card>
-      )}
+      <Drawer open={showSeasonDrawer} onOpenChange={setShowSeasonDrawer}>
+        <DrawerContent className="mx-auto max-h-[80vh] max-w-2xl">
+          <DrawerHeader><DrawerTitle>Select season</DrawerTitle></DrawerHeader>
+          <div className="overflow-y-auto px-4 pb-6">
+            <div className="flex flex-col gap-2">
+              {seasonOptions.map((option) => <Button className="h-auto justify-start p-3" key={option.value} onClick={() => handleSelectChange(option.value)} variant={option.value === currentSelection.value ? 'default' : 'secondary'}>{getSeasonIcon(option.season)}{option.label}</Button>)}
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   )
 }
