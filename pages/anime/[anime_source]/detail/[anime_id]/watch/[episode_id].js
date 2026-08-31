@@ -125,7 +125,10 @@ function WatchAnime() {
   }, [params?.anime_source, params?.anime_id, params?.episode_id, resolution, streamIdx])
 
   async function GetAnimeDetail(id) {
-    if (anime.id === id) { return true }
+    if (anime.id === id) {
+      setEpisode(anime.episodes?.find((ep) => `${ep.id}` === `${params.episode_id}`) || {})
+      return true
+    }
 
     try {
       const response = await animapuApi.GetAnimeDetail({
