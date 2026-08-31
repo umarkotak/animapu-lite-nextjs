@@ -46,12 +46,12 @@ function preloadImageWithRetry(url, retriesLeft = MAX_IMAGE_RETRIES) {
   })
 }
 
-export default function ReadManga(props) {
+export default function ReadManga() {
   let router = useRouter()
   const query = router.query
   const pathName = usePathname()
 
-  const [manga, setManga] = useState(props.manga)
+  const [manga, setManga] = useState({})
   const [chapters, setChapters] = useState([])
   const [onApiCallSt, setOnApiCallSt] = useState(onApiCall)
   const [showChaptersModal, setShowChaptersModal] = useState(false)
@@ -61,6 +61,8 @@ export default function ReadManga(props) {
   const [selectedChapterId, setSelectedChapterId] = useState(query.chapter_id || "")
 
   useEffect(() => {
+    if (!router.isReady) return
+
     // if (animapuApi.GetUserLogin().logged_in === "") {
     //   toast.error("Please login first to start reading")
     //   router.push("/login")
@@ -68,6 +70,7 @@ export default function ReadManga(props) {
 
     tempChapters = []
     setChapters(tempChapters)
+    setSelectedChapterId(query.chapter_id || "")
 
     if (!manga.source_id || manga.source_id === "") {
       GetMangaDetail()
@@ -75,7 +78,7 @@ export default function ReadManga(props) {
     }
 
     GetChapter(false, query.chapter_id)
-  }, [manga, pathName])
+  }, [manga, pathName, query.chapter_id, query.id, query.manga_source, router.isReady])
 
   async function GetMangaDetail() {
     try {
@@ -168,6 +171,8 @@ export default function ReadManga(props) {
       if (!tempChapters || tempChapters.length === 0) {
         return
       }
+
+      if (!manga.chapters) return
 
       manga.chapters.map((tmpChapter, idx) => {
         if (tmpChapter.id === tempChapters[tempChapters.length-1].id) {
@@ -268,16 +273,16 @@ export default function ReadManga(props) {
     <>
       <Head>
         {manga.title && <>
-          <meta itemProp="description" content={`${props.manga.title}`} />
-          <meta itemProp="image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+          <meta itemProp="description" content={manga.title} />
+          <meta itemProp="image" content={manga.cover_image?.[0]?.image_urls?.[0]} />
 
-          <meta name="og:title" content={`${props.manga.title}`} />
+          <meta name="og:title" content={manga.title} />
           <meta name="og:description" content={`Read manga with the best experience at animapu`} />
-          <meta name="og:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+          <meta name="og:image" content={manga.cover_image?.[0]?.image_urls?.[0]} />
 
-          <meta name="twitter:title" content={`${props.manga.title}`} />
+          <meta name="twitter:title" content={manga.title} />
           <meta name="twitter:description" content={`Read manga with the best experience at animapu`} />
-          <meta name="twitter:image" content={`${props.manga.cover_image[0].image_urls[0]}`} />
+          <meta name="twitter:image" content={manga.cover_image?.[0]?.image_urls?.[0]} />
         </>}
       </Head>
 
@@ -305,7 +310,7 @@ export default function ReadManga(props) {
                 />
               </div>
               <div className='flex flex-col gap-2 p-4'>
-                {manga.chapters.filter((mangaChapter) => mangaChapter.title.includes(chapterFilter)).map((mangaChapter) => {
+                {(manga.chapters || []).filter((mangaChapter) => mangaChapter.title.includes(chapterFilter)).map((mangaChapter) => {
                   const isCurrentChapter = mangaChapter.id === selectedChapterId;
                   return (
                     <Link
@@ -431,28 +436,6 @@ export default function ReadManga(props) {
       </div>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-  var query = context.query
-
-  var manga = {}
-
-  try {
-    const response = await animapuApi.GetMangaDetail({
-      manga_source: query.manga_source,
-      manga_id: query.id,
-    })
-    const body = await response.json()
-    if (response.status == 200) {
-      manga = body.data
-    }
-
-  } catch (e) {
-    console.error(e)
-  }
-
-  return { props: { manga: manga } }
 }
 
 async function imagesToPdf(imageUrls, pdfFileName = 'images.pdf') {
