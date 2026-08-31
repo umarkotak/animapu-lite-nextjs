@@ -40,12 +40,12 @@ export default function Home() {
 
   return (
     <div className="my-4 mx-4 md:mx-0">
-      {(!user.logged_in || user.logged_in === "") && <Card className="mb-4 border-none gap-2 flex flex-row justify-between items-center bg-red-950 p-2">
+      {/* {(!user.logged_in || user.logged_in === "") && <Card className="mb-4 border-none gap-2 flex flex-row justify-between items-center bg-red-950 p-2">
         <div>To use animapu you have to log in first.</div>
         <Link href="/login">
           <Button variant="default" size="sm" className="bg-red-800 text-white">Login</Button>
         </Link>
-      </Card>}
+      </Card>} */}
 
       <div className="mb-6 border-none">
         <div className="p-0 pb-4">
