@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import Select from 'react-select'
@@ -29,10 +29,11 @@ export default function AnimeLatest({discoveryBar, contentOnly = false}) {
   ])
   const [showModal, setShowModal] = useState(false)
 
-  var endReached = false
+  const endReached = useRef(false)
 
   useEffect(() => {
     setActiveSource(animapuApi.GetActiveAnimeSource())
+    endReached.current = false
     GetLatestAnime(false)
   }, [params, searchParams])
 
@@ -42,7 +43,7 @@ export default function AnimeLatest({discoveryBar, contentOnly = false}) {
     if (onApiCall) {return}
     onApiCall = true
 
-    if (endReached) {return}
+    if (endReached.current) { onApiCall = false; return }
 
     if (!append) {
       page = 1
@@ -61,13 +62,13 @@ export default function AnimeLatest({discoveryBar, contentOnly = false}) {
       }
 
       if (body.data && body.data.length <= 0) {
-        endReached = true
+        endReached.current = true
         onApiCall = false
         return
       }
 
       if (append) {
-        setAnimes(animes.concat(body.data))
+        setAnimes((current) => current.concat(body.data))
       } else {
         setAnimes(body.data)
       }
@@ -80,24 +81,20 @@ export default function AnimeLatest({discoveryBar, contentOnly = false}) {
     }
   }
 
-  const [triggerNextPage, setTriggerNextPage] = useState(0)
-  const handleScroll = () => {
-    var position = window.pageYOffset
-    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
-
-    if (maxPosition-position <= 1200) {
-      setTriggerNextPage(position)
-    }
-  }
   useEffect(() => {
+    let frame
+    const handleScroll = () => {
+      if (frame) return
+      frame = requestAnimationFrame(() => {
+        frame = undefined
+        if (document.documentElement.scrollHeight - window.scrollY - window.innerHeight <= 1200 && !onApiCall) {
+          GetLatestAnime(true)
+        }
+      })
+    }
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => { window.removeEventListener('scroll', handleScroll); cancelAnimationFrame(frame) }
   }, [])
-  useEffect(() => {
-    GetLatestAnime(true)
-  }, [triggerNextPage])
 
   if (discoveryBar) {
     return (

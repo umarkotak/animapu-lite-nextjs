@@ -30,7 +30,7 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
   const cover = detail.cover_urls?.[0] || detail.cover_image?.[0]?.image_urls?.[0] || history.cover_urls?.[0] || "/images/default-book.png"
   const title = detail.title || history.title
   const items = isAnime ? detail.episodes || [] : detail.chapters || []
-  const startItem = items.at(-1)
+  const startItem = items[0]
   const detailPath = isAnime ? `/anime/${history.source}/detail/${history.source_id}/watch/${startItem?.id}` : `/mangas/${history.source}/${history.source_id}`
 
   return (

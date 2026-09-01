@@ -58,9 +58,10 @@ export default function AnimeCard(props) {
       className={`w-full max-w-[175px] h-[265px] mx-auto group`}
       key={`${props.anime.source}-${props.anime.id}`}
       id={`${props.anime.source}-${props.anime.id}`}
+      style={{ contentVisibility: "auto", containIntrinsicSize: "265px" }}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
-        <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />
+        {showModal && <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />}
 
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(true)}>
@@ -68,11 +69,13 @@ export default function AnimeCard(props) {
               className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
               src={(props?.anime?.cover_urls) || "/images/default-book.png"}
               alt="thumb"
+              decoding="async"
+              loading="lazy"
             />
           </div>
         </div>
 
-        {props.anime.score && <Badge className="absolute right-2 top-2 gap-1 bg-yellow-500/90 text-black hover:bg-yellow-500/90" variant="secondary"><Star className="h-3 w-3 fill-current" />{props.anime.score}</Badge>}
+        {props.showScore && props.anime.score && <Badge className="absolute right-2 top-2 gap-1 bg-yellow-500/90 text-black hover:bg-yellow-500/90" variant="secondary"><Star className="h-3 w-3 fill-current" />{props.anime.score}</Badge>}
 
         <div>
           {props.show_hover_source && <div className="absolute bottom-16 left-1 px-2 py-1 leading-none bg-black bg-opacity-90 text-[12px]">

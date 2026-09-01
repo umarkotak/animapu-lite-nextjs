@@ -46,6 +46,7 @@ export default function MangaCardV2(props) {
       className={`w-full max-w-[175px] h-[265px] mx-auto group`}
       key={`${props.manga.source}-${props.manga.source_id}`}
       id={`${props.manga.source}-${props.manga.source_id}`}
+      style={{ contentVisibility: "auto", containIntrinsicSize: "265px" }}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
         <MangaCardDrawer manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
@@ -59,6 +60,8 @@ export default function MangaCardV2(props) {
                   || "/images/default-book.png"
               }
               alt="thumb"
+              decoding="async"
+              loading="lazy"
             />
           </div>
         </div>

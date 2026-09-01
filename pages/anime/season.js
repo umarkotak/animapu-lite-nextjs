@@ -161,7 +161,7 @@ export default function AnimeSeason() {
         {isLoading && <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 md:grid-cols-4">{[...Array(8)].map((_, i) => <div key={i} className="h-[240px] rounded-xl bg-muted animate-pulse sm:h-[280px] md:h-[320px]" />)}</div>}
 
         {!isLoading && <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {animeData.animes?.map((anime) => <AnimeCard anime={anime} key={`${anime.source}-${anime.id}`} source={anime.source || animapuApi.GetActiveAnimeSource()} />)}
+          {animeData.animes?.map((anime) => <AnimeCard anime={anime} key={`${anime.source}-${anime.id}`} showScore source={anime.source || animapuApi.GetActiveAnimeSource()} />)}
         </div>}
 
         {!isLoading && (!animeData.animes || animeData.animes.length === 0) && <Card className="p-8 text-center"><p className="text-muted-foreground">No anime found for this season.</p></Card>}

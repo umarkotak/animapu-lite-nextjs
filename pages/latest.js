@@ -126,20 +126,19 @@ export default function Latest({content_only, hideSourceSelector = false}) {
     }, []);
   }
 
-  const handleScroll = () => {
-    var position = window.pageYOffset
-    var maxPosition = document.documentElement.scrollHeight - document.documentElement.clientHeight
-
-    if (maxPosition-position <= 400) {
-      if (onApiCall) {return}
-      GetLatestManga(true)
-    }
-  }
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
+    let frame
+    const handleScroll = () => {
+      if (frame) return
+      frame = requestAnimationFrame(() => {
+        frame = undefined
+        if (document.documentElement.scrollHeight - window.scrollY - window.innerHeight <= 400 && !onApiCall) {
+          GetLatestManga(true)
+        }
+      })
     }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => { window.removeEventListener("scroll", handleScroll); cancelAnimationFrame(frame) }
   }, [])
 
   if (content_only) {
