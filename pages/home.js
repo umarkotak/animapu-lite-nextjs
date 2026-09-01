@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router"
+import Link from "next/link"
 import { HistoryIcon } from "lucide-react"
 import HomeHeader from "@/components/HomeHeader"
 import HomeMediaMenu from "@/components/HomeMediaMenu"
@@ -31,7 +32,7 @@ export default function Home() {
       <div className="relative">
         <div className="mb-8"><HomeHeader /></div>
         <section className="mb-8">
-          <div className="mb-4 flex items-center gap-2 font-medium"><HistoryIcon size={20} /> Continue</div>
+          <div className="mb-4 flex items-center justify-between font-medium"><div className="flex items-center gap-2"><HistoryIcon size={20} /> Continue</div><Link className="text-sm text-primary hover:underline" href="/history">See all</Link></div>
           <UnifiedHistory compact />
         </section>
         {activeMedia === "anime" ? <AnimeLatest contentOnly /> : <Latest content_only hideSourceSelector />}

@@ -1,15 +1,21 @@
 import Link from "next/link"
-import { BookMarked, History, Search, Sun } from "lucide-react"
+import { useEffect, useState } from "react"
+import { BookMarked, Shield, Sun } from "lucide-react"
 import UserDropdown from "@/components/layouts/UserDropdown"
 
 const quickActions = [
-  { href: "/search", icon: Search, label: "Search" },
   { href: "/library", icon: BookMarked, label: "Library" },
   { href: "/anime/season", icon: Sun, label: "Season" },
-  { href: "/history", icon: History, label: "History" },
 ]
+const adminEmails = ["umarkotak@gmail.com"]
 
 export default function HomeHeader() {
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  useEffect(() => {
+    setIsAdmin(adminEmails.includes(localStorage.getItem("ANIMAPU_LITE:USER:EMAIL")))
+  }, [])
+
   return (
     <section>
       <header className="flex items-center justify-between">
@@ -19,8 +25,8 @@ export default function HomeHeader() {
         </Link>
         <UserDropdown />
       </header>
-      <nav className="mt-5 grid grid-cols-4 gap-3">
-        {quickActions.map(({ href, icon: Icon, label }) => <Link className="flex aspect-square min-w-0 flex-col items-center justify-center gap-2 rounded-2xl bg-white/5 text-xs transition hover:bg-white/10" href={href} key={href}><Icon size={20} /><span className="truncate">{label}</span></Link>)}
+      <nav className="mt-5 grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-6">
+        {[...quickActions, ...(isAdmin ? [{ href: "/admin", icon: Shield, label: "Admin" }] : [])].map(({ href, icon: Icon, label }) => <Link className="flex aspect-square min-w-0 flex-col items-center justify-center gap-2 rounded-2xl bg-white/5 text-xs transition hover:bg-white/10 sm:text-sm" href={href} key={href}><Icon className="size-6 sm:size-7 lg:size-9" /><span className="truncate">{label}</span></Link>)}
       </nav>
     </section>
   )
