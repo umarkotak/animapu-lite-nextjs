@@ -1,4 +1,4 @@
-import { Download, LogIn, LogInIcon, LogOut, Moon, Sun, UserIcon } from "lucide-react"
+import { Activity, Download, Link2, LogIn, LogInIcon, LogOut, Moon, Shield, Sun, UserIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { toast } from "react-toastify";
@@ -22,6 +22,7 @@ export default function UserDropdown() {
   const pathName = usePathname()
 
   const [user, setUser] = useState(defaultUser)
+  const isAdmin = ADM_EMS.includes(user.email)
 
   useEffect(() => {
     window.addEventListener('beforeinstallprompt', (event) => {
@@ -119,6 +120,14 @@ export default function UserDropdown() {
         <DropdownMenuLabel>Appearance</DropdownMenuLabel>
         <DropdownMenuCheckboxItem checked={theme === "light"} onSelect={() => setTheme("light")}><Sun />Light mode</DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={theme === "dark"} onSelect={() => setTheme("dark")}><Moon />Dark mode</DropdownMenuCheckboxItem>
+        {isAdmin && <>
+          <DropdownMenuSeparator />
+          <DropdownMenuLabel>Admin</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => router.push("/admin")}><Shield />Admin</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/admin/affiliate_link")}><Link2 />Affiliate Link Management</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/admin/user_activity")}><Activity />User Manga Activity</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/admin/user_anime_activity")}><Activity />User Anime Activity</DropdownMenuItem>
+        </>}
         <DropdownMenuSeparator />
         {user.email && user.email !== "" ?
           <DropdownMenuItem onClick={()=>Logout()}><LogOut />Log out</DropdownMenuItem>

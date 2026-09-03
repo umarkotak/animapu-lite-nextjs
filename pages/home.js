@@ -33,7 +33,7 @@ export default function Home() {
     <div className="relative mx-4 my-4 pb-24 md:mx-0">
       <div className="pointer-events-none absolute -top-16 left-1/2 hidden h-64 w-screen -translate-x-1/2 rounded-b-[50%] bg-gradient-to-b from-purple-500/30 via-fuchsia-500/20 to-pink-500/0 blur-3xl sm:block" />
       <div className="relative">
-        <div className="mb-8"><HomeHeader /></div>
+        <div className="mb-8"><HomeHeader activeMedia={activeMedia} /></div>
         <section className="mb-8">
           <div className="mb-4 flex items-center justify-between font-medium"><div className="flex items-center gap-2"><HistoryIcon size={20} /> Continue</div><Link className="text-sm text-primary hover:underline" href="/history">See all</Link></div>
           <UnifiedHistory compact />

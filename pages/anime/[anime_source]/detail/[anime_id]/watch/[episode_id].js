@@ -15,7 +15,7 @@ import animapuApi from '@/apis/AnimapuApi'
 import Utils from '@/models/Utils'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
-import { ArrowLeft, ChevronDownIcon, LoaderCircle, Maximize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
+import { ArrowLeft, ChevronDownIcon, LoaderCircle, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
@@ -60,6 +60,8 @@ function WatchAnime() {
   const [playing, setPlaying] = useState(true)
   const [playedSeconds, setPlayedSeconds] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [isPWA, setIsPWA] = useState(null)
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false)
   const hasServerOptions = episodeStream.stream_options?.length > 0 || Object.keys(episodeStream.iframe_urls || {}).length > 0
 
   // WINDOW SIZE
@@ -104,6 +106,13 @@ function WatchAnime() {
     window.screen?.orientation?.lock?.('landscape').catch(() => {})
     return () => window.screen?.orientation?.unlock?.()
   }, [immersive, mobileMode])
+
+  useEffect(() => {
+    setIsPWA(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)
+    const onFullscreenChange = () => setIsNativeFullscreen(Boolean(document.fullscreenElement))
+    document.addEventListener('fullscreenchange', onFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
+  }, [])
 
   useEffect(() => () => clearTimeout(controlsTimerRef.current), [])
 
@@ -345,28 +354,17 @@ function WatchAnime() {
     clearTimeout(controlsTimerRef.current)
     controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
   }
-  const enterImmersive = () => {
-    setImmersive(true)
-    revealControls()
-    if (mobileMode) window.screen?.orientation?.lock?.('landscape').catch(() => {})
-  }
-  const toggleImmersive = () => {
-    if (immersive) {
-      setImmersive(false)
-      window.screen?.orientation?.unlock?.()
-    } else {
-      enterImmersive()
-    }
-  }
-  const requestNativeFullscreen = async () => {
+  const toggleNativeFullscreen = async () => {
     try {
-      await videoPlayerDivRef.current?.requestFullscreen?.()
-      if (mobileMode) await window.screen?.orientation?.lock?.('landscape')
-    } catch (_) {
-      // Native fullscreen and orientation locking are browser-dependent.
-    }
+      if (document.fullscreenElement) {
+        await document.exitFullscreen()
+        window.screen?.orientation?.unlock?.()
+      } else {
+        await videoPlayerDivRef.current?.requestFullscreen?.()
+        if (mobileMode) await window.screen?.orientation?.lock?.('landscape')
+      }
+    } catch (_) {}
   }
-
   useEffect(() => {
     const onKeyDown = (event) => {
       if (!isCustomPlayable || showEpisodesModal || showServersModal || ['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName)) return
@@ -528,8 +526,7 @@ function WatchAnime() {
                       <span className="mx-1 h-8 w-px bg-white/30" aria-hidden="true" />
                       <button disabled={previousLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Previous episode" onClick={(event) => { event.stopPropagation(); previousLink !== '#' && router.push(previousLink) }}><SkipBack className="size-5" /></button>
                       <button disabled={nextLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Next episode" onClick={(event) => { event.stopPropagation(); nextLink !== '#' && router.push(nextLink) }}><SkipForward className="size-5" /></button>
-                      {/* <button className="rounded p-3 hover:bg-white/15" aria-label={immersive ? 'Minimize player' : 'Expand player'} onClick={(event) => { event.stopPropagation(); toggleImmersive() }}>{immersive ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button> */}
-                      <button className="rounded p-3 hover:bg-white/15" aria-label="Enter native fullscreen" onClick={(event) => { event.stopPropagation(); requestNativeFullscreen() }}><Maximize className="size-5" /></button>
+                      {isPWA === false && <button className="rounded p-3 hover:bg-white/15" aria-label={isNativeFullscreen ? 'Exit native fullscreen' : 'Enter native fullscreen'} onClick={(event) => { event.stopPropagation(); toggleNativeFullscreen() }}>{isNativeFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>}
                     </div>
                   </div>
                 </div>

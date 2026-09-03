@@ -190,7 +190,7 @@ export default function ReadManga() {
     return () => {
       window.removeEventListener("scroll", handleScroll)
     }
-  }, [])
+  }, [manga])
 
   async function HandleBookmark() {
     if (!manga.source_id) { return }
