@@ -14,6 +14,9 @@ const nextConfig = {
     // You can now safely use __dirname here
     root: path.join(__dirname, '..'),
   },
+  devIndicators: {
+    appIsrStatus: false, // Disables the build/render indicator badge
+  },
 };
 
 export default nextConfig;

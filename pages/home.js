@@ -15,6 +15,9 @@ export default function Home() {
   const activeMedia = router.query.tab === "anime" ? "anime" : "manga"
 
   useEffect(() => {
+    // TODO: Remove this temporary Anime source override.
+    localStorage.setItem("ANIMAPU_LITE:ACTIVE_ANIME_SOURCE", "kuramanime")
+
     if (router.isReady && !router.query.tab) {
       router.replace({ pathname: router.pathname, query: { ...router.query, tab: "manga" } }, undefined, { shallow: true, scroll: false })
     }
