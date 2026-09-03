@@ -12,18 +12,14 @@ import ReactPlayer from 'react-player'
 
 import animapuApi from '@/apis/AnimapuApi'
 // import AnimeCardRelationV3 from '../AnimeCardRelationV3'
-import Utils from '@/models/Utils'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
-import { ArrowLeft, ChevronDownIcon, LoaderCircle, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
+import { ArrowLeft, LoaderCircle, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
 
 var mobileModeLimit = 470
-var smallWebLimit = 1015
 
 function WatchAnime() {
   let router = useRouter()
@@ -44,54 +40,30 @@ function WatchAnime() {
     raw_stream_url: "", stream_options: [],
   })
 
-  const [searchEpisode, setSearchEpisode] = useState('')
-  const [episodeActiveAnime, setEpisodeActiveAnime] = useState({})
   const [nextLink, setNextLink] = useState('#')
   const [previousLink, setPreviousLink] = useState('#')
 
-  const [videoPlayerHeight, setVideoPlayerHeight] = useState(0)
   const [streamState, setStreamState] = useState("")
   const [showPlayer, setShowPlayer] = useState(false)
   const [loadingStream, setLoadingStream] = useState(false)
   const [showServersModal, setShowServersModal] = useState(false)
   const [showEpisodesModal, setShowEpisodesModal] = useState(false)
-  const [immersive, setImmersive] = useState(true)
   const [controlsVisible, setControlsVisible] = useState(true)
   const [playing, setPlaying] = useState(true)
   const [playedSeconds, setPlayedSeconds] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [isPWA, setIsPWA] = useState(null)
   const [isNativeFullscreen, setIsNativeFullscreen] = useState(false)
   const hasServerOptions = episodeStream.stream_options?.length > 0 || Object.keys(episodeStream.iframe_urls || {}).length > 0
 
   // WINDOW SIZE
   const [mobileMode, setMobileMode] = useState(true)
-  const [smallWebMode, setSmallWebMode] = useState(true)
   useEffect(() => {
     if (typeof(window) === "undefined") { return }
 
-    if (window.innerWidth <= mobileModeLimit) {
-      setMobileMode(true)
-      setSmallWebMode(true)
-    } else if (window.innerWidth <= smallWebLimit) {
-      setMobileMode(false)
-      setSmallWebMode(true)
-    } else {
-      setMobileMode(false)
-      setSmallWebMode(false)
-    }
+    setMobileMode(window.innerWidth <= mobileModeLimit)
 
     const onResize = () => {
-      if (window.innerWidth <= mobileModeLimit) {
-        setMobileMode(true)
-        setSmallWebMode(true)
-      } else if (window.innerWidth <= smallWebLimit) {
-        setMobileMode(false)
-        setSmallWebMode(true)
-      } else {
-        setMobileMode(false)
-        setSmallWebMode(false)
-      }
+      setMobileMode(window.innerWidth <= mobileModeLimit)
     }
 
     window.addEventListener("resize", onResize)
@@ -101,14 +73,13 @@ function WatchAnime() {
   }, [])
 
   useEffect(() => {
-    if (!immersive || !mobileMode) { return }
-    // Browsers may reject this until a user gesture, so it is also retried on the first tap.
+    if (!mobileMode) { return }
+    // Browsers may reject this until a user gesture; the player retries on touch.
     window.screen?.orientation?.lock?.('landscape').catch(() => {})
     return () => window.screen?.orientation?.unlock?.()
-  }, [immersive, mobileMode])
+  }, [mobileMode])
 
   useEffect(() => {
-    setIsPWA(window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)
     const onFullscreenChange = () => setIsNativeFullscreen(Boolean(document.fullscreenElement))
     document.addEventListener('fullscreenchange', onFullscreenChange)
     return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
@@ -120,20 +91,9 @@ function WatchAnime() {
     clearTimeout(controlsTimerRef.current)
     controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
     return () => clearTimeout(controlsTimerRef.current)
-  }, [immersive])
-
-  // VIDEO PLAYER SIZE
-  const videoPlayerDivRef = useRef()
-  useEffect(() => {
-    if (!videoPlayerDivRef.current) return
-    const resizeObserver = new ResizeObserver(() => {
-      if (!videoPlayerDivRef.current) return
-      var res = Math.floor(videoPlayerDivRef.current.offsetWidth / (16 / 9))
-      setVideoPlayerHeight(res)
-    })
-    resizeObserver.observe(videoPlayerDivRef.current)
-    return () => resizeObserver.disconnect() // clean up
   }, [])
+
+  const videoPlayerDivRef = useRef(null)
 
   useEffect(() => {
     if (window) { window.scrollTo(0, 0) }
@@ -180,7 +140,6 @@ function WatchAnime() {
       var tmpAnime = body.data
 
       setAnime(tmpAnime)
-      setEpisodeActiveAnime(tmpAnime)
       setEpisodes(tmpAnime.episodes)
 
       tmpAnime.episodes && tmpAnime.episodes.length > 0 && tmpAnime.episodes.map((ep) => {
@@ -206,26 +165,6 @@ function WatchAnime() {
     } catch (e) {
       alert(`GetAnimeDetail ${e.message}`)
       return false
-    }
-  }
-
-  async function GetOnlyAnimeDetail(id) {
-    try {
-      const response = await animapuApi.GetAnimeDetail({
-        anime_source: params.anime_source,
-        anime_id: id
-      })
-      const body = await response.json()
-      if (response.status !== 200) {
-        console.log("error", body)
-        return
-      }
-
-      setEpisodeActiveAnime(body.data)
-      setEpisodes(body.data.episodes)
-
-    } catch (e) {
-      alert(`GetOnlyAnimeDetail ${e.message}`)
     }
   }
 
@@ -257,20 +196,6 @@ function WatchAnime() {
       alert(`GetEpisodeStream ${e.message}`)
       return false
     }
-  }
-
-  useEffect(() => {
-    if (!episodeActiveAnime.episodes) { return }
-
-    setEpisodes(
-      episodeActiveAnime.episodes.filter((ep) => {
-        return `${ep.number}`.toLowerCase().includes(searchEpisode.toLowerCase())
-      })
-    )
-  }, [searchEpisode])
-
-  function changeEpisodeByAnimeID(animeID) {
-    GetOnlyAnimeDetail(animeID)
   }
 
   const onChangeBitrate = (event) => {
@@ -354,10 +279,6 @@ function WatchAnime() {
     clearTimeout(controlsTimerRef.current)
     controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
   }
-  const toggleImmersive = () => {
-    setImmersive((value) => !value)
-    revealControls()
-  }
   const toggleNativeFullscreen = async () => {
     try {
       if (document.fullscreenElement) {
@@ -380,7 +301,7 @@ function WatchAnime() {
   }, [isCustomPlayable, duration, showEpisodesModal, showServersModal])
 
   return (
-    <main className={`${immersive ? 'min-h-screen' : 'h-[100dvh] overflow-hidden'} ${mobileMode ? "" : "m-6"}`}>
+    <main className="min-h-screen">
       {!params || params.episode_id === "undefined" ? <div>
         <div className='w-full rounded-lg bg-red-500 p-2 mb-4 flex max-w-[1700px] mx-auto'>
           Please select the episode on the right
@@ -454,12 +375,12 @@ function WatchAnime() {
         </DrawerContent>
       </Drawer>
 
-      <div className={`${pageModeClass(mobileMode, smallWebMode)} ${immersive ? '' : 'h-full overflow-hidden'}`}>
+      <div className="min-h-screen">
         {/* Main content */}
         <div className='w-full mr-4 mb-4'>
           {/* VIDEO PLAYER */}
-          <div ref={videoPlayerDivRef} id="video-content" className={immersive ? 'fixed inset-0 z-40 bg-black' : videoContainerClass(mobileMode, smallWebMode)}>
-            <div className={`relative bg-black shadow-2xl shadow-gray-900 ${immersive ? 'h-[100dvh] w-screen' : 'aspect-video'}`} onMouseMove={revealControls} onTouchStart={() => { lastTouchRef.current = Date.now(); revealControls() }} onClick={() => { if (Date.now() - lastTouchRef.current > 500) togglePlaying() }}>
+          <div ref={videoPlayerDivRef} id="video-content" className="fixed inset-0 z-40 bg-black">
+            <div className="relative h-[100dvh] w-screen bg-black shadow-2xl shadow-gray-900" onMouseMove={revealControls} onTouchStart={() => { lastTouchRef.current = Date.now(); window.screen?.orientation?.lock?.('landscape').catch(() => {}); revealControls() }} onClick={() => { if (Date.now() - lastTouchRef.current > 500) togglePlaying() }}>
               <div className={`h-full w-full bg-black ${mobileMode ? "" : "overflow-hidden"}`}>
                 {showPlayer ? <>
                   {(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") && episodeStream.raw_stream_url ? <div className="h-full w-full">
@@ -530,8 +451,7 @@ function WatchAnime() {
                       <span className="mx-1 h-8 w-px bg-white/30" aria-hidden="true" />
                       <button disabled={previousLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Previous episode" onClick={(event) => { event.stopPropagation(); previousLink !== '#' && router.push(previousLink) }}><SkipBack className="size-5" /></button>
                       <button disabled={nextLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Next episode" onClick={(event) => { event.stopPropagation(); nextLink !== '#' && router.push(nextLink) }}><SkipForward className="size-5" /></button>
-                      {isPWA === true && <button className="rounded p-3 hover:bg-white/15" aria-label={immersive ? 'Minimize player' : 'Expand player'} onClick={(event) => { event.stopPropagation(); toggleImmersive() }}>{immersive ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>}
-                      {isPWA === false && <button className="rounded p-3 hover:bg-white/15" aria-label={isNativeFullscreen ? 'Exit native fullscreen' : 'Enter native fullscreen'} onClick={(event) => { event.stopPropagation(); toggleNativeFullscreen() }}>{isNativeFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>}
+                      <button className="rounded p-3 hover:bg-white/15" aria-label={isNativeFullscreen ? 'Exit native fullscreen' : 'Enter native fullscreen'} onClick={(event) => { event.stopPropagation(); toggleNativeFullscreen() }}>{isNativeFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>
                     </div>
                   </div>
                 </div>
@@ -540,145 +460,10 @@ function WatchAnime() {
             </div>
           </div>
 
-          {!immersive && <><div
-            className={`flex justify-between items-center ${mobileMode ? "mx-2" : ""} `}
-            style={{marginTop: (mobileMode ? `${videoPlayerHeight+16}px` : "16px")}}
-          >
-            <div className="line-clamp-3 flex-auto text-base font-semibold leading-relaxed">
-              {episode.number && <Badge className="mr-2 align-middle" variant="secondary">Episode - {episode.number}</Badge>}
-              {anime.title}
-            </div>
-          </div>
-          <div className={`flex justify-between mt-4 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
-            <div className='flex justify-start gap-2'>
-              <Link href={episodeStream.original_url ? `${episodeStream.original_url}` : `${anime.original_link}`}>
-                <Button size="xs">Watch on source</Button>
-              </Link>
-              {/* <button
-                className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center ml-2'
-                onClick={()=>{screenfull.request(document.querySelector('.react-player'))}}
-              >
-                Full Screen
-              </button> */}
-              {hasServerOptions && <Button size="xs" onClick={()=>setShowServersModal(!showServersModal)}>
-                Select server
-                <ChevronDownIcon size={14} />
-              </Button>}
-            </div>
-            <div className='flex justify-end gap-2'>
-              <Link href={previousLink}><Button size="xs">Prev</Button></Link>
-              <Link href={nextLink}><Button size="xs">Next</Button></Link>
-            </div>
-          </div>
-          <div className={`flex justify-between mt-2 items-center text-xs ${mobileMode ? "mx-2" : ""}`}>
-            <div>
-              <div className={`flex items-center ${episodeStream.stream_type === "hls" ? "block" : "hidden"}`}>
-                <span className='mr-2'>Res:</span>
-                <select onChange={onChangeBitrate} className='text-black p-1 border rounded-xl'>
-                  {hlsLevels.map(
-                    (level, id) => <option key={id} value={id}>
-                      {level.name}
-                    </option>
-                  )}
-                </select>
-              </div>
-            </div>
-            <div className='flex justify-end'>
-              <div className={`${episodeStream.stream_type === "hls" ? "block" : "hidden"}`}>
-                <button
-                  className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center'
-                  onClick={()=>{rPlayerRef.current?.seekTo(rPlayerRef.current?.getCurrentTime()-5)}}
-                >
-                  <i className="fa-solid fa-angles-left"></i> -5s
-                </button>
-                <button
-                  className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 items-center ml-2'
-                  onClick={()=>{rPlayerRef.current?.seekTo(rPlayerRef.current?.getCurrentTime()+5)}}
-                >
-                  <i className="fa-solid fa-angles-right"></i> +5s
-                </button>
-                <button
-                  className='py-1 px-2 rounded-xl text-black bg-gray-200 hover:bg-gray-300 ml-2'
-                  onClick={()=>{rPlayerRef.current?.seekTo(rPlayerRef.current?.getCurrentTime()+30)}}
-                >
-                  <i className="fa-solid fa-angles-right"></i> +30s
-                </button>
-              </div>
-            </div>
-          </div></>}
         </div>
-
-        {/* Side content */}
-        {!immersive && <div id="suggestion-content" className={`${mobileMode || smallWebMode ? "" : "min-w-[402px] max-w-[402px]"} flex h-full min-h-0 flex-col`}>
-          <div className={`mb-2 pb-2 ${mobileMode || smallWebMode ? "mx-2" : ""}`}>
-            <Input
-              type="text" placeholder="Search episode"
-              onChange={(e) => setSearchEpisode(e.target.value)}
-            />
-          </div>
-
-          <div className='min-h-0 flex-1 overflow-y-auto'>
-            {episodes && episodes.map((oneEpisode, index)=>(
-              <Link
-                key={`${oneEpisode.source}-${oneEpisode.anime_id}-${oneEpisode.id}-${index}`}
-                className={
-                  `mb-3 flex p-2 hover:bg-gray-700
-                  ${params.episode_id === oneEpisode.id ? "bg-gray-800" : "bg-gray-950"}
-                  ${mobileMode || smallWebMode ? "mx-2" : "min-w-[402px] max-w-[402px]"}`
-                }
-                href={`/anime/${params.anime_source}/detail/${oneEpisode.anime_id}/watch/${oneEpisode.id}`}
-              >
-                <div className='min-w-[168px] max-w-[168px] h-[94px]'>
-                  <div className='relative overflow-clip bg-black'>
-                    <Img
-                      className={`shadow-md w-[168px] h-[94px]
-                      hover:scale-110 transition duration-500 cursor-pointer overflow-clip object-contain`}
-                      src={oneEpisode?.cover_urls?.[0] || oneEpisode?.cover_url || "/images/thumb_not_found_1.png"}
-                      alt="thumb"
-                    />
-                    {!oneEpisode.cover_url && !anime.cover_url ? <div
-                      className={`flex flex-col justify-center items-center content-center absolute bg-black bg-opacity-50 top-0 left-0 h-full w-full text-white
-                      hover:scale-110 transition duration-500 cursor-pointer overflow-clip`}
-                    ><span>Episode {oneEpisode.number}</span></div> : null}
-                  </div>
-                </div>
-                <div className='pr-2'>
-                  <div className='w-full ml-2 flex flex-col'>
-                    {oneEpisode.use_title ? <>
-                      <span>{oneEpisode.title}</span>
-                      {/* <span>{oneEpisode.id}</span> */}
-                    </> : <>
-                      <span>Episode {oneEpisode.number}</span>
-                      <span className="flex text-sm mt-1 items-center">
-                        <span className='w-full'>{episodeActiveAnime.title}</span>
-                      </span>
-                    </>}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>}
       </div>
     </main>
   )
-
-  function pageModeClass(tmpMobileMode, tmpSmallWebMode) {
-    if (tmpMobileMode) { return "flex flex-col" }
-    if (tmpSmallWebMode) { return `flex flex-col` }
-    return `flex max-w-[1700px] mx-auto`
-  }
-
-  function videoContainerClass(tmpMobileMode, tmpSmallWebMode) {
-    if (tmpMobileMode) { return "w-full fixed z-10" }
-    if (tmpSmallWebMode) { return `w-full` }
-    return `w-full`
-  }
-
-  function removeSpecialCharacters(inputString) {
-    // Use a regular expression to remove non-alphanumeric characters
-    return `${inputString}`.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()
-  }
 }
 
 export default dynamic(() => Promise.resolve(WatchAnime), { ssr: false })
