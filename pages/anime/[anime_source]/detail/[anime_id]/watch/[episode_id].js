@@ -108,7 +108,7 @@ function WatchAnime() {
   }, [immersive, mobileMode])
 
   useEffect(() => {
-    setIsPWA(window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)
+    setIsPWA(window.matchMedia('(display-mode: fullscreen)').matches || window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true)
     const onFullscreenChange = () => setIsNativeFullscreen(Boolean(document.fullscreenElement))
     document.addEventListener('fullscreenchange', onFullscreenChange)
     return () => document.removeEventListener('fullscreenchange', onFullscreenChange)
@@ -354,6 +354,10 @@ function WatchAnime() {
     clearTimeout(controlsTimerRef.current)
     controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
   }
+  const toggleImmersive = () => {
+    setImmersive((value) => !value)
+    revealControls()
+  }
   const toggleNativeFullscreen = async () => {
     try {
       if (document.fullscreenElement) {
@@ -526,6 +530,7 @@ function WatchAnime() {
                       <span className="mx-1 h-8 w-px bg-white/30" aria-hidden="true" />
                       <button disabled={previousLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Previous episode" onClick={(event) => { event.stopPropagation(); previousLink !== '#' && router.push(previousLink) }}><SkipBack className="size-5" /></button>
                       <button disabled={nextLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Next episode" onClick={(event) => { event.stopPropagation(); nextLink !== '#' && router.push(nextLink) }}><SkipForward className="size-5" /></button>
+                      {isPWA === true && <button className="rounded p-3 hover:bg-white/15" aria-label={immersive ? 'Minimize player' : 'Expand player'} onClick={(event) => { event.stopPropagation(); toggleImmersive() }}>{immersive ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>}
                       {isPWA === false && <button className="rounded p-3 hover:bg-white/15" aria-label={isNativeFullscreen ? 'Exit native fullscreen' : 'Enter native fullscreen'} onClick={(event) => { event.stopPropagation(); toggleNativeFullscreen() }}>{isNativeFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>}
                     </div>
                   </div>
