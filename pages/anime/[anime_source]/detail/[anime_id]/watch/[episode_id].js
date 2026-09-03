@@ -15,7 +15,7 @@ import animapuApi from '@/apis/AnimapuApi'
 import Utils from '@/models/Utils'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
-import { ArrowLeft, ChevronDownIcon, LoaderCircle, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
+import { ArrowLeft, ChevronDownIcon, LoaderCircle, Maximize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Slider } from '@/components/ui/slider'
@@ -239,6 +239,7 @@ function WatchAnime() {
         return false
       }
       setEpisodeStream(body.data)
+      if (body.data.stream_type === 'iframe') setLoadingStream(false)
 
       return true
 
@@ -355,6 +356,14 @@ function WatchAnime() {
       window.screen?.orientation?.unlock?.()
     } else {
       enterImmersive()
+    }
+  }
+  const requestNativeFullscreen = async () => {
+    try {
+      await videoPlayerDivRef.current?.requestFullscreen?.()
+      if (mobileMode) await window.screen?.orientation?.lock?.('landscape')
+    } catch (_) {
+      // Native fullscreen and orientation locking are browser-dependent.
     }
   }
 
@@ -490,15 +499,7 @@ function WatchAnime() {
                       src={`/api/video/${encodeURIComponent(episodeStream.gdrive_conf?.gid || "")}?${new URLSearchParams({access_token: episodeStream.gdrive_conf?.access_token || ""})}`}
                     />
                   </div> : null}
-                  {episodeStream.stream_type === "iframe" && episodeStream.iframe_url ? <div className='h-full w-full overflow-hidden'>
-                    {/* <div>Iframe URL: {episodeStream.stream_type} | {episodeStream.iframe_url}</div> */}
-                    <iframe
-                      className='h-full w-full'
-                      src={episodeStream.iframe_url}
-                      onLoad={() => setLoadingStream(false)}
-                      allowFullScreen={true}
-                    />
-                  </div> : null}
+                  {episodeStream.stream_type === "iframe" && <div className="flex h-full w-full items-center justify-center p-6 text-center text-sm text-white/70">Iframe streams are temporarily unavailable.</div>}
                 </> : null}
               </div>
               {isCustomPlayable && <>
@@ -512,7 +513,7 @@ function WatchAnime() {
                 </div>
                 <div className="pointer-events-auto space-y-5 pb-2">
                   {isCustomPlayable && <div className="flex items-center gap-3 text-xs tabular-nums"><span>{formatTime(playedSeconds)}</span><Slider value={[playedSeconds]} min={0} max={duration || 1} step={0.1} onValueChange={([time]) => { seekTo(time); setPlayedSeconds(time) }} /><span>{formatTime(duration)}</span></div>}
-                  <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2">
                       {isCustomPlayable && <>
                         <button className="rounded-full p-4 hover:bg-white/15" aria-label="Back 10 seconds" onClick={(event) => { event.stopPropagation(); seekBy(-10) }}><RotateCcw className="size-5" /></button>
@@ -521,12 +522,14 @@ function WatchAnime() {
                       </>}
                       {hasServerOptions && <button className="rounded px-4 py-3 text-base hover:bg-white/15" onClick={(event) => { event.stopPropagation(); setShowServersModal(true) }}><Settings className="mr-1 inline size-5" />Servers</button>}
                     </div>
+                    <button type="button" className="mx-2 h-12 flex-1 cursor-default" aria-label="Hide player controls" onClick={(event) => { event.stopPropagation(); clearTimeout(controlsTimerRef.current); setControlsVisible(false) }} />
                     <div className="flex items-center gap-2">
                       <button className="rounded px-4 py-3 text-base hover:bg-white/15" onClick={(event) => { event.stopPropagation(); setShowEpisodesModal(true) }}>Episodes</button>
                       <span className="mx-1 h-8 w-px bg-white/30" aria-hidden="true" />
                       <button disabled={previousLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Previous episode" onClick={(event) => { event.stopPropagation(); previousLink !== '#' && router.push(previousLink) }}><SkipBack className="size-5" /></button>
                       <button disabled={nextLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Next episode" onClick={(event) => { event.stopPropagation(); nextLink !== '#' && router.push(nextLink) }}><SkipForward className="size-5" /></button>
-                      <button className="rounded p-3 hover:bg-white/15" aria-label={immersive ? 'Minimize player' : 'Expand player'} onClick={(event) => { event.stopPropagation(); toggleImmersive() }}>{immersive ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>
+                      {/* <button className="rounded p-3 hover:bg-white/15" aria-label={immersive ? 'Minimize player' : 'Expand player'} onClick={(event) => { event.stopPropagation(); toggleImmersive() }}>{immersive ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button> */}
+                      <button className="rounded p-3 hover:bg-white/15" aria-label="Enter native fullscreen" onClick={(event) => { event.stopPropagation(); requestNativeFullscreen() }}><Maximize className="size-5" /></button>
                     </div>
                   </div>
                 </div>
