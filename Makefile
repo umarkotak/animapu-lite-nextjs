@@ -7,5 +7,14 @@ build:
 start: build
 	bun --bun run start
 
-startd: build
-	nohup bun --bun run start > animapu-web.log 2>&1 &
+.PHONY: run build start startd stopd
+
+startd: stopd build
+	: > animapu-web.log
+	nohup bun --bun run start > animapu-web.log 2>&1 & echo $$! > animapu-web.pid
+
+stopd:
+	@if [ -f animapu-web.pid ]; then \
+		kill "$$(cat animapu-web.pid)" 2>/dev/null || true; \
+		rm -f animapu-web.pid; \
+	fi
