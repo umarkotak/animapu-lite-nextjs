@@ -110,7 +110,7 @@ export default function ReadManga() {
       })
       const body = await response.json()
 
-      var chapterData = body.data
+      var chapterData = { ...body.data, requestedChapterId: chapterID }
 
       if (response.status == 200) {
         if (append) {
@@ -172,7 +172,16 @@ export default function ReadManga() {
 
       if (!manga.chapters) return
 
-      const currentChapterIdx = manga.chapters.findIndex((chapter) => chapter.id === tempChapters[tempChapters.length-1].id)
+      const currentChapter = tempChapters[tempChapters.length-1]
+      let currentChapterIdx = manga.chapters.findIndex((chapter) => (
+        chapter.id === currentChapter.id || chapter.id === currentChapter.requestedChapterId
+      ))
+      if (currentChapterIdx === -1) {
+        const matchingChapters = manga.chapters.filter((chapter) => chapter.number === currentChapter.number)
+        if (matchingChapters.length === 1) {
+          currentChapterIdx = manga.chapters.indexOf(matchingChapters[0])
+        }
+      }
       if (currentChapterIdx === -1) return
 
       const targetIdx = currentChapterIdx - 1
