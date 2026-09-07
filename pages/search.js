@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 
 export default function Search() {
   const router = useRouter()
+  const queryTitle = typeof router.query.q === "string" ? router.query.q : ""
   const [title, setTitle] = useState("")
   const [sources, setSources] = useState([])
   const [sections, setSections] = useState([])
@@ -39,11 +40,11 @@ export default function Search() {
     loadSources()
   }, [])
 
-  async function searchSource(source) {
+  async function searchSource(source, searchTitle) {
     try {
       const response = source.mediaType === "anime"
-        ? await animapuApi.SearchAnime({ anime_source: source.id, title })
-        : await animapuApi.SearchManga({ manga_source: source.id, title })
+        ? await animapuApi.SearchAnime({ anime_source: source.id, title: searchTitle })
+        : await animapuApi.SearchManga({ manga_source: source.id, title: searchTitle })
       const body = await response.json()
       return response.status === 200 && body.data?.length ? { ...source, items: body.data } : null
     } catch (error) {
@@ -52,13 +53,36 @@ export default function Search() {
     }
   }
 
-  async function handleSearch() {
-    if (!title.trim() || !sources.length) return
+  async function search(searchTitle) {
+    if (!searchTitle.trim() || !sources.length) return
     setLoading(true)
     setSections([])
-    const results = await Promise.all(sources.map(searchSource))
+    const results = await Promise.all(sources.map((source) => searchSource(source, searchTitle)))
     setSections(results.filter(Boolean))
     setLoading(false)
+  }
+
+  useEffect(() => {
+    if (!router.isReady) return
+    setTitle(queryTitle)
+  }, [router.isReady, queryTitle])
+
+  useEffect(() => {
+    if (router.isReady && queryTitle && sources.length) {
+      search(queryTitle)
+    }
+  }, [router.isReady, queryTitle, sources])
+
+  function handleSearch() {
+    const searchTitle = title.trim()
+    if (!searchTitle || !sources.length) return
+
+    if (searchTitle === queryTitle) {
+      search(searchTitle)
+      return
+    }
+
+    router.push({ pathname: router.pathname, query: { ...router.query, q: searchTitle } }, undefined, { shallow: true })
   }
 
   return (
