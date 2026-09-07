@@ -43,3 +43,4 @@ next-env.d.ts
 public/sw.js
 public/workbox-*.js
 animapu-web.log
+animapu-web.pid
