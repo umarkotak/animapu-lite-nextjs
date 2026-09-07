@@ -11,7 +11,7 @@ import { toast } from 'react-toastify'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Bookmark, ChevronDownIcon, DownloadIcon, Home, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
+import { Bookmark, ChevronDownIcon, ChevronLeft, ChevronRight, DownloadIcon, Home, LinkIcon, Settings2, Share2Icon, XIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
 import { LoadingSpinner } from '@/components/ui/icon'
@@ -166,20 +166,16 @@ export default function ReadManga() {
 
     // bigger will be fetch next chapter earlier
     if (maxPosition-position <= 3600) {
-      var targetIdx = 0
-
       if (!tempChapters || tempChapters.length === 0) {
         return
       }
 
       if (!manga.chapters) return
 
-      manga.chapters.map((tmpChapter, idx) => {
-        if (tmpChapter.id === tempChapters[tempChapters.length-1].id) {
-          targetIdx = idx - 1
-        }
-      })
+      const currentChapterIdx = manga.chapters.findIndex((chapter) => chapter.id === tempChapters[tempChapters.length-1].id)
+      if (currentChapterIdx === -1) return
 
+      const targetIdx = currentChapterIdx - 1
       if (manga.chapters[targetIdx]) {
         GetChapter(true, manga.chapters[targetIdx].id)
       }
@@ -257,17 +253,20 @@ export default function ReadManga() {
   useEffect(() => {
     if (showChaptersModal) {
       // Small delay to ensure the drawer animation has started
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         const currentChapterElement = document.getElementById('current-chapter');
         if (currentChapterElement) {
+          currentChapterElement.focus({ preventScroll: true });
           currentChapterElement.scrollIntoView({
             behavior: 'smooth',
             block: 'center'
           });
         }
       }, 100);
+
+      return () => clearTimeout(timeout);
     }
-  }, [showChaptersModal]);
+  }, [showChaptersModal, selectedChapterId, chapterFilter]);
 
   return (
     <>
@@ -338,18 +337,27 @@ export default function ReadManga() {
         <div>
           {chapters.map((oneChapter) => (
             <div key={`chapter-${oneChapter.id}-${oneChapter.number}`}>
+              {(() => {
+                const chapterIndex = (manga.chapters || []).findIndex((chapter) => chapter.id === oneChapter.id)
+                const previousChapter = manga.chapters?.[chapterIndex + 1]
+                const nextChapter = manga.chapters?.[chapterIndex - 1]
+
+                return (
               <div className="sticky top-0 bg-accent">
                 <div className="p-0 flex flex-col">
                   <div className='flex justify-between items-center gap-1'>
                     <Button aria-label="Go home" size="sm" variant="outline" onClick={() => router.push('/home')}><Home size={14} /></Button>
+                    <Button aria-label="Previous chapter" size="sm" variant="outline" disabled={!previousChapter} onClick={() => router.push(`/mangas/${manga.source}/${manga.source_id}/read/${previousChapter.id}`)}><ChevronLeft size={14} /></Button>
                     <Button size="sm" variant="outline" onClick={()=>{
                       setSelectedChapterId(oneChapter.id);
-                      setShowChaptersModal(!showChaptersModal);
+                      setChapterFilter("");
+                      setShowChaptersModal(true);
                     }}>
                       {onApiCallSt && <LoadingSpinner />}
                       Chapter - {oneChapter.number}
                       <ChevronDownIcon size={14} />
                     </Button>
+                    <Button aria-label="Next chapter" size="sm" variant="outline" disabled={!nextChapter} onClick={() => router.push(`/mangas/${manga.source}/${manga.source_id}/read/${nextChapter.id}`)}><ChevronRight size={14} /></Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button size="sm" variant="outline"><Settings2 /></Button>
@@ -401,6 +409,8 @@ export default function ReadManga() {
                   />
                 </div>
               </div>
+                )
+              })()}
 
               <div id={`${oneChapter.id}-top`} className=''></div>
               <div className='flex flex-col items-center gap-1 w-full max-w-[800px]'>
