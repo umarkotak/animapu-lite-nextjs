@@ -1,4 +1,4 @@
-import { Activity, Download, Link2, LogIn, LogInIcon, LogOut, Moon, Shield, Sun, UserIcon } from "lucide-react"
+import { Activity, Download, LogIn, LogInIcon, LogOut, Moon, Shield, Sun, UserIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { toast } from "react-toastify";
@@ -124,9 +124,7 @@ export default function UserDropdown() {
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Admin</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => router.push("/admin")}><Shield />Admin</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/admin/affiliate_link")}><Link2 />Affiliate Link Management</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/admin/user_activity")}><Activity />User Manga Activity</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/admin/user_anime_activity")}><Activity />User Anime Activity</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/admin/user_activity")}><Activity />User activity</DropdownMenuItem>
         </>}
         <DropdownMenuSeparator />
         {user.email && user.email !== "" ?

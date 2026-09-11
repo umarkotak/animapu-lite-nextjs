@@ -172,35 +172,8 @@ class AnimapuApi {
     return response
   }
 
-  async GetRandomAffiliateLinks(limit) {
-    var uri = `${this.AnimapuApiHost}/affiliate_links/random?limit=${limit}`
-    const response = await fetch(uri, {
-      method: 'GET',
-      headers: this.GenHeaders(),
-    })
-    return response
-  }
-
-  async GetAffiliateLinks(limit) {
-    var uri = `${this.AnimapuApiHost}/affiliate_links?limit=${limit}`
-    const response = await fetch(uri, {
-      method: 'GET',
-      headers: this.GenHeaders(),
-    })
-    return response
-  }
-
-  async GetUsersMangaActivities(limit) {
-    var uri = `${this.AnimapuApiHost}/users/mangas/activities?limit=${limit}`
-    const response = await fetch(uri, {
-      method: 'GET',
-      headers: this.GenHeaders(),
-    })
-    return response
-  }
-
-  async GetUsersAnimeActivities(limit) {
-    var uri = `${this.AnimapuApiHost}/users/animes/activities?limit=${limit}`
+  async GetUsersActivities(limit) {
+    var uri = `${this.AnimapuApiHost}/users/activities?limit=${limit}`
     const response = await fetch(uri, {
       method: 'GET',
       headers: this.GenHeaders(),
@@ -267,16 +240,6 @@ class AnimapuApi {
     const response = await fetch(uri, {
       method: 'GET',
       headers: this.GenHeaders(),
-    })
-    return response
-  }
-
-  async PostAddTokopediaAffiliateLink(params) {
-    var uri = `${this.AnimapuApiHost}/affiliate_links/tokopedia/add`
-    const response = await fetch(uri, {
-      method: 'POST',
-      headers: this.GenHeaders(),
-      body: JSON.stringify(params)
     })
     return response
   }
