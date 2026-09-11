@@ -49,8 +49,8 @@ export default function UserActivity() {
                 <CardDescription className="break-all">Visitor ID: {userActivity.visitor_id}</CardDescription>
               </CardHeader>
               <CardContent className="pt-6">
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                  {userActivity.histories.map((history) => <HistoryCard history={history} key={`${history.media_type}-${history.source}-${history.source_id}`} />)}
+                <div className="flex flex-nowrap gap-4 overflow-x-auto pb-2">
+                  {userActivity.histories.map((history) => <HistoryCard compact history={history} key={`${history.media_type}-${history.source}-${history.source_id}`} />)}
                 </div>
               </CardContent>
             </Card>
