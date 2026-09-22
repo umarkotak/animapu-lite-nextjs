@@ -24,6 +24,32 @@ class AnimapuApi {
     return response
   }
 
+  async GetKidsMangas() {
+    const response = await fetch(`${this.AnimapuApiHost}/mangas/kids`, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async PutMangaTags(params) {
+    const uri = `${this.AnimapuApiHost}/admin/mangas/${encodeURIComponent(params.source)}/${encodeURIComponent(params.source_id)}/tags`
+    const response = await fetch(uri, {
+      method: 'PUT',
+      headers: this.GenHeaders(),
+      body: JSON.stringify({ mode: params.mode, tags: params.tags }),
+    })
+    return response
+  }
+
+  async GetAdminStatus() {
+    const response = await fetch(`${this.AnimapuApiHost}/admin/status`, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
   async GetReadManga(params) {
     var uri = `${this.AnimapuApiHost}/mangas/${params.manga_source}/read/${params.manga_id}/${params.chapter_id}`
     const response = await fetch(uri, {
@@ -77,6 +103,14 @@ class AnimapuApi {
     var uri = `${this.AnimapuApiHost}/logs`
     const response = await fetch(uri, {
       method: 'GET',
+      headers: this.GenHeaders(),
+    })
+    return response
+  }
+
+  async FlushCache() {
+    const response = await fetch(`${this.AnimapuApiHost}/admin/cache/flush`, {
+      method: 'POST',
       headers: this.GenHeaders(),
     })
     return response

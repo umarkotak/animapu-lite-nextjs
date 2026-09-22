@@ -50,7 +50,7 @@ export default function UserActivity() {
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="flex flex-nowrap gap-4 overflow-x-auto pb-2">
-                  {userActivity.histories.map((history) => <HistoryCard compact history={history} key={`${history.media_type}-${history.source}-${history.source_id}`} />)}
+                  {userActivity.histories.map((history) => <HistoryCard compact showActivityTime history={history} key={`${history.media_type}-${history.source}-${history.source_id}`} />)}
                 </div>
               </CardContent>
             </Card>

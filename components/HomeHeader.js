@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { BookMarked, Sun } from "lucide-react"
+import { Baby, BookMarked, Sun } from "lucide-react"
 import UserDropdown from "@/components/layouts/UserDropdown"
 
 export default function HomeHeader({ activeMedia }) {
@@ -19,6 +19,7 @@ export default function HomeHeader({ activeMedia }) {
       </header>
       <nav className="mt-5 grid grid-cols-4 gap-3 sm:grid-cols-5 lg:grid-cols-6">
         <Link className="flex aspect-square min-w-0 flex-col items-center justify-center gap-2 rounded-2xl bg-white/5 text-xs transition hover:bg-white/10 sm:text-sm" href={quickAction.href}><QuickActionIcon className="size-6 sm:size-7 lg:size-9" /><span className="truncate">{quickAction.label}</span></Link>
+        <Link className="flex aspect-square min-w-0 flex-col items-center justify-center gap-2 rounded-2xl bg-white/5 text-xs transition hover:bg-white/10 sm:text-sm" href="/kids"><Baby className="size-6 sm:size-7 lg:size-9" /><span className="truncate">Kids</span></Link>
       </nav>
     </section>
   )

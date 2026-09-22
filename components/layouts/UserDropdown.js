@@ -1,4 +1,4 @@
-import { Activity, Download, LogIn, LogInIcon, LogOut, Moon, Shield, Sun, UserIcon } from "lucide-react"
+import { Activity, Download, LogIn, LogInIcon, LogOut, Moon, RefreshCw, Shield, Sun, UserIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { toast } from "react-toastify";
@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
+import animapuApi from "../../apis/AnimapuApi";
 
 var defaultUser = {
   avatar: "/images/usertemp.png",
@@ -67,6 +68,16 @@ export default function UserDropdown() {
       }
     }
   }
+
+  async function FlushCache() {
+    try {
+      const response = await animapuApi.FlushCache()
+      if (!response.ok) throw new Error()
+      toast.success("Cache flushed")
+    } catch {
+      toast.error("Unable to flush cache")
+    }
+  }
   useEffect(() => {
     LoginCheck()
   }, [])
@@ -125,6 +136,7 @@ export default function UserDropdown() {
           <DropdownMenuLabel>Admin</DropdownMenuLabel>
           <DropdownMenuItem onClick={() => router.push("/admin")}><Shield />Admin</DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/admin/user_activity")}><Activity />User activity</DropdownMenuItem>
+          <DropdownMenuItem onClick={FlushCache}><RefreshCw />Flush cache</DropdownMenuItem>
         </>}
         <DropdownMenuSeparator />
         {user.email && user.email !== "" ?

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/router"
-import { BookIcon, BookmarkIcon, DownloadIcon, EyeIcon, PlayIcon, Share2Icon } from 'lucide-react'
+import { BookIcon, BookmarkIcon, DownloadIcon, EyeIcon, Minus, PlayIcon, Plus, Share2Icon } from 'lucide-react'
 import { toast } from 'react-toastify'
 import Link from 'next/link'
 import animapuApi from "../apis/AnimapuApi"
@@ -49,6 +49,39 @@ export function MangaCardDrawer(props) {
   const [chapters, setChapters] = useState([{id: 1}])
   const [continueManga, setContinueManga] = useState({last_link: "#", last_chapter_read: 0})
   const [followed, setFollowed] = useState(props.manga.is_in_library)
+  const [isAdmin, setIsAdmin] = useState(false)
+  const [isUpdatingTag, setIsUpdatingTag] = useState(false)
+  const hasKidsTag = (props.tags || []).includes("for_kids:true")
+  const hasNSFWTag = (props.tags || []).includes("nsfw:true")
+
+  useEffect(() => {
+    if (!show) return
+    animapuApi.GetAdminStatus()
+      .then((response) => response.json())
+      .then((body) => setIsAdmin(body.data?.is_admin === true))
+      .catch(() => setIsAdmin(false))
+  }, [show])
+
+  async function toggleTag(tag, hasTag, label) {
+    setIsUpdatingTag(true)
+    try {
+      const response = await animapuApi.PutMangaTags({
+        source: props.manga.source,
+        source_id: props.manga.source_id,
+        mode: hasTag ? "remove" : "add",
+        tags: [tag],
+      })
+      const body = await response.json()
+      if (response.status !== 200) {
+        throw new Error(body.error?.message || "Unable to update tag")
+      }
+      props.onTagsChange?.(body.data.tags)
+      toast.info(`${hasTag ? "Removed from" : "Added to"} ${label}`)
+    } catch (e) {
+      toast.error(e.message)
+    }
+    setIsUpdatingTag(false)
+  }
 
   function isContinuePossible() {
     try {
@@ -148,8 +181,8 @@ export function MangaCardDrawer(props) {
                   src={(manga.cover_image && manga.cover_image[0].image_urls[0]) || "/images/default-book.png"}
                 />
               </div>
-              <div className="flex flex-col gap-2">
-                <div className="flex justify-end items-center gap-2">
+              <div className="flex min-w-0 flex-1 flex-col gap-2">
+                <div className="flex w-full items-center justify-end gap-2">
                   <Button
                     size="xs"
                     variant="default"
@@ -168,6 +201,25 @@ export function MangaCardDrawer(props) {
                     <BookmarkIcon size={10} />
                     {followed ? "Un-Follow" : "Follow"}
                   </Button>
+                  {isAdmin && <>
+                    <Button
+                      size="xs"
+                      variant="default"
+                      disabled={isUpdatingTag}
+                      onClick={() => toggleTag("for_kids:true", hasKidsTag, "Kids Corner")}
+                    >
+                      {hasKidsTag ? <Minus size={10} /> : <Plus size={10} />}
+                      Kids
+                    </Button>
+                    <Button
+                      size="xs"
+                      variant={hasNSFWTag ? "destructive" : "default"}
+                      disabled={isUpdatingTag}
+                      onClick={() => toggleTag("nsfw:true", hasNSFWTag, "NSFW")}
+                    >
+                      NSFW
+                    </Button>
+                  </>}
                 </div>
                 <h1 className="text-lg">
                   { manga.title ? manga.title : <div className="h-3 bg-gray-600 rounded animate-pulse w-1/2"></div> }

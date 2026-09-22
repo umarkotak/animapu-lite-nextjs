@@ -12,6 +12,12 @@ import { MangaCardDrawer } from "./MangaCardDrawer"
 
 export default function MangaCardV2(props) {
   const [showModal, setShowModal] = useState(false)
+  const [tags, setTags] = useState(props.manga.tags || [])
+  const hasNSFWTag = tags.includes("nsfw:true")
+
+  useEffect(() => {
+    setTags(props.manga.tags || [])
+  }, [props.manga.tags])
 
   function lastReadChapter() {
     if (props.manga.last_link) {
@@ -49,14 +55,15 @@ export default function MangaCardV2(props) {
       style={{ contentVisibility: "auto", containIntrinsicSize: "265px" }}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
-        <MangaCardDrawer manga={props.manga} showModal={showModal} setShowModal={setShowModal} />
+        <MangaCardDrawer manga={props.manga} onTagsChange={setTags} showModal={showModal} setShowModal={setShowModal} tags={tags} />
 
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>
             <img
-              className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
-              src={
-                (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                className={`w-full object-cover h-[265px] rounded-xl transition z-0 cursor-pointer ${hasNSFWTag ? "blur-md" : "group-hover:scale-105"}`}
+                src={
+                  (props.manga.cover_image && props.manga.cover_image[0] && props.manga.cover_image[0].image_urls && props.manga.cover_image[0].image_urls[0])
+                    || (props.manga.cover_urls && props.manga.cover_urls[0])
                   || "/images/default-book.png"
               }
               alt="thumb"
@@ -81,7 +88,7 @@ export default function MangaCardV2(props) {
               {props.manga.title}
             </p>
             <div className={`flex justify-between items-center text-sm text-[#75b5f0] mt-1`}>
-              <span>{props.manga.latest_chapter_number !== 0 ? `Ch ${props.manga.latest_chapter_number}` : "Read"}</span>
+              <span>{(props.manga.latest_chapter_number ?? props.manga.latest_chapter) ? `Ch ${props.manga.latest_chapter_number ?? props.manga.latest_chapter}` : "Read"}</span>
               <span className="text-[12px]">{lastReadChapter()}</span>
             </div>
           </div>
