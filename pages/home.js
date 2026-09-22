@@ -31,6 +31,11 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    if (router.isReady && localStorage.getItem("ANIMAPU_LITE:KIDS_MODE") === "true") {
+      router.replace("/kids")
+      return
+    }
+
     // TODO: Remove this temporary Anime source override.
     localStorage.setItem("ANIMAPU_LITE:ACTIVE_ANIME_SOURCE", "kuramanime")
 

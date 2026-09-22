@@ -1,4 +1,4 @@
-import { Activity, Download, LogIn, LogInIcon, LogOut, Moon, RefreshCw, Shield, Sun, UserIcon } from "lucide-react"
+import { Activity, Baby, Download, LogIn, LogInIcon, LogOut, Moon, RefreshCw, Shield, Sun, UserIcon } from "lucide-react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ var defaultUser = {
 const ADM_EMS = [
   "umarkotak@gmail.com"
 ]
+const KIDS_MODE_KEY = "ANIMAPU_LITE:KIDS_MODE"
 
 export default function UserDropdown() {
   const router = useRouter()
@@ -23,6 +24,7 @@ export default function UserDropdown() {
   const pathName = usePathname()
 
   const [user, setUser] = useState(defaultUser)
+  const [kidsMode, setKidsMode] = useState(false)
   const isAdmin = ADM_EMS.includes(user.email)
 
   useEffect(() => {
@@ -80,7 +82,13 @@ export default function UserDropdown() {
   }
   useEffect(() => {
     LoginCheck()
+    setKidsMode(localStorage.getItem(KIDS_MODE_KEY) === "true")
   }, [])
+
+  function setKidsModeEnabled(enabled) {
+    setKidsMode(enabled)
+    localStorage.setItem(KIDS_MODE_KEY, String(enabled))
+  }
 
   useEffect(() => {
     if (pathName && pathName.startsWith("/admin")) {
@@ -131,6 +139,7 @@ export default function UserDropdown() {
         <DropdownMenuLabel>Appearance</DropdownMenuLabel>
         <DropdownMenuCheckboxItem checked={theme === "light"} onSelect={() => setTheme("light")}><Sun />Light mode</DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem checked={theme === "dark"} onSelect={() => setTheme("dark")}><Moon />Dark mode</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem checked={kidsMode} onCheckedChange={setKidsModeEnabled}><Baby />Kids mode</DropdownMenuCheckboxItem>
         {isAdmin && <>
           <DropdownMenuSeparator />
           <DropdownMenuLabel>Admin</DropdownMenuLabel>
