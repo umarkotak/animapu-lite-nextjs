@@ -86,8 +86,8 @@ export default function UserDropdown() {
   }, [])
 
   function setKidsModeEnabled(enabled) {
-    setKidsMode(enabled)
     localStorage.setItem(KIDS_MODE_KEY, String(enabled))
+    window.location.reload()
   }
 
   useEffect(() => {
