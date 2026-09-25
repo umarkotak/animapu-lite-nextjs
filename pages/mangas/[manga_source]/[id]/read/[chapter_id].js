@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input'
 import ScrollProgress from '@/components/ScrollProgress'
 
 var tempChapters = []
-var onApiCall = false
 var tempLoadedImageUrls = {}
 var tempFailedImageUrls = {}
 const IMAGE_RETRY_DELAY_MS = 1000
@@ -53,7 +52,9 @@ export default function ReadManga() {
 
   const [manga, setManga] = useState({})
   const [chapters, setChapters] = useState([])
-  const [onApiCallSt, setOnApiCallSt] = useState(onApiCall)
+  const [onApiCallSt, setOnApiCallSt] = useState(false)
+  const onApiCall = useRef(false)
+  const pendingChapter = useRef(null)
   const [showChaptersModal, setShowChaptersModal] = useState(false)
   const [loadedImageUrls, setLoadedImageUrls] = useState({})
   const [failedImageUrls, setFailedImageUrls] = useState({})
@@ -97,15 +98,18 @@ export default function ReadManga() {
     }
   }
 
-  async function GetChapter(append, chapterID) {
-    if (onApiCall) { return }
+  async function GetChapter(append, chapterID, mangaSource = query.manga_source, mangaID = query.id) {
+    if (onApiCall.current) {
+      if (!append) pendingChapter.current = { chapterID, mangaSource, mangaID }
+      return
+    }
 
     try {
-      onApiCall = true
+      onApiCall.current = true
       setOnApiCallSt(true)
       const response = await animapuApi.GetReadManga({
-        manga_source: query.manga_source,
-        manga_id: query.id,
+        manga_source: mangaSource,
+        manga_id: mangaID,
         chapter_id: chapterID,
       })
       const body = await response.json()
@@ -120,13 +124,15 @@ export default function ReadManga() {
         }
         setChapters(tempChapters)
       }
-      onApiCall = false
-      setOnApiCallSt(false)
-
     } catch (e) {
-      onApiCall = false
-      setOnApiCallSt(false)
       toast.error(`Error fetching chapter: ${e}`)
+    }
+    onApiCall.current = false
+    setOnApiCallSt(false)
+    if (pendingChapter.current !== null) {
+      const nextChapter = pendingChapter.current
+      pendingChapter.current = null
+      GetChapter(false, nextChapter.chapterID, nextChapter.mangaSource, nextChapter.mangaID)
     }
 
     try {
