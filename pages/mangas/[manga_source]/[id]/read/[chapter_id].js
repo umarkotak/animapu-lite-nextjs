@@ -7,6 +7,7 @@ import { jsPDF } from "jspdf";
 import { saveAs } from 'file-saver';
 
 import animapuApi from "../../../../../apis/AnimapuApi"
+import Manga from "../../../../../models/Manga"
 import { toast } from 'react-toastify'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -123,6 +124,17 @@ export default function ReadManga() {
           tempChapters = [chapterData]
         }
         setChapters(tempChapters)
+
+        const user = animapuApi.GetUserLogin()
+        const mangaHistory = new Manga({ source: mangaSource, source_id: mangaID }, user.uid)
+        const progress = JSON.stringify({
+          last_link: `/mangas/${mangaSource}/${mangaID}/read/${chapterID}`,
+          last_chapter_read: chapterData.number,
+        })
+        localStorage.setItem(mangaHistory.GetLocalHistoryKey(), progress)
+        if (user.logged_in === "true") {
+          localStorage.setItem(mangaHistory.GetOnlineHistoryKey(), progress)
+        }
       }
     } catch (e) {
       toast.error(`Error fetching chapter: ${e}`)
