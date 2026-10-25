@@ -116,6 +116,12 @@ export default function Latest({content_only, hideSourceSelector = false}) {
     GetLatestManga(false, source)
   }, [])
 
+  function handleMarkNSFW(manga) {
+    tempMangas = tempMangas.filter((item) => item.source !== manga.source || item.source_id !== manga.source_id)
+    setMangas(tempMangas)
+    cacheLatestMangaFeed(manga.source, tempMangas, page)
+  }
+
   function injectObjectEveryNthElement(array, object, n) {
     return array.reduce((acc, item, index) => {
         acc.push(item);
@@ -157,7 +163,7 @@ export default function Latest({content_only, hideSourceSelector = false}) {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
           {mangas.map((manga, idx) => (
-            <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
+            <MangaCardV2 manga={manga} onMarkNSFW={handleMarkNSFW} key={`${manga.source}-${manga.source_id}`} />
           ))}
         </div>
 
@@ -186,7 +192,7 @@ export default function Latest({content_only, hideSourceSelector = false}) {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
         {mangas.map((manga, idx) => (
-          <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />
+          <MangaCardV2 manga={manga} onMarkNSFW={handleMarkNSFW} key={`${manga.source}-${manga.source_id}`} />
         ))}
       </div>
 

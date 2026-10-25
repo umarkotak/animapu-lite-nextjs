@@ -55,7 +55,13 @@ export default function MangaCardV2(props) {
       style={{ contentVisibility: "auto", containIntrinsicSize: "265px" }}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
-        <MangaCardDrawer manga={props.manga} onTagsChange={setTags} showModal={showModal} setShowModal={setShowModal} tags={tags} />
+        <MangaCardDrawer manga={props.manga} onTagsChange={(updatedTags) => {
+          setTags(updatedTags)
+          if (updatedTags.includes("nsfw:true")) {
+            setShowModal(false)
+            props.onMarkNSFW?.(props.manga)
+          }
+        }} showModal={showModal} setShowModal={setShowModal} tags={tags} />
 
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(!showModal)}>

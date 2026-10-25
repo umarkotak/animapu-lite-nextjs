@@ -76,7 +76,7 @@ export function MangaCardDrawer(props) {
         throw new Error(body.error?.message || "Unable to update tag")
       }
       props.onTagsChange?.(body.data.tags)
-      toast.info(`${hasTag ? "Removed from" : "Added to"} ${label}`)
+      toast.success(tag === "nsfw:true" && !hasTag ? "Marked as NSFW successfully" : `${hasTag ? "Removed from" : "Added to"} ${label}`)
     } catch (e) {
       toast.error(e.message)
     }
