@@ -14,12 +14,10 @@ import animapuApi from '@/apis/AnimapuApi'
 // import AnimeCardRelationV3 from '../AnimeCardRelationV3'
 import { Button } from '@/components/ui/button'
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui/drawer'
-import { ArrowLeft, LoaderCircle, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
+import { ArrowLeft, ListVideo, LoaderCircle, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw, Settings, SkipBack, SkipForward } from 'lucide-react'
 import { Slider } from '@/components/ui/slider'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/router'
-
-var mobileModeLimit = 470
 
 function WatchAnime() {
   let router = useRouter()
@@ -55,30 +53,6 @@ function WatchAnime() {
   const [isNativeFullscreen, setIsNativeFullscreen] = useState(false)
   const hasServerOptions = episodeStream.stream_options?.length > 0 || Object.keys(episodeStream.iframe_urls || {}).length > 0
 
-  // WINDOW SIZE
-  const [mobileMode, setMobileMode] = useState(true)
-  useEffect(() => {
-    if (typeof(window) === "undefined") { return }
-
-    setMobileMode(window.innerWidth <= mobileModeLimit)
-
-    const onResize = () => {
-      setMobileMode(window.innerWidth <= mobileModeLimit)
-    }
-
-    window.addEventListener("resize", onResize)
-    return () => {
-      window.removeEventListener("resize", onResize)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!mobileMode) { return }
-    // Browsers may reject this until a user gesture; the player retries on touch.
-    window.screen?.orientation?.lock?.('landscape').catch(() => {})
-    return () => window.screen?.orientation?.unlock?.()
-  }, [mobileMode])
-
   useEffect(() => {
     const onFullscreenChange = () => setIsNativeFullscreen(Boolean(document.fullscreenElement))
     document.addEventListener('fullscreenchange', onFullscreenChange)
@@ -89,7 +63,7 @@ function WatchAnime() {
 
   useEffect(() => {
     clearTimeout(controlsTimerRef.current)
-    controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
+    controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 1500)
     return () => clearTimeout(controlsTimerRef.current)
   }, [])
 
@@ -277,16 +251,14 @@ function WatchAnime() {
   const revealControls = () => {
     setControlsVisible(true)
     clearTimeout(controlsTimerRef.current)
-    controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 2500)
+    controlsTimerRef.current = setTimeout(() => setControlsVisible(false), 1500)
   }
   const toggleNativeFullscreen = async () => {
     try {
       if (document.fullscreenElement) {
         await document.exitFullscreen()
-        window.screen?.orientation?.unlock?.()
       } else {
         await videoPlayerDivRef.current?.requestFullscreen?.()
-        if (mobileMode) await window.screen?.orientation?.lock?.('landscape')
       }
     } catch (_) {}
   }
@@ -316,7 +288,7 @@ function WatchAnime() {
 
       <Drawer open={showServersModal} onOpenChange={setShowServersModal}>
         <DrawerContent>
-          <div className='overflow-auto h-[450px] mx-auto w-full max-w-md'>
+          <div className='max-h-[80dvh] overflow-auto mx-auto w-full max-w-md'>
             <DrawerHeader className="text-left">
               <DrawerTitle>Select Servers</DrawerTitle>
             </DrawerHeader>
@@ -357,7 +329,7 @@ function WatchAnime() {
       </Drawer>
 
       <Drawer open={showEpisodesModal} onOpenChange={setShowEpisodesModal}>
-        <DrawerContent className="mx-auto max-h-[76vh] max-w-6xl bg-zinc-950 text-white">
+        <DrawerContent className="mx-auto max-h-[76dvh] max-w-6xl bg-zinc-950 text-white">
           <DrawerHeader className="text-left"><DrawerTitle>Episodes</DrawerTitle></DrawerHeader>
           <div className="flex gap-3 overflow-x-auto px-4 pb-8">
             {episodes.map((oneEpisode, index) => (
@@ -380,8 +352,8 @@ function WatchAnime() {
         <div className='w-full mr-4 mb-4'>
           {/* VIDEO PLAYER */}
           <div ref={videoPlayerDivRef} id="video-content" className="fixed inset-0 z-40 bg-black">
-            <div className="relative h-[100dvh] w-screen bg-black shadow-2xl shadow-gray-900" onMouseMove={revealControls} onTouchStart={() => { lastTouchRef.current = Date.now(); window.screen?.orientation?.lock?.('landscape').catch(() => {}); revealControls() }} onClick={() => { if (Date.now() - lastTouchRef.current > 500) togglePlaying() }}>
-              <div className={`h-full w-full bg-black ${mobileMode ? "" : "overflow-hidden"}`}>
+            <div className="relative h-full w-full bg-black shadow-2xl shadow-gray-900" onMouseMove={revealControls} onTouchStart={() => { lastTouchRef.current = Date.now(); revealControls() }} onClick={() => { if (Date.now() - lastTouchRef.current > 500) togglePlaying() }}>
+              <div className="h-full w-full overflow-hidden bg-black">
                 {showPlayer ? <>
                   {(episodeStream.stream_type === "hls" || episodeStream.stream_type === "mp4") && episodeStream.raw_stream_url ? <div className="h-full w-full">
                     <ReactPlayer
@@ -389,6 +361,7 @@ function WatchAnime() {
                       src={episodeStream.raw_stream_url}
                       playing={playing}
                       controls={false}
+                      playsInline
                       width={"100%"}
                       height={"100%"}
                       onTimeUpdate={() => setPlayedSeconds(getCurrentTime())}
@@ -429,26 +402,24 @@ function WatchAnime() {
                 <button type="button" className="absolute inset-y-[22%] left-0 z-10 w-[32%] rounded-r-full opacity-0" aria-label="Double click to rewind 10 seconds" onClick={(event) => { event.stopPropagation(); revealControls() }} onDoubleClick={(event) => { event.stopPropagation(); seekBy(-10); revealControls() }} />
                 <button type="button" className="absolute inset-y-[22%] right-0 z-10 w-[32%] rounded-l-full opacity-0" aria-label="Double click to forward 10 seconds" onClick={(event) => { event.stopPropagation(); revealControls() }} onDoubleClick={(event) => { event.stopPropagation(); seekBy(10); revealControls() }} />
               </>}
-              <div className={`pointer-events-none absolute inset-0 z-20 flex flex-col justify-between bg-gradient-to-b from-black/50 via-transparent to-black/65 p-4 text-white transition-opacity duration-300 ${controlsVisible ? 'opacity-100' : 'opacity-0'}`}>
+              <div inert={!controlsVisible} className={`pointer-events-none absolute inset-0 z-20 flex flex-col justify-between bg-gradient-to-b from-black/50 via-transparent to-black/65 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] text-white transition-opacity duration-300 sm:p-4 sm:pb-[max(1rem,env(safe-area-inset-bottom))] ${controlsVisible ? 'opacity-100' : 'opacity-0'}`}>
                 <div className="pointer-events-auto flex items-center justify-between gap-3">
                   <button className="rounded-full p-2 hover:bg-white/15" aria-label="Back to Anime home" onClick={(event) => { event.stopPropagation(); router.push('/home?tab=anime') }}><ArrowLeft /></button>
                   <div className="min-w-0 text-right"><p className="truncate font-medium">{anime.title}</p><p className="text-sm text-white/70">Episode {episode.number}</p></div>
                 </div>
-                <div className="pointer-events-auto space-y-5 pb-2">
+                <div className="pointer-events-auto space-y-3 sm:space-y-4">
                   {isCustomPlayable && <div className="flex items-center gap-3 text-xs tabular-nums"><span>{formatTime(playedSeconds)}</span><Slider value={[playedSeconds]} min={0} max={duration || 1} step={0.1} onValueChange={([time]) => { seekTo(time); setPlayedSeconds(time) }} /><span>{formatTime(duration)}</span></div>}
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col items-center gap-3 landscape:sm:flex-row landscape:sm:justify-between">
                     <div className="flex items-center gap-2">
                       {isCustomPlayable && <>
-                        <button className="rounded-full p-4 hover:bg-white/15" aria-label="Back 10 seconds" onClick={(event) => { event.stopPropagation(); seekBy(-10) }}><RotateCcw className="size-5" /></button>
-                        <button className="rounded-full bg-white p-5 text-black hover:bg-white/85" aria-label={playing ? 'Pause' : 'Play'} onClick={(event) => { event.stopPropagation(); togglePlaying() }}>{playing ? <Pause className="size-6" fill="currentColor" /> : <Play className="size-6" fill="currentColor" />}</button>
-                        <button className="rounded-full p-4 hover:bg-white/15" aria-label="Forward 10 seconds" onClick={(event) => { event.stopPropagation(); seekBy(10) }}><RotateCw className="size-5" /></button>
+                        <button className="rounded-full p-3 hover:bg-white/15" aria-label="Back 10 seconds" onClick={(event) => { event.stopPropagation(); seekBy(-10) }}><RotateCcw className="size-5" /></button>
+                        <button className="rounded-full bg-white p-4 text-black hover:bg-white/85" aria-label={playing ? 'Pause' : 'Play'} onClick={(event) => { event.stopPropagation(); togglePlaying() }}>{playing ? <Pause className="size-6" fill="currentColor" /> : <Play className="size-6" fill="currentColor" />}</button>
+                        <button className="rounded-full p-3 hover:bg-white/15" aria-label="Forward 10 seconds" onClick={(event) => { event.stopPropagation(); seekBy(10) }}><RotateCw className="size-5" /></button>
                       </>}
-                      {hasServerOptions && <button className="rounded px-4 py-3 text-base hover:bg-white/15" onClick={(event) => { event.stopPropagation(); setShowServersModal(true) }}><Settings className="mr-1 inline size-5" />Servers</button>}
                     </div>
-                    <button type="button" className="mx-2 h-12 flex-1 cursor-default" aria-label="Hide player controls" onClick={(event) => { event.stopPropagation(); clearTimeout(controlsTimerRef.current); setControlsVisible(false) }} />
-                    <div className="flex items-center gap-2">
-                      <button className="rounded px-4 py-3 text-base hover:bg-white/15" onClick={(event) => { event.stopPropagation(); setShowEpisodesModal(true) }}>Episodes</button>
-                      <span className="mx-1 h-8 w-px bg-white/30" aria-hidden="true" />
+                    <div className="flex w-full items-center justify-between gap-1 landscape:sm:w-auto landscape:sm:gap-2">
+                      {hasServerOptions && <button className="flex items-center gap-1 rounded p-3 text-sm hover:bg-white/15" aria-label="Servers" onClick={(event) => { event.stopPropagation(); setShowServersModal(true) }}><Settings className="size-5" /><span className="hidden min-[400px]:inline">Servers</span></button>}
+                      <button className="flex items-center gap-1 rounded p-3 text-sm hover:bg-white/15" aria-label="Episodes" onClick={(event) => { event.stopPropagation(); setShowEpisodesModal(true) }}><ListVideo className="size-5" /><span className="hidden min-[400px]:inline">Episodes</span></button>
                       <button disabled={previousLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Previous episode" onClick={(event) => { event.stopPropagation(); previousLink !== '#' && router.push(previousLink) }}><SkipBack className="size-5" /></button>
                       <button disabled={nextLink === '#'} className="rounded p-3 hover:bg-white/15 disabled:opacity-40" aria-label="Next episode" onClick={(event) => { event.stopPropagation(); nextLink !== '#' && router.push(nextLink) }}><SkipForward className="size-5" /></button>
                       <button className="rounded p-3 hover:bg-white/15" aria-label={isNativeFullscreen ? 'Exit native fullscreen' : 'Enter native fullscreen'} onClick={(event) => { event.stopPropagation(); toggleNativeFullscreen() }}>{isNativeFullscreen ? <Minimize className="size-5" /> : <Maximize className="size-5" />}</button>
