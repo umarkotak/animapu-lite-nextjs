@@ -24,7 +24,10 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
           ? await animapuApi.GetAnimeDetail({ anime_source: history.source, anime_id: history.source_id })
           : await animapuApi.GetMangaDetail({ manga_source: history.source, manga_id: history.source_id })
         const body = await response.json()
-        if (response.status === 200) setDetail(body.data)
+        if (response.status === 200) {
+          setDetail(body.data)
+          if (isAnime) setTags(body.data.tags || [])
+        }
       } catch (error) {
         console.error(error)
       }
@@ -34,7 +37,7 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
   }, [open, isAnime, history.source, history.source_id])
 
   useEffect(() => {
-    if (!open || isAnime) return
+    if (!open) return
     animapuApi.GetAdminStatus()
       .then((response) => response.json())
       .then((body) => setIsAdmin(body.data?.is_admin === true))
@@ -44,7 +47,7 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
   async function toggleTag(tag, hasTag, label) {
     setIsUpdatingTag(true)
     try {
-      const response = await animapuApi.PutMangaTags({
+      const response = await (isAnime ? animapuApi.PutAnimeTags : animapuApi.PutMangaTags).call(animapuApi, {
         source: history.source,
         source_id: history.source_id,
         mode: hasTag ? "remove" : "add",
@@ -81,9 +84,9 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
         <div className="container mx-auto flex max-w-[768px] flex-wrap gap-2 px-3 py-3">
           {(!isAnime || startItem) && <Button asChild size="xs"><Link href={detailPath}><Eye size={12} /> {isAnime ? "Start Watch" : "Detail"}</Link></Button>}
           {history.last_link && <Button asChild size="xs"><Link href={history.last_link}><Play size={12} /> Continue {isAnime ? `Ep ${history.progress}` : `Ch ${history.progress}`}</Link></Button>}
-          {!isAnime && isAdmin && <>
+          {isAdmin && <>
             <Button disabled={isUpdatingTag} onClick={() => toggleTag("for_kids:true", hasKidsTag, "Kids Corner")} size="xs">{hasKidsTag ? <Minus size={12} /> : <Plus size={12} />} Kids</Button>
-            <Button disabled={isUpdatingTag} onClick={() => toggleTag("nsfw:true", hasNSFWTag, "NSFW")} size="xs" variant={hasNSFWTag ? "destructive" : "default"}>NSFW</Button>
+            {!isAnime && <Button disabled={isUpdatingTag} onClick={() => toggleTag("nsfw:true", hasNSFWTag, "NSFW")} size="xs" variant={hasNSFWTag ? "destructive" : "default"}>NSFW</Button>}
           </>}
         </div>
 

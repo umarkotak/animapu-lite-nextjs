@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 
 import animapuApi from "@/apis/AnimapuApi"
 import HomeHeader from "@/components/HomeHeader"
+import AnimeCard from "@/components/AnimeCard"
 import MangaCardV2 from "@/components/MangaCardV2"
 import UnifiedHistory from "@/components/UnifiedHistory"
 
@@ -15,22 +16,24 @@ const placeholders = [
 
 export default function Kids() {
   const [mangas, setMangas] = useState(placeholders)
+  const [animes, setAnimes] = useState([])
 
   useEffect(() => {
-    async function loadKidsMangas() {
+    async function loadKidsTitles() {
       try {
-        const response = await animapuApi.GetKidsMangas()
-        const body = await response.json()
-        if (response.status !== 200) {
-          throw new Error(body.error?.message || "Unable to load Kids Corner")
-        }
-        setMangas(body.data)
+        const responses = await Promise.all([animapuApi.GetKidsMangas(), animapuApi.GetKidsAnimes()])
+        const bodies = await Promise.all(responses.map((response) => response.json()))
+        responses.forEach((response, index) => {
+          if (response.status !== 200) throw new Error(bodies[index].error?.message || "Unable to load Kids Corner")
+        })
+        setMangas(bodies[0].data)
+        setAnimes(bodies[1].data)
       } catch (e) {
         toast.error(e.message)
         setMangas([])
       }
     }
-    loadKidsMangas()
+    loadKidsTitles()
   }, [])
 
   return <div className="relative mx-4 my-4 pb-8 md:mx-0">
@@ -42,9 +45,10 @@ export default function Kids() {
         <UnifiedHistory compact />
       </section>
       <h1 className="mb-6 text-2xl font-semibold">Kids Corner</h1>
-      {mangas.length ? <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+      {mangas.length || animes.length ? <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+        {animes.map((anime) => <AnimeCard anime={anime} key={`anime-${anime.source}-${anime.id}`} />)}
         {mangas.map((manga) => <MangaCardV2 manga={manga} key={`${manga.source}-${manga.source_id}`} />)}
-      </div> : <p className="text-muted-foreground">No kid-friendly manga yet.</p>}
+      </div> : <p className="text-muted-foreground">No kid-friendly manga or anime yet.</p>}
     </div>
   </div>
 }

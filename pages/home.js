@@ -13,6 +13,7 @@ const AnimeLatest = dynamic(() => import("./anime/latest"))
 export default function Home() {
   const router = useRouter()
   const activeMedia = router.query.tab === "anime" ? "anime" : "manga"
+  const [activeAnimeSource, setActiveAnimeSource] = useState("")
   const [isLegacyHost, setIsLegacyHost] = useState(false)
   const [secondsRemaining, setSecondsRemaining] = useState(10)
 
@@ -38,6 +39,7 @@ export default function Home() {
 
     // TODO: Remove this temporary Anime source override.
     localStorage.setItem("ANIMAPU_LITE:ACTIVE_ANIME_SOURCE", "kuramanime")
+    setActiveAnimeSource("kuramanime")
 
     if (router.isReady && !router.query.tab) {
       router.replace({ pathname: router.pathname, query: { ...router.query, tab: "manga" } }, undefined, { shallow: true, scroll: false })
@@ -71,12 +73,12 @@ export default function Home() {
     <div className="relative mx-4 my-4 pb-24 md:mx-0">
       <div className="pointer-events-none absolute -top-16 left-1/2 hidden h-64 w-screen -translate-x-1/2 rounded-b-[50%] bg-gradient-to-b from-purple-500/30 via-fuchsia-500/20 to-pink-500/0 blur-3xl sm:block" />
       <div className="relative">
-        <div className="mb-8"><HomeHeader activeMedia={activeMedia} /></div>
+        <div className="mb-8"><HomeHeader activeMedia={activeMedia} animeSource={activeAnimeSource} /></div>
         <section className="mb-8">
           <div className="mb-4 flex items-center justify-between font-medium"><div className="flex items-center gap-2"><HistoryIcon size={20} /> Continue</div><Link className="text-sm text-primary hover:underline" href="/history">See all</Link></div>
           <UnifiedHistory compact />
         </section>
-        {activeMedia === "anime" ? <AnimeLatest contentOnly /> : <Latest content_only hideSourceSelector />}
+        {activeMedia === "anime" ? activeAnimeSource && <AnimeLatest contentOnly animeSource={activeAnimeSource} /> : <Latest content_only hideSourceSelector />}
         <HomeMediaMenu activeMedia={activeMedia} onMediaChange={changeMedia} />
       </div>
     </div>

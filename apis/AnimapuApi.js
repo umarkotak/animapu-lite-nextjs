@@ -32,6 +32,21 @@ class AnimapuApi {
     return response
   }
 
+  async GetKidsAnimes() {
+    return fetch(`${this.AnimapuApiHost}/animes/kids`, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+    })
+  }
+
+  async PutAnimeTags(params) {
+    return fetch(`${this.AnimapuApiHost}/admin/animes/${encodeURIComponent(params.source)}/${encodeURIComponent(params.source_id)}/tags`, {
+      method: 'PUT',
+      headers: this.GenHeaders(),
+      body: JSON.stringify({ mode: params.mode, tags: params.tags }),
+    })
+  }
+
   async PutMangaTags(params) {
     const uri = `${this.AnimapuApiHost}/admin/mangas/${encodeURIComponent(params.source)}/${encodeURIComponent(params.source_id)}/tags`
     const response = await fetch(uri, {
@@ -224,11 +239,22 @@ class AnimapuApi {
     return response
   }
 
+  async GetAnimeCapabilities(params) {
+    return fetch(`${this.AnimapuApiHost}/animes/${params.anime_source}/capabilities`, {
+      method: 'GET',
+      headers: this.GenHeaders(),
+      signal: params.signal,
+    })
+  }
+
   async GetLatestAnime(params) {
-    var uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/latest?page=${params.page}`
+    const query = new URLSearchParams({ page: params.page })
+    if (params.special_filter) query.set("special_filter", params.special_filter)
+    const uri = `${this.AnimapuApiHost}/animes/${params.anime_source}/latest?${query}`
     const response = await fetch(uri, {
       method: 'GET',
       headers: this.GenHeaders(),
+      signal: params.signal,
     })
     return response
   }
