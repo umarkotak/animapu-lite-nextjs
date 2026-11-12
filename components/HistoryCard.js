@@ -1,10 +1,12 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BookOpen, Play } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import HistoryDrawer from "@/components/HistoryDrawer"
 
 export default function HistoryCard({ history, compact = false, showActivityTime = false }) {
   const [showModal, setShowModal] = useState(false)
+  const [tags, setTags] = useState(history.tags || [])
+  useEffect(() => { setTags(history.tags || []) }, [history.tags])
 
   if (history.shimmer) {
     return <div className={`${compact ? "w-[220px] h-[112px] flex-none" : "w-full h-[280px]"} animate-pulse rounded-2xl border border-white/10 bg-white/5`} />
@@ -14,10 +16,10 @@ export default function HistoryCard({ history, compact = false, showActivityTime
   const Icon = isAnime ? Play : BookOpen
   const progressLabel = isAnime ? "Episode" : "Chapter"
   const cover = history.cover_urls?.[0] || "/images/default-book.png"
-  const isNSFW = !isAnime && history.tags?.includes("nsfw:true")
+  const isNSFW = tags.includes("nsfw:true")
   return (
     <div className={compact ? "flex-none" : "w-full"}>
-      {showModal && <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />}
+      {showModal && <HistoryDrawer history={{ ...history, tags }} open={showModal} onOpenChange={setShowModal} onTagsChange={setTags} />}
       <button type="button" onClick={() => setShowModal(true)} aria-label={`Open ${history.title}`} className={`group relative block overflow-hidden rounded-2xl border border-white/10 bg-white/5 text-left backdrop-blur-xl transition hover:-translate-y-1 hover:border-primary/60 hover:bg-white/10 ${compact ? "w-[220px] h-[176px]" : "w-full h-[280px]"}`}>
         <img className={`absolute inset-0 h-full w-full object-cover transition duration-500 ${isNSFW ? "blur-md" : "group-hover:scale-105"} ${compact ? "opacity-55" : "opacity-75"}`} src={cover} alt="" decoding="async" loading="lazy" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/5" />

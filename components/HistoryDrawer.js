@@ -6,7 +6,7 @@ import animapuApi from "@/apis/AnimapuApi"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerContent } from "@/components/ui/drawer"
 
-export default function HistoryDrawer({ history, open, onOpenChange }) {
+export default function HistoryDrawer({ history, open, onOpenChange, onTagsChange }) {
   const isAnime = history.media_type === "anime"
   const [detail, setDetail] = useState({ chapters: [], episodes: [] })
   const [tags, setTags] = useState(history.tags || [])
@@ -55,7 +55,8 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
       })
       const body = await response.json()
       if (response.status !== 200) throw new Error(body.error?.message || "Unable to update tag")
-      setTags(body.data.tags)
+      setTags(body.data.tags || [])
+      onTagsChange?.(body.data.tags || [])
       toast.info(`${hasTag ? "Removed from" : "Added to"} ${label}`)
     } catch (error) {
       toast.error(error.message)
@@ -86,7 +87,7 @@ export default function HistoryDrawer({ history, open, onOpenChange }) {
           {history.last_link && <Button asChild size="xs"><Link href={history.last_link}><Play size={12} /> Continue {isAnime ? `Ep ${history.progress}` : `Ch ${history.progress}`}</Link></Button>}
           {isAdmin && <>
             <Button disabled={isUpdatingTag} onClick={() => toggleTag("for_kids:true", hasKidsTag, "Kids Corner")} size="xs">{hasKidsTag ? <Minus size={12} /> : <Plus size={12} />} Kids</Button>
-            {!isAnime && <Button disabled={isUpdatingTag} onClick={() => toggleTag("nsfw:true", hasNSFWTag, "NSFW")} size="xs" variant={hasNSFWTag ? "destructive" : "default"}>NSFW</Button>}
+            <Button disabled={isUpdatingTag} onClick={() => toggleTag("nsfw:true", hasNSFWTag, "NSFW")} size="xs" variant={hasNSFWTag ? "destructive" : "default"}>NSFW</Button>
           </>}
         </div>
 

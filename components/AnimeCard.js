@@ -14,6 +14,12 @@ import HistoryDrawer from '@/components/HistoryDrawer'
 
 export default function AnimeCard(props) {
   const [showModal, setShowModal] = useState(false)
+  const [tags, setTags] = useState(props.anime.tags || [])
+  const hasNSFWTag = tags.includes("nsfw:true")
+
+  useEffect(() => {
+    setTags(props.anime.tags || [])
+  }, [props.anime.tags])
 
   function lastReadChapter() {
     if (props.anime.last_link) {
@@ -45,6 +51,7 @@ export default function AnimeCard(props) {
 
   const history = {
     ...props.anime,
+    tags,
     media_type: 'anime',
     source: props.anime.source || props.source,
     source_id: props.anime.id,
@@ -61,12 +68,18 @@ export default function AnimeCard(props) {
       style={{ contentVisibility: "auto", containIntrinsicSize: "265px" }}
     >
       <div className="flex flex-col relative shadow-xl rounded-xl">
-        {showModal && <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />}
+        {showModal && <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} onTagsChange={(updatedTags) => {
+          setTags(updatedTags)
+          if (updatedTags.includes("nsfw:true")) {
+            setShowModal(false)
+            props.onMarkNSFW?.(props.anime)
+          }
+        }} />}
 
         <div className="overflow-hidden rounded-xl">
           <div className="bg-black rounded-xl" onClick={()=>setShowModal(true)}>
             <img
-              className={`w-full object-cover h-[265px] rounded-xl group-hover:scale-105 transition z-0 cursor-pointer`}
+              className={`w-full object-cover h-[265px] rounded-xl transition z-0 cursor-pointer ${hasNSFWTag ? "blur-md" : "group-hover:scale-105"}`}
               src={(props?.anime?.cover_urls) || "/images/default-book.png"}
               alt="thumb"
               decoding="async"

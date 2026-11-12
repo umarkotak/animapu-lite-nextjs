@@ -35,6 +35,7 @@ export default function AnimeLatest({discoveryBar, contentOnly = false, animeSou
       onApiCall = true
       setLoading(true)
       setError("")
+      let skipEmptyPage = false
       try {
         const requestedPage = page
         const response = await animapuApi.GetLatestAnime({
@@ -47,7 +48,8 @@ export default function AnimeLatest({discoveryBar, contentOnly = false, animeSou
         if (!response.ok) throw new Error(body.error?.message || "Unable to load anime.")
         if (controller.signal.aborted) return
         const results = body.data || []
-        endReached = results.length === 0
+        skipEmptyPage = results.length === 0 && response.headers?.get("X-Anime-Has-More") === "true"
+        endReached = results.length === 0 && !skipEmptyPage
         setAnimes((current) => requestedPage === 1 ? results : current.concat(results))
         page += 1
       } catch (error) {
@@ -57,7 +59,10 @@ export default function AnimeLatest({discoveryBar, contentOnly = false, animeSou
         }
       } finally {
         onApiCall = false
-        if (!controller.signal.aborted) setLoading(false)
+        if (!controller.signal.aborted) {
+          setLoading(false)
+          if (skipEmptyPage) loadAnimes()
+        }
       }
     }
 
@@ -77,6 +82,10 @@ export default function AnimeLatest({discoveryBar, contentOnly = false, animeSou
     }
   }, [router.isReady, activeSource, specialFilter])
 
+  function handleMarkNSFW(anime) {
+    setAnimes((current) => current.filter((item) => item.source !== anime.source || item.id !== anime.id))
+  }
+
   const status = error
     ? <p role="alert" className="py-8 text-center text-destructive">{error}</p>
     : !animes.length && <p role="status" className="py-8 text-center text-muted-foreground">{loading ? "Loading anime…" : "No anime found."}</p>
@@ -86,14 +95,14 @@ export default function AnimeLatest({discoveryBar, contentOnly = false, animeSou
     return (
       <div className="flex flex-row gap-4 flex-nowrap overflow-auto">
         {animes.map((oneAnimeData) => (
-          <AnimeCardBar anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />
+          <AnimeCardBar onMarkNSFW={handleMarkNSFW} anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />
         ))}
       </div>
     )
   }
 
   if (contentOnly) {
-    return status || <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">{animes.map((oneAnimeData) => <AnimeCard anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />)}</div>
+    return status || <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">{animes.map((oneAnimeData) => <AnimeCard onMarkNSFW={handleMarkNSFW} anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />)}</div>
   }
 
   return (
@@ -114,7 +123,7 @@ export default function AnimeLatest({discoveryBar, contentOnly = false, animeSou
 
       {status || <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 z-0">
         {animes.map((oneAnimeData) => (
-          <AnimeCard anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />
+          <AnimeCard onMarkNSFW={handleMarkNSFW} anime={oneAnimeData} key={`${oneAnimeData.source}-${oneAnimeData.id}`} source={oneAnimeData.source} />
         ))}
       </div>}
     </div>

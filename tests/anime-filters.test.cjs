@@ -132,12 +132,131 @@ test('Changing filters resets pagination and ignores stale responses', async () 
   const cleanupCompleted = render()
   assert.equal(requests[2].params.page, 1)
   assert.equal(requests[2].params.special_filter, 'completed')
-  requests[2].resolve({ ok: true, json: async () => ({ data: [] }) })
+  requests[2].resolve({ ok: true, headers: { get: () => "true" }, json: async () => ({ data: [] }) })
   requests[1].resolve({ ok: true, json: async () => ({ data: [{ id: 'stale' }] }) })
   await flush()
   assert.equal(state[1].length, 0)
+  assert.equal(requests[3].params.page, 2)
+  requests[3].resolve({ ok: true, json: async () => ({ data: [] }) })
+  await flush()
   onScroll()
   await flush()
-  assert.equal(requests.length, 3)
+  assert.equal(requests.length, 4)
   cleanupCompleted()
+})
+
+function findElements(node, predicate, result = []) {
+  if (!node || typeof node !== 'object') return result
+  if (Array.isArray(node)) {
+    node.forEach((child) => findElements(child, predicate, result))
+    return result
+  }
+  if (predicate(node)) result.push(node)
+  findElements(node.props?.children, predicate, result)
+  return result
+}
+
+test('Anime NSFW toggle is admin-only and saves through anime tags API', async () => {
+  const Button = () => null
+  const calls = []
+  const updates = []
+  let hookIndex = 0
+  let isAdmin = true
+  let tags = []
+  let saveOK = true
+  const Drawer = loadModule('components/HistoryDrawer.js', {
+    react: {
+      useEffect: () => {},
+      useState: () => [[{ episodes: [] }, tags, isAdmin, false][hookIndex++], () => {}],
+    },
+    'next/link': () => null,
+    'lucide-react': {},
+    'react-toastify': { toast: { info: () => {}, error: () => {} } },
+    '@/components/ui/button': { Button },
+    '@/components/ui/drawer': { Drawer: () => null, DrawerContent: () => null },
+    '@/apis/AnimapuApi': {
+      PutAnimeTags: async (params) => {
+        calls.push(params)
+        return { status: saveOK ? 200 : 500, json: async () => ({ data: { tags: params.mode === 'add' ? ['nsfw:true'] : [] } }) }
+      },
+      PutMangaTags: () => { throw new Error('Anime tag update used manga API') },
+    },
+  })
+  const history = { media_type: 'anime', source: 'kuramanime', source_id: '5044' }
+  function render() {
+    hookIndex = 0
+    return Drawer({ history, open: true, onTagsChange: (value) => updates.push(value) })
+  }
+  function nsfwButton(tree) {
+    return findElements(tree, (node) => node.type === Button && node.props.children === 'NSFW')[0]
+  }
+  await nsfwButton(render()).props.onClick()
+  assert.equal(calls[0].source, 'kuramanime')
+  assert.equal(calls[0].source_id, '5044')
+  assert.equal(calls[0].mode, 'add')
+  assert.equal(updates[0][0], 'nsfw:true')
+  tags = ['nsfw:true']
+  await nsfwButton(render()).props.onClick()
+  assert.equal(calls[1].mode, 'remove')
+  assert.equal(updates[1].length, 0)
+  saveOK = false
+  await nsfwButton(render()).props.onClick()
+  assert.equal(updates.length, 2)
+  isAdmin = false
+  assert.equal(nsfwButton(render()), undefined)
+})
+
+test('Anime history covers blur when tagged NSFW', () => {
+  let tags = ['nsfw:true']
+  let hookIndex = 0
+  const Card = loadModule('components/HistoryCard.js', {
+    react: { useEffect: () => {}, useState: () => [[false, tags][hookIndex++], () => {}] },
+    'lucide-react': {},
+    'date-fns': {},
+    '@/components/HistoryDrawer': () => null,
+  })
+  function cover() {
+    hookIndex = 0
+    return findElements(Card({ history: { media_type: 'anime', title: 'Anime' } }), (node) => node.type === 'img')[0]
+  }
+  assert.match(cover().props.className, /blur-md/)
+  tags = []
+  assert.doesNotMatch(cover().props.className, /blur-md/)
+})
+
+test('Marking an anime NSFW closes its drawer and updates the card', () => {
+  const Drawer = () => null
+  const anime = { source: 'kuramanime', id: '5044', title: 'Anime' }
+  const state = [true, []]
+  let hookIndex = 0
+  let marked
+  const Card = loadModule('components/AnimeCard.js', {
+    react: {
+      useEffect: () => {},
+      useState: () => {
+        const index = hookIndex++
+        return [state[index], (value) => { state[index] = value }]
+      },
+    },
+    'next/link': () => null,
+    'next/navigation': {},
+    'next/router': {},
+    'react-image': {},
+    '@/apis/AnimapuApi': {},
+    './ui/button': {},
+    './ui/badge': {},
+    'react-toastify': {},
+    'lucide-react': {},
+    '@/components/HistoryDrawer': Drawer,
+  })
+  function render() {
+    hookIndex = 0
+    return Card({ anime, onMarkNSFW: (value) => { marked = value } })
+  }
+  const drawer = findElements(render(), (node) => node.type === Drawer)[0]
+  drawer.props.onTagsChange(['nsfw:true'])
+  assert.equal(marked, anime)
+  assert.equal(state[0], false)
+  const cover = findElements(render(), (node) => node.type === 'img')[0]
+  assert.match(cover.props.className, /blur-md/)
 })

@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import utils from '@/models/Utils'
 import HistoryDrawer from '@/components/HistoryDrawer'
 
 export default function AnimeCardBar(props) {
   const [showModal, setShowModal] = useState(false)
+  const [tags, setTags] = useState(props.anime.tags || [])
+  useEffect(() => { setTags(props.anime.tags || []) }, [props.anime.tags])
   const history = {
     ...props.anime,
+    tags,
     media_type: "anime",
     source_id: props.anime.id,
     cover_urls: Array.isArray(props.anime.cover_urls) ? props.anime.cover_urls : [props.anime.cover_urls],
@@ -27,7 +30,13 @@ export default function AnimeCardBar(props) {
       key={`${props.anime.source}-${props.anime.id}`}
       id={`${props.anime.source}-${props.anime.id}`}
     >
-      <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} />
+      <HistoryDrawer history={history} open={showModal} onOpenChange={setShowModal} onTagsChange={(updatedTags) => {
+        setTags(updatedTags)
+        if (updatedTags.includes("nsfw:true")) {
+          setShowModal(false)
+          props.onMarkNSFW?.(props.anime)
+        }
+      }} />
 
       <div
         className="flex flex-row gap-2 h-full"
@@ -35,7 +44,7 @@ export default function AnimeCardBar(props) {
       >
         <div className="relative flex-none">
           <img
-            className={`flex-none object-contain h-full w-[100px]`}
+            className={`flex-none object-contain h-full w-[100px] ${tags.includes("nsfw:true") ? "blur-md" : ""}`}
             src={(props?.anime?.cover_urls) || "/images/default-book.png"}
             alt="thumb"
           />
